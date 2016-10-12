@@ -18,6 +18,9 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 
+# See https://github.com/rails/execjs#readme for more supported runtimes
+gem 'therubyracer', platforms: :ruby
+
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 
@@ -26,7 +29,11 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
 
+# CoAP server for Rails.
 gem 'david'
+
+# encode/decode cbor messages
+gem 'cbor'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
