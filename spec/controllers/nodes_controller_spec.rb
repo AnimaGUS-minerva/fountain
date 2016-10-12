@@ -24,11 +24,14 @@ RSpec.describe NodesController, type: :controller do
   # Node. As you add validations to Node, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    { name: 'Frank', fqdn: 'frank.things.example.com',
+      eui64: '00:16:3e:ff:fe:12:ea:91', device_type_id: 1,
+      manufacturer_id: 1, idevid: 'O=bulb,CN=12ea91'
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    skip("never works")
   }
 
   # This should return the minimal set of values that should be in the session
@@ -40,7 +43,7 @@ RSpec.describe NodesController, type: :controller do
     it "assigns all nodes as @nodes" do
       node = Node.create! valid_attributes
       get :index, {}, valid_session
-      expect(assigns(:nodes)).to eq([node])
+      expect(assigns(:nodes)).to include(node)
     end
   end
 
