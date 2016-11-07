@@ -1,0 +1,10 @@
+bulb1:
+      name: bulb twenty seven
+      fqdn: seven.bulbs.example.com
+      eui64: 00:16:3e:ff:fe:12:ea:91
+      device_type_id: 1
+      manufacturer_id: 1
+      idevid: O=bulb,CN=12ea91
+
+
+        

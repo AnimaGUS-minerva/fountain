@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @node.name %>
+</p>
+
+<p>
+  <strong>Fqdn:</strong>
+  <%= @node.fqdn %>
+</p>
+
+<p>
+  <strong>Eui64:</strong>
+  <%= @node.eui64 %>
+</p>
+
+<p>
+  <strong>Device type:</strong>
+  <%= @node.device_type_id %>
+</p>
+
+<p>
+  <strong>Manufacturer:</strong>
+  <%= @node.manufacturer_id %>
+</p>
+
+<p>
+  <strong>Idevid:</strong>
+  <%= @node.idevid %>
+</p>
+
+<%= link_to 'Edit', edit_node_path(@node) %> |
+<%= link_to 'Back', nodes_path %>
