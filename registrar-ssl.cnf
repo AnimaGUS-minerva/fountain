@@ -1,0 +1,32 @@
+[ ra ]
+extendedKeyUsage = cmcRA, emailProtection
+authorityKeyIdentifier=keyid,issuer
+keyUsage = digitalSignature, keyEncipherment
+
+[ req ]
+default_bits		= 2048
+default_keyfile 	= privkey.pem
+distinguished_name	= fountain_req
+default_days	        = 365			# how long to certify for
+
+[ policy_anything ]
+countryName		= optional
+stateOrProvinceName	= optional
+localityName		= optional
+organizationName	= optional
+organizationalUnitName	= optional
+commonName		= supplied
+emailAddress		= optional
+
+[ req_attributes ]
+
+[ fountain_req ]
+countryName_default	= CA
+stateOrProvinceName_default = Ontario
+localityName_default	= Ottawa
+organizationName_default= Sandelman Software
+organizationalUnitName_default = ANIMA
+commonName              = What is the FQDN
+commonName_default	= fountain.sandelman.ca
+emailAddress_default	= mcr@sandelman.ca
+
