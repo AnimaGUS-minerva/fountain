@@ -50,77 +50,99 @@ namespace :fountain do
     end
   end
 
-  desc "Create a certificate for the MASA to sign vouchers with"
-  task :bootstrap_masa => :environment do
+  desc "Create a certificate for the JRC web interface; also owns the devices"
+  task :jrc_cert => :environment do
 
-    curve = HighwayKeys.ca.curve
+    curve = FountainKeys.ca.client_curve
 
     certdir = Rails.root.join('db').join('cert')
     FileUtils.mkpath(certdir)
 
-    masaprivkey=certdir.join("masa_#{curve}.key")
-    if File.exists?(masaprivkey)
-      masa_key = OpenSSL::PKey.read(File.open(masaprivkey))
+    serverprivkey=certdir.join("jrc_#{curve}.key")
+    if File.exists?(serverprivkey)
+      server_key = OpenSSL::PKey.read(File.open(serverprivkey))
     else
       # the MASA's public/private key - 3*1024 + 8
-      masa_key = OpenSSL::PKey::EC.new(curve)
-      masa_key.generate_key
-      File.open(masaprivkey, "w") do |f| f.write masa_key.to_pem end
+      server_key = OpenSSL::PKey::EC.new(curve)
+      server_key.generate_key
+      File.open(serverprivkey, "w") do |f| f.write server_key.to_pem end
     end
 
-    masa_crt  = OpenSSL::X509::Certificate.new
+    server_crt  = OpenSSL::X509::Certificate.new
     # cf. RFC 5280 - to make it a "v3" certificate
-    masa_crt.version = 2
-    masa_crt.serial = 1
-    masa_crt.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=Unstrung MASA"
+    server_crt.version = 2
+    server_crt.serial  = FountainKeys.ca.serial
+    server_crt.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=localhost"
 
-    root_ca = HighwayKeys.ca.rootkey
+    root_ca = FountainKeys.ca.rootkey
     # masa is signed by root_ca
-    masa_crt.issuer = root_ca.subject
+    server_crt.issuer = root_ca.subject
     #root_ca.public_key = root_key.public_key
-    masa_crt.public_key = masa_key
-    masa_crt.not_before = Time.now
+    server_crt.public_key = server_key
+    server_crt.not_before = Time.now
 
     # 2 years validity
-    masa_crt.not_after = masa_crt.not_before + 2 * 365 * 24 * 60 * 60
+    server_crt.not_after = server_crt.not_before + 2 * 365 * 24 * 60 * 60
 
     # Extension Factory
     ef = OpenSSL::X509::ExtensionFactory.new
-    ef.subject_certificate = masa_crt
+    ef.subject_certificate = server_crt
     ef.issuer_certificate  = root_ca
-    masa_crt.add_extension(ef.create_extension("basicConstraints","CA:FALSE",true))
-    masa_crt.sign(HighwayKeys.ca.rootprivkey, OpenSSL::Digest::SHA256.new)
+    server_crt.add_extension(ef.create_extension("basicConstraints","CA:FALSE",true))
+    server_crt.sign(FountainKeys.ca.rootprivkey, FountainKeys.ca.digest)
 
-    File.open(certdir.join("masa_#{curve}.crt"),'w') do |f|
-      f.write masa_crt.to_pem
+    File.open(certdir.join("jrc_#{curve}.crt"),'w') do |f|
+      f.write server_crt.to_pem
     end
   end
 
-  desc "Sign a IDevID certificate for a new device"
-  task :signmic => :environment do
+  desc "Create a certificate for the Registration Authority to own devices with"
+  task :create_registrar => :environment do
 
-    eui64 = ENV['EUI64']
+    curve = FountainKeys.ca.curve
 
-    dev = Device.create(eui64: eui64)
-    dev.gen_and_store_key
-  end
+    certdir = Rails.root.join('db').join('cert')
+    FileUtils.mkpath(certdir)
 
-  def foo_one
-    key = OpenSSL::PKey::RSA.new 2048
-    cert = OpenSSL::X509::Certificate.new
-    cert.version = 2
-    cert.serial = 2
-    cert.subject = OpenSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby certificate"
-    cert.issuer = root_ca.subject # root CA is the issuer
-    cert.public_key = key.public_key
-    cert.not_before = Time.now
-    cert.not_after = cert.not_before + 1 * 365 * 24 * 60 * 60 # 1 years validity
+    jrcprivkey=certdir.join("jrc_#{curve}.key")
+    if File.exists?(jrcprivkey)
+      jrc_key = OpenSSL::PKey.read(File.open(jrcprivkey))
+    else
+      # the JRC's public/private key - 3*1024 + 8
+      jrc_key = OpenSSL::PKey::EC.new(curve)
+      jrc_key.generate_key
+      File.open(jrcprivkey, "w") do |f| f.write jrc_key.to_pem end
+    end
+
+    jrc_crt  = OpenSSL::X509::Certificate.new
+    # cf. RFC 5280 - to make it a "v3" certificate
+    jrc_crt.version = 2
+    jrc_crt.serial = 1
+    jrc_crt.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=Unstrung JRC"
+
+    root_ca = FountainKeys.ca.rootkey
+    # jrc is signed by root_ca
+    jrc_crt.issuer = root_ca.subject
+    #root_ca.public_key = root_key.public_key
+    jrc_crt.public_key = jrc_key
+    jrc_crt.not_before = Time.now
+
+    # 2 years validity
+    jrc_crt.not_after = jrc_crt.not_before + 2 * 365 * 24 * 60 * 60
+
+    # Extension Factory
     ef = OpenSSL::X509::ExtensionFactory.new
-    ef.subject_certificate = cert
-    ef.issuer_certificate = root_ca
-    cert.add_extension(ef.create_extension("keyUsage","digitalSignature", true))
-    cert.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-    cert.sign(root_key, OpenSSL::Digest::SHA256.new)
+    ef.subject_certificate = jrc_crt
+    ef.issuer_certificate  = root_ca
+    ef.config = OpenSSL::Config.load("registrar-ssl.cnf")
+    jrc_crt.add_extension(ef.create_extension("basicConstraints","CA:FALSE",true))
+    n = ef.create_extension("extendedKeyUsage","cmcRA:TRUE",true)
+    jrc_crt.add_extension(n)
+    jrc_crt.sign(FountainKeys.ca.rootprivkey, OpenSSL::Digest::SHA256.new)
+
+    File.open(certdir.join("jrc_#{curve}.crt"),'w') do |f|
+      f.write jrc_crt.to_pem
+    end
   end
 
 end
