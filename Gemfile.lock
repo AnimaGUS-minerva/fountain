@@ -205,7 +205,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   json
-  rails (= 4.2.5)
+  rails (~> 4.2.5)
   rspec-rails (~> 3.0)
   sass-rails (~> 5.0)
   sdoc
