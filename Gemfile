@@ -18,7 +18,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 
-# See https://github.com/rails/execjs#readme for more supported runtimes
+gem 'active_scaffold'
 gem 'therubyracer', platforms: :ruby
 
 gem 'jbuilder', '~> 2.0'

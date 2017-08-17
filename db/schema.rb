@@ -13,6 +13,11 @@
 
 ActiveRecord::Schema.define(version: 20161012012600) do
 
+  create_table "certificates", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "device_types", force: :cascade do |t|
     t.text     "name"
     t.datetime "created_at", null: false

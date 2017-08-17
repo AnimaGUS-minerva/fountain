@@ -2,6 +2,11 @@ Rails.application.routes.draw do
   resources :device_types
   resources :manufacturers
   resources :nodes
+
+  resources :certificates do
+    as_routes
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
