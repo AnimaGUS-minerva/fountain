@@ -8,5 +8,5 @@ Rails.application.routes.draw do
   end
 
   # EST processing at well known URLs
-  post '/.well-known/est/requestvoucher', to: 'est#voucher'
+  post '/.well-known/est/requestvoucher', to: 'est#voucherrequest'
 end

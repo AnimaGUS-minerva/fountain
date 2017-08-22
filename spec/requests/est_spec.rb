@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Est", type: :request do
 
   describe "voucher request" do
-    it "works! (now write some real specs)" do
+    it "should get posted to requestvoucher" do
 
       post "/.well-known/est/requestvoucher"
       expect(response).to have_http_status(200)
