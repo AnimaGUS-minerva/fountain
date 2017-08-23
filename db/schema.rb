@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161012012600) do
+ActiveRecord::Schema.define(version: 20170822193551) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "certificates", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -39,6 +42,20 @@ ActiveRecord::Schema.define(version: 20161012012600) do
     t.text     "idevid"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+  end
+
+  create_table "voucher_requests", force: :cascade do |t|
+    t.integer  "node_id"
+    t.integer  "manufacturer_id"
+    t.text     "device_identifier"
+    t.inet     "requesting_ip"
+    t.inet     "proxy_ip"
+    t.text     "nonce"
+    t.binary   "idevid"
+    t.json     "details"
+    t.boolean  "signed"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
 end
