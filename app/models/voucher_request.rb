@@ -1,22 +1,26 @@
 class VoucherRequest < ApplicationRecord
-  belongs_to :voucher
-  belongs_to :owner
-  belongs_to :device
+  belongs_to :node
+  belongs_to :manufacturer
 
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
 
-  def self.from_json_jose(token)
-    json = Chariwt::VoucherRequest.from_json_jose(token)
-    vr = create(details: json)
+  def self.from_json_jose(token, json)
+    signed = false
+    jsonresult = Chariwt::VoucherRequest.from_json_jose(token)
+    if jsonresult
+      signed = true
+      json = jsonresult
+    end
+
+    vr = create(details: json, signed: signed)
     vr.populate_explicit_fields
-    vr.owner      = Owner.find_by_public_key(vr.vdetails["pinned-domain-cert"])
     vr
   end
 
   def vdetails
-    raise VoucherRequest::InvalidVoucherRequest unless details["ietf-voucher:voucher"]
-    @vdetails ||= details["ietf-voucher:voucher"]
+    raise VoucherRequest::InvalidVoucherRequest unless details["ietf-voucher-request:voucher"]
+    @vdetails ||= details["ietf-voucher-request:voucher"]
   end
 
   def name
@@ -30,7 +34,7 @@ class VoucherRequest < ApplicationRecord
 
   def populate_explicit_fields
     self.device_identifier = vdetails["serial-number"]
-    self.device            = Device.find_by_number(device_identifier)
+    self.node              = Node.find_or_make_by_number(device_identifier)
     self.nonce             = vdetails["nonce"]
   end
 
