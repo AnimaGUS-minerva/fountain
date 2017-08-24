@@ -2,7 +2,6 @@ class VoucherRequest < ApplicationRecord
   belongs_to :voucher
   belongs_to :owner
   belongs_to :device
-  include FixtureSave
 
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end

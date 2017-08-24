@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.2'
 
 # Use postgresql as the database for Active Record
-gem 'pg'
+gem 'pg', '0.20'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -19,6 +19,9 @@ gem "turbolinks"
 gem 'chariwt', :path => '../chariwt'
 #gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 gem 'jwt'
+
+gem "fixture_save", :path => "../fixture_save"
+#gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
 gem 'active_scaffold'
 gem 'therubyracer', platforms: :ruby

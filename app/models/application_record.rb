@@ -1,7 +1,7 @@
-#require 'fixture_save'
+require 'fixture_save'
 
 class ApplicationRecord < ActiveRecord::Base
-  #include FixtureSave
+  include FixtureSave
   self.abstract_class = true
 
 end
