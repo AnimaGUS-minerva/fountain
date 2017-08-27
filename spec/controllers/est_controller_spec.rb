@@ -25,6 +25,7 @@ RSpec.describe EstController, type: :controller do
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).signed).to be_falsey
       expect(assigns(:voucherreq).node).to_not be_nil
+      expect(assigns(:voucherreq).manufacturer).to be_present
     end
   end
 end

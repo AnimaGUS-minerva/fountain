@@ -2,6 +2,8 @@ class VoucherRequest < ApplicationRecord
   belongs_to :node
   belongs_to :manufacturer
 
+  attr_accessor :certificate, :issuer_pki
+
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
 
@@ -59,7 +61,33 @@ class VoucherRequest < ApplicationRecord
     voucher.jose_sign!
   end
 
+  def certificate
+    @certificate ||= OpenSSL::X509::Certificate.new(tls_clientcert)
+  end
+
+  def issuer_pki
+    @issuer_pki  ||= certificate.issuer.to_der
+  end
+
   def discover_manufacturer
+    @masaurl = nil
+    certificate.extensions.each { |ext|
+      if ext.oid == "1.3.6.1.4.1.46930.2"
+        @masa_url = ext.value[2..-1]
+      end
+    }
+    manu = Manufacturer.where(masa_url: @masa_url).take
+    unless manu
+      manu = Manufacturer.where(issuer_public_key: issuer_pki).take
+    end
+    unless manu
+      manu = Manufacturer.create(masa_url: @masa_url,
+                                 issuer_public_key: issuer_pki)
+      manu.name = "Manu#{manu.id}"
+      manu.save!
+    end
+
+    self.manufacturer = manu
   end
 
 end

@@ -14,7 +14,7 @@ RSpec.describe VoucherRequest, type: :model do
   describe "certificates" do
     it "should find the MASA URL from the certificate" do
       vr2 = VoucherRequest.new
-      vr2.tls_clientcert = Base64.urlsafe_encode64(IO.binread("spec/certs/12-00-00-66-4D-02.crt"))
+      vr2.tls_clientcert = IO.binread("spec/certs/12-00-00-66-4D-02.crt")
       vr2.discover_manufacturer
       expect(vr2.manufacturer).to eq(manufacturers(:widget1))
     end
