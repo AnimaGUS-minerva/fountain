@@ -16,7 +16,7 @@ RSpec.describe EstController, type: :controller do
         }
       }
 
-      clientcert = Base64.urlsafe_encode64(IO.binread("spec/certs/12-00-00-66-4D-02.crt"))
+      clientcert = IO.binread("spec/certs/12-00-00-66-4D-02.crt")
       @request.env["SSL_CLIENT_CERT"] = clientcert
 
       post :requestvoucher, voucherrequest.merge(format: 'json')

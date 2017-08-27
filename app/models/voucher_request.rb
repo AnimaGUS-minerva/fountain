@@ -59,4 +59,7 @@ class VoucherRequest < ApplicationRecord
     voucher.jose_sign!
   end
 
+  def discover_manufacturer
+  end
+
 end
