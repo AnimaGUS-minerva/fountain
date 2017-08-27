@@ -9,6 +9,10 @@ RSpec.describe VoucherRequest, type: :model do
       expect(vr1.node).to         be_present
       expect(vr1.manufacturer).to be_present
     end
+    it "should have a voucher (response)" do
+      vr1=voucher_requests(:vr1)
+      expect(vr1.voucher).to      be_present
+    end
   end
 
   describe "certificates" do

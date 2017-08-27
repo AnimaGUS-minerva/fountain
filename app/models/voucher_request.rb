@@ -1,6 +1,7 @@
 class VoucherRequest < ApplicationRecord
   belongs_to :node
   belongs_to :manufacturer
+  has_many   :vouchers
 
   attr_accessor :certificate, :issuer_pki
 

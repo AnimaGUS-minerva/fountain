@@ -1,10 +1,10 @@
-vr1:
+voucher1:
   id: 1
-  node_id: 1
   manufacturer_id: 1
+  node_id: 1
+  voucher_request_id: 1
   device_identifier: "JADA123456789"
-  requesting_ip: fe80::1234
-  proxy_ip: fd0a::12
   nonce: "abcd1234"
   details: { "some": "stuff"}
-  signed: false
+  signed_voucher: ""
+
