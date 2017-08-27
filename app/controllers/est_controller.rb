@@ -8,6 +8,7 @@ class EstController < ApplicationController
     if clientcert_pem
       @voucherreq.tls_clientcert = clientcert_pem
     end
+    @voucherreq.discover_manufacturer
     @voucherreq.save!
 
     head :ok

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824015344) do
+ActiveRecord::Schema.define(version: 20170827014659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,8 +29,10 @@ ActiveRecord::Schema.define(version: 20170824015344) do
 
   create_table "manufacturers", force: :cascade do |t|
     t.text     "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.text     "masa_url"
+    t.binary   "issuer_public_key"
   end
 
   create_table "nodes", force: :cascade do |t|
