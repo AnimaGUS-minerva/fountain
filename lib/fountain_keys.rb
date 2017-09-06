@@ -46,6 +46,13 @@ class FountainKeys
     @ca ||= self.new
   end
 
+  def jrc_pub_key
+    @jrc_pub_key  ||= load_jrc_pub_key
+  end
+  def jrc_priv_key
+    @jrc_priv_key ||= load_jrc_priv_key
+  end
+
   protected
   def ca_load_priv_key
     vendorprivkey=certdir.join("ownerca_#{curve}.key")
@@ -60,14 +67,14 @@ class FountainKeys
     end
   end
 
-  def jrc_priv_key
+  def load_jrc_priv_key
     jrcprivkey=certdir.join("jrc_#{client_curve}.key")
     File.open(jrcprivkey) do |f|
       OpenSSL::PKey.read(f)
     end
   end
 
-  def jrc_pub_key
+  def load_jrc_pub_key
     File.open(certdir.join("jrc_#{client_curve}.crt"),'r') do |f|
       OpenSSL::X509::Certificate.new(f)
     end

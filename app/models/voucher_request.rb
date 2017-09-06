@@ -41,6 +41,17 @@ class VoucherRequest < ApplicationRecord
     self.nonce             = vdetails["nonce"]
   end
 
+  # create a voucher request (JOSE signed JSON) appropriate for sending to the MASA.
+  # it shall always be signed.
+  def registrar_voucher_request_json
+    # now build our voucher request from the one we got.
+    vreq = Chariwt::VoucherRequest.new
+    vreq.owner_cert = FountainKeys.ca.jrc_pub_key
+    vreq.attributes['nonce']         = nonce
+    vreq.attributes['serial-number'] = device_identifier
+    jwt = vreq.jose_sign(FountainKeys.ca.jrc_priv_key)
+  end
+
   def issue_voucher
     # at a minimum, this must be before a device that belongs to us!
     return nil unless device

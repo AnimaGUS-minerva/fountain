@@ -11,7 +11,15 @@ RSpec.describe VoucherRequest, type: :model do
     end
     it "should have a voucher (response)" do
       vr1=voucher_requests(:vr1)
-      expect(vr1.voucher).to      be_present
+      expect(vr1.vouchers).to      be_present
+    end
+  end
+
+  describe "signing requests" do
+    it "should create a signed voucher request" do
+      vr1=voucher_requests(:vr1)
+      # result is a BASE64 encoded PKCS7 object
+      expect(vr1.registrar_voucher_request_json).to_not be_nil
     end
   end
 
