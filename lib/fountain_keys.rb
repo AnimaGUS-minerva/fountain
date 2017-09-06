@@ -25,7 +25,7 @@ class FountainKeys
   end
 
   def client_curve
-    'secp256k1'
+    'prime256v1'
   end
 
   def serial
@@ -56,6 +56,19 @@ class FountainKeys
 
   def ca_load_pub_key
     File.open(certdir.join("ownerca_#{curve}.crt"),'r') do |f|
+      OpenSSL::X509::Certificate.new(f)
+    end
+  end
+
+  def jrc_priv_key
+    jrcprivkey=certdir.join("jrc_#{client_curve}.key")
+    File.open(jrcprivkey) do |f|
+      OpenSSL::PKey.read(f)
+    end
+  end
+
+  def jrc_pub_key
+    File.open(certdir.join("jrc_#{client_curve}.crt"),'r') do |f|
       OpenSSL::X509::Certificate.new(f)
     end
   end
