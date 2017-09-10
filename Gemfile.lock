@@ -1,7 +1,7 @@
 PATH
   remote: ../chariwt
   specs:
-    chariwt (0.0.1)
+    chariwt (0.1.0)
 
 PATH
   remote: ../fixture_save

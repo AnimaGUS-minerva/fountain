@@ -3,7 +3,7 @@ class VoucherRequest < ApplicationRecord
   belongs_to :manufacturer
   has_many   :vouchers
 
-  attr_accessor :certificate, :issuer_pki
+  attr_accessor :certificate, :issuer_pki, :request
 
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
@@ -52,25 +52,24 @@ class VoucherRequest < ApplicationRecord
     jwt = vreq.jose_sign(FountainKeys.ca.jrc_priv_key)
   end
 
-  def issue_voucher
-    # at a minimum, this must be before a device that belongs to us!
-    return nil unless device
+  # create a voucher request (PKCS7 signed JSON) appropriate for sending to the MASA.
+  # it shall always be signed.
+  def calc_registrar_voucher_request_pkcs7
+    # now build our voucher request from the one we got.
+    vreq = Chariwt::VoucherRequest.new
+    vreq.owner_cert = FountainKeys.ca.jrc_pub_key
+    vreq.attributes['nonce']         = nonce
+    vreq.attributes['serial-number'] = device_identifier
+    self.request = vreq
+    token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
+  end
 
-    # must have an owner!
-    return nil unless owner
+  def owner_cert
+    request.try(:owner_cert)
+  end
 
-    # XXX if there is another valid voucher for this device, it must be for
-    # the same owner.
-
-    ## XXX what other kinds of validation belongs here?
-
-    voucher = Voucher.create(owner: owner,
-                             device: device,
-                             nonce: nonce)
-    unless nonce
-      voucher.expires_on = Time.now + 14.days
-    end
-    voucher.jose_sign!
+  def registrar_voucher_request_pkcs7
+    @pkcs7_voucher ||= calc_registrar_voucher_request_pkcs7
   end
 
   def certificate

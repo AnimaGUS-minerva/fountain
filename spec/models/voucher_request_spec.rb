@@ -20,6 +20,13 @@ RSpec.describe VoucherRequest, type: :model do
       vr1=voucher_requests(:vr1)
       # result is a BASE64 encoded PKCS7 object
       expect(vr1.registrar_voucher_request_json).to_not be_nil
+
+      # save it for examination elsewhere (and use by MASA tests)
+      File.open(File.join("tmp", "vr_#{vr1.device_identifier}.pkcs"), "w") do |f|
+        f.puts vr1.registrar_voucher_request_pkcs7
+      end
+
+      expect(vr1.owner_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
     end
   end
 
@@ -29,6 +36,13 @@ RSpec.describe VoucherRequest, type: :model do
       vr2.tls_clientcert = IO.binread("spec/certs/12-00-00-66-4D-02.crt")
       vr2.discover_manufacturer
       expect(vr2.manufacturer).to eq(manufacturers(:widget1))
+    end
+  end
+
+  describe "vouchers" do
+    it "should send a signed request to the indicated MASA" do
+      vr1=voucher_requests(:vr1)
+
     end
   end
 end
