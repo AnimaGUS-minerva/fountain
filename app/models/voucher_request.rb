@@ -8,6 +8,12 @@ class VoucherRequest < ApplicationRecord
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
 
+  def self.from_json(json, signed = false)
+    vr = create(details: json, signed: signed)
+    vr.populate_explicit_fields
+    vr
+  end
+
   def self.from_json_jose(token, json)
     signed = false
     jsonresult = Chariwt::VoucherRequest.from_json_jose(token)
@@ -15,10 +21,17 @@ class VoucherRequest < ApplicationRecord
       signed = true
       json = jsonresult
     end
+    return from_json(json, signed)
+  end
 
-    vr = create(details: json, signed: signed)
-    vr.populate_explicit_fields
-    vr
+  def self.from_pkcs7(token, json)
+    signed = false
+    jsonresult = Chariwt::VoucherRequest.from_pkcs7(token)
+    if jsonresult
+      signed = true
+      json = jsonresult
+    end
+    return from_json(json, signed)
   end
 
   def vdetails
@@ -99,6 +112,81 @@ class VoucherRequest < ApplicationRecord
     end
 
     self.manufacturer = manu
+  end
+
+  def masa_url
+    manufacturer.try(:masa_url)
+  end
+  def masa_uri
+    @marauri ||= URI::join(masa_url, "/.well-known/est/voucherrequest")
+  end
+  def http_handler
+    @http_handler ||= Net::HTTP.new(masa_uri.host, masa_uri.port)
+  end
+
+  def process_content_type_arguments(args)
+    args.each { |param|
+      param.strip!
+      (thing,value) = param.split(/=/)
+      case thing.downcase
+      when 'smime-type'
+        @smimetype = value.downcase
+        process_smime_type
+        @responsetype = :pkcs7_voucher
+      end
+    }
+  end
+
+  def process_smime_type
+    case @smimetype.downcase
+    when 'voucher'
+      @pkcs7voucher = true
+    end
+  end
+
+  def process_content_type(value)
+    things = value.split(/;/)
+    majortype = things.shift
+    return false unless majortype
+
+    @apptype = majortype.downcase
+    case @apptype
+    when 'application/pkcs7-mime'
+      @pkcs7 = true
+      process_content_type_arguments(things)
+      return true
+    end
+  end
+  def response_pkcs7?
+    @pkcs7
+  end
+  def response_voucher?
+    @pkcs7voucher
+  end
+  def response_type
+    @responsetype
+  end
+
+  def get_voucher
+    request = Net::HTTP::Post.new(masa_uri)
+    request.body = registrar_voucher_request_pkcs7
+    request.content_type = 'application/pkcs7-mime; smime-type=voucher-request'
+    response = http_handler.request request # Net::HTTPResponse object
+
+    byebug
+    case response
+    when Net::HTTPSuccess, Net::HTTPRedirection
+    # OK
+    else
+      process_content_type(@content_type = response['Content-Type'])
+      voucher = Voucher.from_voucher(response.content_type, response.body)
+      voucher.voucher_request = self
+      voucher.node = self.node
+      voucher.manufacturer = self.manufacturer
+      voucher
+    end
+
+    return nil
   end
 
 end
