@@ -173,17 +173,19 @@ class VoucherRequest < ApplicationRecord
     request.content_type = 'application/pkcs7-mime; smime-type=voucher-request'
     response = http_handler.request request # Net::HTTPResponse object
 
-    byebug
     case response
-    when Net::HTTPSuccess, Net::HTTPRedirection
-    # OK
-    else
-      process_content_type(@content_type = response['Content-Type'])
-      voucher = Voucher.from_voucher(response.content_type, response.body)
-      voucher.voucher_request = self
-      voucher.node = self.node
-      voucher.manufacturer = self.manufacturer
-      voucher
+    when Net::HTTPSuccess
+      if process_content_type(@content_type = response['Content-Type'])
+        voucher = Voucher.from_voucher(response.content_type, response.body)
+        voucher.voucher_request = self
+        voucher.node = self.node
+        voucher.manufacturer = self.manufacturer
+        return voucher
+      else
+        nil
+      end
+
+    when Net::HTTPRedirection
     end
 
     return nil

@@ -52,6 +52,12 @@ RSpec.describe VoucherRequest, type: :model do
       expect(vr1.response_type).to eq(:pkcs7_voucher)
     end
 
+    it "should have a dozen voucher responses which are broken/mis-formatted" do
+      pending "something to write"
+      vr1= nil
+      expect(vr1).to_not be_nil
+    end
+
   end
 
   describe "certificates" do
