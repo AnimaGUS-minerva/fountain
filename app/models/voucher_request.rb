@@ -141,6 +141,7 @@ class VoucherRequest < ApplicationRecord
     case @smimetype.downcase
     when 'voucher'
       @pkcs7voucher = true
+      @voucher_response_type = :pkcs7
     end
   end
 
@@ -176,7 +177,7 @@ class VoucherRequest < ApplicationRecord
     case response
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
-        voucher = Voucher.from_voucher(response.content_type, response.body)
+        voucher = Voucher.from_voucher(@voucher_response_type, response.body)
         voucher.voucher_request = self
         voucher.node = self.node
         voucher.manufacturer = self.manufacturer

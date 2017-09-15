@@ -10,7 +10,7 @@ class Voucher < ActiveRecord::Base
     voucher = create(signed_voucher: value)
 
     case type
-    when 'application/pkcs7-mime; smime-type=voucher'
+    when :pkcs7
       voucher.details_from_pkcs7
     end
     voucher
