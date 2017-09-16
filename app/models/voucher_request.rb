@@ -60,8 +60,11 @@ class VoucherRequest < ApplicationRecord
     # now build our voucher request from the one we got.
     vreq = Chariwt::VoucherRequest.new
     vreq.owner_cert = FountainKeys.ca.jrc_pub_key
-    vreq.attributes['nonce']         = nonce
-    vreq.attributes['serial-number'] = device_identifier
+    vreq.nonce      = nonce
+    vreq.serialNumber = device_identifier
+    vreq.createdOn  = created_at
+    vreq.assertion  = :proximity
+    self.request = vreq
     jwt = vreq.jose_sign(FountainKeys.ca.jrc_priv_key)
   end
 
@@ -71,9 +74,12 @@ class VoucherRequest < ApplicationRecord
     # now build our voucher request from the one we got.
     vreq = Chariwt::VoucherRequest.new
     vreq.owner_cert = FountainKeys.ca.jrc_pub_key
-    vreq.attributes['nonce']         = nonce
-    vreq.attributes['serial-number'] = device_identifier
+    vreq.nonce      = nonce
+    vreq.serialNumber = device_identifier
+    vreq.createdOn  = created_at
+    vreq.assertion  = :proximity
     self.request = vreq
+    byebug
     token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
   end
 
