@@ -25,4 +25,11 @@ class Voucher < ActiveRecord::Base
     end
   end
 
+  def serial_number
+    details.serialNumber
+  end
+  def owner_cert
+    details.owner_cert
+  end
+
 end

@@ -59,7 +59,7 @@ class VoucherRequest < ApplicationRecord
   def registrar_voucher_request_json
     # now build our voucher request from the one we got.
     vreq = Chariwt::VoucherRequest.new
-    vreq.owner_cert = FountainKeys.ca.jrc_pub_key
+    vreq.signing_cert = FountainKeys.ca.jrc_pub_key
     vreq.nonce      = nonce
     vreq.serialNumber = device_identifier
     vreq.createdOn  = created_at
@@ -73,18 +73,18 @@ class VoucherRequest < ApplicationRecord
   def calc_registrar_voucher_request_pkcs7
     # now build our voucher request from the one we got.
     vreq = Chariwt::VoucherRequest.new
-    vreq.owner_cert = FountainKeys.ca.jrc_pub_key
+    vreq.signing_cert = FountainKeys.ca.jrc_pub_key
+    vreq.pinnedDomainCert = FountainKeys.ca.jrc_pub_key
     vreq.nonce      = nonce
     vreq.serialNumber = device_identifier
     vreq.createdOn  = created_at
     vreq.assertion  = :proximity
     self.request = vreq
-    byebug
     token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
   end
 
-  def owner_cert
-    request.try(:owner_cert)
+  def signing_cert
+    request.try(:signing_cert)
   end
 
   def registrar_voucher_request_pkcs7
@@ -174,6 +174,14 @@ class VoucherRequest < ApplicationRecord
     @responsetype
   end
 
+  def decode_pem(base64stuff)
+    begin
+      der = Base64.urlsafe_decode64(base64stuff)
+    rescue ArgumentError
+      der = Base64.decode64(base64stuff)
+    end
+  end
+
   def get_voucher
     request = Net::HTTP::Post.new(masa_uri)
     request.body = registrar_voucher_request_pkcs7
@@ -183,7 +191,8 @@ class VoucherRequest < ApplicationRecord
     case response
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
-        voucher = Voucher.from_voucher(@voucher_response_type, response.body)
+        der = decode_pem(response.body)
+        voucher = Voucher.from_voucher(@voucher_response_type, der)
         voucher.voucher_request = self
         voucher.node = self.node
         voucher.manufacturer = self.manufacturer

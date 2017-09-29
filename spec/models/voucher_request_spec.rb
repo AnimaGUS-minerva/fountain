@@ -18,6 +18,7 @@ RSpec.describe VoucherRequest, type: :model do
   describe "signing requests" do
     it "should create a signed voucher request" do
       vr1=voucher_requests(:vr1)
+      vr1.created_at = '2017-09-15'.to_datetime
       # result is a BASE64 encoded PKCS7 object
       expect(vr1.nonce).to eq("abcd1234")
       expect(vr1.registrar_voucher_request_pkcs7).to_not be_nil
@@ -30,14 +31,14 @@ RSpec.describe VoucherRequest, type: :model do
       puts "diff tmp/vr_JADA123456789.txt spec/files/vr_JADA123456789.txt"
       expect(system("diff tmp/vr_JADA123456789.txt spec/files/vr_JADA123456789.txt")).to be true
 
-      expect(vr1.owner_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
+      expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
       expect(vr1.masa_url).to eq("https://highway.sandelman.ca/")
     end
   end
 
   describe "sending requests" do
     it "should request a voucher from the MASA" do
-      voucher1_base64 = Base64.encode64(IO::read(File::join(Rails.root, "spec", "files", "voucher_12ea91.pkcs")))
+      voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_JADA123456789.pkcs"))
       stub_request(:post, "http://highway.sandelman.ca:443/.well-known/est/voucherrequest").
         with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request', 'Host'=>'highway.sandelman.ca', 'User-Agent'=>'Ruby'}).
          to_return(status: 200, body: voucher1_base64, headers: {
