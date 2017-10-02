@@ -10,6 +10,11 @@ namespace :fountain do
     masaurl = ENV['MASA']
     masa_id = ENV['MASAID'].try(:to_i)
 
+    unless vrid
+      puts "Must set VRID=xx"
+      exit
+    end
+
     vr = VoucherRequest.find(vrid)
     unless vr.manufacturer.present?
       manu = Manufacturer.find(masa_id)
@@ -18,13 +23,15 @@ namespace :fountain do
     end
 
     if manu
-      target_url = manu.masaurl
+      target_url = manu.masa_url
     end
     if masaurl
       target_url = masaurl
     end
 
-    signed_vr_json = vr.registrar_voucher_request_json
+    voucher = vr.get_voucher(target_url)
+    byebug
+    puts voucher
 
   end
 

@@ -7,6 +7,7 @@ class VoucherRequest < ApplicationRecord
 
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
+  class BadMASA          < Exception; end
 
   def self.from_json(json, signed = false)
     vr = create(details: json, signed: signed)
@@ -123,8 +124,8 @@ class VoucherRequest < ApplicationRecord
   def masa_url
     manufacturer.try(:masa_url)
   end
-  def masa_uri
-    @marauri ||= URI::join(masa_url, "/.well-known/est/voucherrequest")
+  def masa_uri(url = masa_url)
+    @marauri ||= URI::join(url, "/.well-known/est/requestvoucher")
   end
   def http_handler
     @http_handler ||= Net::HTTP.new(masa_uri.host, masa_uri.port)
@@ -182,13 +183,18 @@ class VoucherRequest < ApplicationRecord
     end
   end
 
-  def get_voucher
-    request = Net::HTTP::Post.new(masa_uri)
+  def get_voucher(target_url = nil)
+    target_uri = masa_uri(target_url)
+
+    request = Net::HTTP::Post.new(target_uri)
     request.body = registrar_voucher_request_pkcs7
     request.content_type = 'application/pkcs7-mime; smime-type=voucher-request'
     response = http_handler.request request # Net::HTTPResponse object
 
     case response
+    when Net::HTTPBadRequest, Net::HTTPNotFound
+      raise VoucherRequest::BadMASA
+
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
         der = decode_pem(response.body)
