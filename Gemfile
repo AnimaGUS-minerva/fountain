@@ -30,12 +30,13 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 
 gem 'sdoc'
+gem 'uglifier'
 
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
 
 # CoAP server for Rails.
-gem 'david'
+#gem 'david'
 
 # encode/decode cbor messages
 gem 'cbor'
