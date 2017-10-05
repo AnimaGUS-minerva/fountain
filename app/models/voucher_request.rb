@@ -25,12 +25,22 @@ class VoucherRequest < ApplicationRecord
     return from_json(json, signed)
   end
 
-  def self.from_pkcs7(token, json)
+  def self.from_pkcs7(token, json = nil)
     signed = false
     jsonresult = Chariwt::VoucherRequest.from_pkcs7(token)
     if jsonresult
       signed = true
       json = jsonresult
+    end
+    return from_json(json, signed)
+  end
+
+  def self.from_pkcs7_withoutkey(token, json = nil)
+    signed = false
+    vr = Chariwt::VoucherRequest.from_pkcs7_withoutkey(token)
+    if vr
+      signed = true
+      json = vr.vrhash
     end
     return from_json(json, signed)
   end
@@ -93,7 +103,9 @@ class VoucherRequest < ApplicationRecord
   end
 
   def certificate
-    @certificate ||= OpenSSL::X509::Certificate.new(tls_clientcert)
+    if @certificate
+      @certificate   ||= OpenSSL::X509::Certificate.new(tls_clientcert)
+    end
   end
 
   def issuer_pki
@@ -102,6 +114,7 @@ class VoucherRequest < ApplicationRecord
 
   def discover_manufacturer
     @masaurl = nil
+    return nil unless certificate
     certificate.extensions.each { |ext|
       if ext.oid == "1.3.6.1.4.1.46930.2"
         @masa_url = ext.value[2..-1]
