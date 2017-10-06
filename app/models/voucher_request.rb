@@ -145,11 +145,15 @@ class VoucherRequest < ApplicationRecord
   def masa_url
     manufacturer.try(:masa_url)
   end
-  def masa_uri(url = masa_url)
-    @marauri ||= URI::join(url, "/.well-known/est/requestvoucher")
+  def masa_uri(url = nil)
+    url ||= masa_url
+    @masauri ||= URI::join(url, "/.well-known/est/requestvoucher")
   end
   def http_handler
-    @http_handler ||= Net::HTTP.new(masa_uri.host, masa_uri.port)
+    @http_handler ||=
+      Net::HTTP.start(masa_uri.host, masa_uri.port,
+                      { :verify_mode => OpenSSL::SSL::VERIFY_NONE,
+                        :use_ssl => masa_uri.scheme == 'https'})
   end
 
   def process_content_type_arguments(args)
