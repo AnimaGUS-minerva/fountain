@@ -1,7 +1,7 @@
 class ManufacturersController < ApplicationController
   before_action :set_manufacturer, only: [:show, :edit, :update, :destroy]
 
-  active_scaffold :manufacturers do |config|
+  active_scaffold :manufacturer do |config|
     #config.columns = [ :eui64, :customer, :hostname ]
   end
 
