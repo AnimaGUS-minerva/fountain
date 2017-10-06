@@ -15,8 +15,12 @@ class EstController < ApplicationController
 
     @voucher = @voucherreq.get_voucher
 
-    render :text => @voucher.base64_signed_voucher,
-           :context_type => 'application/pkcs7-mime; smime-type=voucher'
+    if @voucher
+      render :text => @voucher.base64_signed_voucher,
+             :context_type => 'application/pkcs7-mime; smime-type=voucher'
+    else
+      head 500
+    end
   end
 
 
