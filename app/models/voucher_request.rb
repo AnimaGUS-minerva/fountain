@@ -211,6 +211,8 @@ class VoucherRequest < ApplicationRecord
   def get_voucher(target_url = nil)
     target_uri = masa_uri(target_url)
 
+    puts "Contacting server at: #{target_uri}"
+
     request = Net::HTTP::Post.new(target_uri)
     request.body = registrar_voucher_request_pkcs7
     request.content_type = 'application/pkcs7-mime; smime-type=voucher-request'
@@ -229,6 +231,7 @@ class VoucherRequest < ApplicationRecord
         voucher.manufacturer = self.manufacturer
         return voucher
       else
+        puts "Content type #{response['Content-Type']} is wrong"
         nil
       end
 
