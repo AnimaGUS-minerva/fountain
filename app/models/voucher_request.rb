@@ -17,22 +17,26 @@ class VoucherRequest < ApplicationRecord
 
   def self.from_json_jose(token, json)
     signed = false
-    jsonresult = Chariwt::VoucherRequest.from_json_jose(token)
-    if jsonresult
+    vr = Chariwt::VoucherRequest.from_json_jose(token)
+    if vr
       signed = true
-      json = jsonresult
+      json = vr.vrhash
     end
-    return from_json(json, signed)
+    voucher = from_json(json, signed)
+    voucher.request = vr
+    return voucher
   end
 
   def self.from_pkcs7(token, json = nil)
     signed = false
-    jsonresult = Chariwt::VoucherRequest.from_pkcs7(token)
-    if jsonresult
+    vr = Chariwt::VoucherRequest.from_pkcs7(token)
+    if vr
       signed = true
-      json = jsonresult
+      json = vr.vrhash
     end
-    return from_json(json, signed)
+    voucher = from_json(json, signed)
+    voucher.request = vr
+    return voucher
   end
 
   def self.from_pkcs7_withoutkey(token, json = nil)
@@ -42,7 +46,9 @@ class VoucherRequest < ApplicationRecord
       signed = true
       json = vr.vrhash
     end
-    return from_json(json, signed)
+    voucher = from_json(json, signed)
+    voucher.request = vr
+    return voucher
   end
 
   def vdetails
@@ -103,9 +109,11 @@ class VoucherRequest < ApplicationRecord
   end
 
   def certificate
-    if @certificate
+    if !@certificate and !tls_clientcert.blank?
       @certificate   ||= OpenSSL::X509::Certificate.new(tls_clientcert)
     end
+    @certificate   ||= signing_cert
+    @certificate
   end
 
   def issuer_pki

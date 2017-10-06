@@ -37,6 +37,10 @@ class Voucher < ActiveRecord::Base
     details.serialNumber
   end
 
+  def base64_signed_voucher
+    Base64.strict_encode64(signed_voucher)
+  end
+
   def owner_cert
     @owner
   end
