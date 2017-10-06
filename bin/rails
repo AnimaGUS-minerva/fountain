@@ -13,7 +13,9 @@ module Rails
   class Server
     def default_options
       super.merge({
-                    :Port        => 8542,
+                    :BindAddress => '::2',
+                    :ServerAlias => ['fountain-test.sandelman.ca', 'localhost', 'fountain.sandelman.ca'],
+                    :Port        => 443,
                     :SSLEnable => true,
                     :SSLCertificate => OpenSSL::X509::Certificate.new(File.read('db/cert/jrc_prime256v1.crt')),
                     :SSLPrivateKey => OpenSSL::PKey.read(File.read('db/cert/jrc_prime256v1.key'))
