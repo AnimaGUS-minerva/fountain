@@ -1,7 +1,7 @@
 class NodesController < ApplicationController
   before_action :set_node, only: [:show, :edit, :update, :destroy]
 
-  active_scaffold :nodes do |config|
+  active_scaffold :node do |config|
     #config.columns = [ :eui64, :customer, :hostname ]
   end
 
