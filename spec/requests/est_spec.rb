@@ -5,6 +5,8 @@ RSpec.describe "Est", type: :request do
   describe "unsigned voucher request" do
     it "should get posted to requestvoucher" do
 
+      pending "unsigned requests not yet implemented"
+
       voucherrequest = {
         "ietf-voucher-request:voucher" => {
           "nonce" => "62a2e7693d82fcda2624de58fb6722e5",
