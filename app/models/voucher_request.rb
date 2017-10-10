@@ -36,6 +36,7 @@ class VoucherRequest < ApplicationRecord
     end
     voucher = from_json(json, signed)
     voucher.request = vr
+    voucher.pledge_request = token
     return voucher
   end
 

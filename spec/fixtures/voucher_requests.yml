@@ -7,4 +7,4 @@ vr1:
   proxy_ip: fd0a::12
   nonce: "abcd1234"
   details: { "some": "stuff"}
-  signed: false
+  signed: true
