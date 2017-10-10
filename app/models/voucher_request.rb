@@ -94,7 +94,6 @@ class VoucherRequest < ApplicationRecord
     # now build our voucher request from the one we got.
     vreq = Chariwt::VoucherRequest.new
     vreq.signing_cert = FountainKeys.ca.jrc_pub_key
-    vreq.pinnedDomainCert = FountainKeys.ca.jrc_pub_key
     vreq.nonce      = nonce
     vreq.serialNumber = device_identifier
     vreq.createdOn  = created_at

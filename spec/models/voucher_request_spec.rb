@@ -41,6 +41,9 @@ RSpec.describe VoucherRequest, type: :model do
       voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_JADA123456789.pkcs"))
 
       voucher_request = nil
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+      allow(Time).to receive(:now).and_return(@time_now)
+
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request', 'Host'=>'highway.sandelman.ca', 'User-Agent'=>'Ruby'}).
          to_return(status: 200, body: lambda { |request|
