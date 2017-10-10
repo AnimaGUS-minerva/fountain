@@ -16,3 +16,5 @@
 !/log/.keep
 /tmp
 *~config/database.yml
+spec/files/voucher_081196FFFE0181E0.der
+spec/files/vr_081196FFFE0181E0.der
