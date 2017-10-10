@@ -40,7 +40,7 @@ RSpec.describe "Est", type: :request do
       # get the Base64 of the signed request
       body = IO.read("spec/files/vr_081196FFFE0181E0.pkcs")
 
-      clientcert = IO.binread("spec/certs/12-00-00-66-4D-02.crt")
+      clientcert = IO.binread("spec/certs/081196FFFE0181E0.crt")
 
       env = Hash.new
       env["SSL_CLIENT_CERT"] = clientcert
