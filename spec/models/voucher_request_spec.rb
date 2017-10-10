@@ -40,14 +40,21 @@ RSpec.describe VoucherRequest, type: :model do
     it "should request a voucher from the MASA" do
       voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_JADA123456789.pkcs"))
 
+      voucher_request = nil
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request', 'Host'=>'highway.sandelman.ca', 'User-Agent'=>'Ruby'}).
-         to_return(status: 200, body: voucher1_base64, headers: {
+         to_return(status: 200, body: lambda { |request|
+                    voucher_request = request.body
+                    voucher1_base64},
+                   headers: {
                    'Content-Type' => 'application/pkcs7-mime; smime-type=voucher'})
 
       vr1= voucher_requests(:vr1)
       v1 = vr1.get_voucher
       expect(v1.manufacturer).to eq(vr1.manufacturer)
+
+      expect(Chariwt.cmp_pkcs_file(voucher_request,
+                                   "voucher_request_JADA123456789")).to be true
     end
 
     it "should process content-type to extract voucher/response" do

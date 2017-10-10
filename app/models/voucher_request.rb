@@ -49,6 +49,7 @@ class VoucherRequest < ApplicationRecord
     end
     voucher = from_json(json, signed)
     voucher.request = vr
+    voucher.pledge_request = token
     return voucher
   end
 
@@ -82,6 +83,7 @@ class VoucherRequest < ApplicationRecord
     vreq.serialNumber = device_identifier
     vreq.createdOn  = created_at
     vreq.assertion  = :proximity
+    vreq.priorSignedVoucherRequest = pledge_request
     self.request = vreq
     jwt = vreq.jose_sign(FountainKeys.ca.jrc_priv_key)
   end
@@ -122,7 +124,7 @@ class VoucherRequest < ApplicationRecord
   end
 
   def discover_manufacturer
-    @masaurl = nil
+    @masa_url = nil
     return nil unless certificate
     certificate.extensions.each { |ext|
       if ext.oid == "1.3.6.1.4.1.46930.2"
