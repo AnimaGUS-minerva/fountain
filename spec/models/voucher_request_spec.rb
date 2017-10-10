@@ -39,7 +39,8 @@ RSpec.describe VoucherRequest, type: :model do
   describe "sending requests" do
     it "should request a voucher from the MASA" do
       voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_JADA123456789.pkcs"))
-      stub_request(:post, "http://highway.sandelman.ca:443/.well-known/est/voucherrequest").
+
+      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request', 'Host'=>'highway.sandelman.ca', 'User-Agent'=>'Ruby'}).
          to_return(status: 200, body: voucher1_base64, headers: {
                    'Content-Type' => 'application/pkcs7-mime; smime-type=voucher'})
