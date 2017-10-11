@@ -98,6 +98,7 @@ class VoucherRequest < ApplicationRecord
     vreq.serialNumber = device_identifier
     vreq.createdOn  = created_at
     vreq.assertion  = :proximity
+    vreq.priorSignedVoucherRequest = pledge_request
     self.request = vreq
     token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
   end
