@@ -23,13 +23,9 @@ RSpec.describe VoucherRequest, type: :model do
       expect(vr1.nonce).to eq("abcd1234")
       expect(vr1.registrar_voucher_request_pkcs7).to_not be_nil
 
-      # save it for examination elsewhere (and use by MASA tests)
-      File.open(File.join("tmp", "vr_#{vr1.device_identifier}.pkcs"), "w") do |f|
-        f.puts vr1.registrar_voucher_request_pkcs7
-      end
-      system("bin/pkcs2json tmp/vr_JADA123456789.pkcs tmp/vr_JADA123456789.txt")
-      puts "diff tmp/vr_JADA123456789.txt spec/files/vr_JADA123456789.txt"
-      expect(system("diff tmp/vr_JADA123456789.txt spec/files/vr_JADA123456789.txt")).to be true
+      smime = vr1.registrar_voucher_request_pkcs7
+
+      expect(Chariwt.cmp_pkcs_file(smime, "voucher_request-00-D0-E5-F2-00-02.pkcs")
 
       expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
       expect(vr1.masa_url).to eq("https://highway.sandelman.ca/")
