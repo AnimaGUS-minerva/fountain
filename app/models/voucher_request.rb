@@ -232,6 +232,7 @@ class VoucherRequest < ApplicationRecord
         voucher.voucher_request = self
         voucher.node = self.node
         voucher.manufacturer = self.manufacturer
+        voucher.save!
         return voucher
       else
         puts "Content type #{response['Content-Type']} is wrong"
