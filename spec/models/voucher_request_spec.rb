@@ -25,7 +25,8 @@ RSpec.describe VoucherRequest, type: :model do
 
       smime = vr1.registrar_voucher_request_pkcs7
 
-      expect(Chariwt.cmp_pkcs_file(smime, "voucher_request-00-D0-E5-F2-00-02.pkcs")
+      expect(Chariwt.cmp_pkcs_file(smime,
+                                   "voucher_request-00-D0-E5-F2-00-02")).to be_truthy
 
       expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
       expect(vr1.masa_url).to eq("https://highway.sandelman.ca/")
@@ -34,7 +35,7 @@ RSpec.describe VoucherRequest, type: :model do
 
   describe "sending requests" do
     it "should request a voucher from the MASA" do
-      voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_JADA123456789.pkcs"))
+      voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_081196FFFE0181E0.pkcs"))
 
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
@@ -53,7 +54,7 @@ RSpec.describe VoucherRequest, type: :model do
       expect(v1.manufacturer).to eq(vr1.manufacturer)
 
       expect(Chariwt.cmp_pkcs_file(voucher_request,
-                                   "voucher_request_JADA123456789")).to be true
+                                   "model_request_081196FFFE0181E0")).to be_truthy
     end
 
     it "should process content-type to extract voucher/response" do
