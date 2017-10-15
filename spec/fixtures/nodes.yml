@@ -7,5 +7,12 @@ bulb1:
   manufacturer_id: 1
   idevid: O=bulb,CN=12ea91
 
+jadaf20001:
+  id: 2
+  name: bulb f2-00-01
+  device_type_id: 1
+  manufacturer_id: 1
+  idevid: "JADA_f2-00-01"
+
 
         

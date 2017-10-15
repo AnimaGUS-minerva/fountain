@@ -22,8 +22,7 @@ RSpec.describe Voucher, type: :model do
 
       v1 = Voucher.from_voucher(:pkcs7, voucher_binary)
 
-      expect(v1.node).to eq(nodes(:bulb1))
-      expect(v1.owner_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=Unstrung Fountain")
+      expect(v1.node).to eq(nodes(:jadaf20001))
     end
 
     it "should get a voucher format error on empty voucher object" do
