@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe VoucherRequest, type: :model do
   fixtures :all
 
+  before(:each) do
+    FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+  end
+
   describe "relationships" do
     it "should have a manufacturer" do
       vr1=voucher_requests(:vr1)

@@ -1,4 +1,5 @@
 class FountainKeys
+  attr_accessor :devdir, :certdir
 
   def rootkey
     @rootkey ||= ca_load_pub_key
