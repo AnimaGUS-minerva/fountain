@@ -13,7 +13,12 @@ class EstController < ApplicationController
     @voucherreq.discover_manufacturer
     @voucherreq.save!
 
-    @voucher = @voucherreq.get_voucher
+    begin
+      @voucher = @voucherreq.get_voucher
+    rescue VoucherRequest::BadMASA => e
+      logger.info "Invalid MASA response: #{e.message}"
+      head 404, text: e.message
+    end
 
     if @voucher
       render :body => @voucher.base64_signed_voucher,

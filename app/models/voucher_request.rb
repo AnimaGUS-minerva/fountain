@@ -214,7 +214,7 @@ class VoucherRequest < ApplicationRecord
   def get_voucher(target_url = nil)
     target_uri = masa_uri(target_url)
 
-    puts "Contacting server at: #{target_uri}"
+    puts "Contacting server at: #{target_uri} about #{self.device_identifier}"
 
     request = Net::HTTP::Post.new(target_uri)
     request.body = registrar_voucher_request_pkcs7
@@ -222,8 +222,11 @@ class VoucherRequest < ApplicationRecord
     response = http_handler.request request # Net::HTTPResponse object
 
     case response
-    when Net::HTTPBadRequest, Net::HTTPNotFound
-      raise VoucherRequest::BadMASA
+    when Net::HTTPBadRequest
+      raise VoucherRequest::BadMASA.new("bad request")
+
+    when Net::HTTPNotFound
+      raise VoucherRequest::BadMASA.new(response.body)
 
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
