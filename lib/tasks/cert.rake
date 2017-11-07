@@ -23,8 +23,9 @@ namespace :fountain do
     root_ca  = OpenSSL::X509::Certificate.new
     # cf. RFC 5280 - to make it a "v3" certificate
     root_ca.version = 2
-    root_ca.serial = 1
-    root_ca.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=Unstrung Fountain CA"
+    root_ca.serial  = FountainKeys.ca.serial
+    hostname        = SystemVariable.hostname
+    root_ca.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=#{hostname} Unstrung Fountain CA"
 
     # root CA's are "self-signed"
     root_ca.issuer = root_ca.subject

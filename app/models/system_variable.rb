@@ -68,6 +68,14 @@ class SystemVariable < ActiveRecord::Base
     return self.nextval(:unix_id)
   end
 
+  def self.hostname
+    hostname = findormake(:hostname)
+    unless hostname
+      hostname = Socket.gethostname
+    end
+    hostname
+  end
+
   def after_save
     @@cache.delete(self.variable)
   end
