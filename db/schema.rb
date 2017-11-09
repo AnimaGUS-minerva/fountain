@@ -46,6 +46,12 @@ ActiveRecord::Schema.define(version: 20171010173251) do
     t.datetime "updated_at",      null: false
   end
 
+  create_table "system_variables", force: :cascade do |t|
+    t.string  "variable"
+    t.string  "value"
+    t.integer "number"
+  end
+
   create_table "voucher_requests", force: :cascade do |t|
     t.integer  "node_id"
     t.integer  "manufacturer_id"
