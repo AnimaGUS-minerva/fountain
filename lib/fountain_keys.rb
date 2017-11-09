@@ -30,9 +30,7 @@ class FountainKeys
   end
 
   def serial
-    @serial ||= 2
-    @serial += 1
-    @serial
+    SystemVariable.nextval(:serialnumber)
   end
 
   def devicedir
