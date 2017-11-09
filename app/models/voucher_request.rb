@@ -228,8 +228,12 @@ class VoucherRequest < ApplicationRecord
     response = http_handler.request request # Net::HTTPResponse object
 
     case response
-    when Net::HTTPBadRequest, Net::HTTPNotFound
+    when Net::HTTPBadRequest
       raise VoucherRequest::BadMASA
+
+    when Net::HTTPNotFound
+      logger.info "MASA at #{target_uri} says #{response.message}"
+      raise VoucherRequest::BadMASA.new(response.message)
 
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
