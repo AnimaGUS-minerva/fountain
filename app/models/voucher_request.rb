@@ -134,6 +134,10 @@ class VoucherRequest < ApplicationRecord
     }
     if @masa_url
       manu = Manufacturer.where(masa_url: @masa_url).take
+      unless manu
+        # try again with trailing /
+        manu = Manufacturer.where(masa_url: @masa_url + "/").take
+      end
     else
       logger.warn "Did not find a MASA URL extension"
       unless manu

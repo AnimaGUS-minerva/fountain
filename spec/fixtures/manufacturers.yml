@@ -6,3 +6,12 @@ widget1:
   masa_url: https://highway.sandelman.ca/
   issuer_public_key: !binary |-
     ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
+
+honeydukes:
+  id: 2
+  name: coressw
+  created_at: 2017-08-27 02:11:06.468034653 Z
+  updated_at: 2017-08-27 02:11:06.468034653 Z
+  masa_url: https://masa.honeydukes.sandelman.ca/
+  issuer_public_key: !binary |-
+    ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
