@@ -125,15 +125,21 @@ class VoucherRequest < ApplicationRecord
 
   def discover_manufacturer
     @masa_url = nil
+    manu = nil
     return nil unless certificate
     certificate.extensions.each { |ext|
       if ext.oid == "1.3.6.1.4.1.46930.2"
         @masa_url = ext.value[2..-1]
       end
     }
-    manu = Manufacturer.where(masa_url: @masa_url).take
-    unless manu
-      manu = Manufacturer.where(issuer_public_key: issuer_pki).take
+    if @masa_url
+      manu = Manufacturer.where(masa_url: @masa_url).take
+    else
+      logger.warn "Did not find a MASA URL extension"
+      unless manu
+        logger.warn "Tried to find manufacturer by issuer #{certificate.issuer.to_s}"
+        manu = Manufacturer.where(issuer_public_key: issuer_pki).take
+      end
     end
     unless manu
       manu = Manufacturer.create(masa_url: @masa_url,
