@@ -59,7 +59,9 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).manufacturer).to be_present
 
       expect(Chariwt.cmp_pkcs_file(voucher_request,
-                                   "voucher_request_081196FFFE0181E0")).to be true
+                                   "voucher_request_081196FFFE0181E0",
+                                   "spec/files/cert/certs.crt"
+                                  )).to be true
 
     end
   end
