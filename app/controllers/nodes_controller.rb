@@ -1,4 +1,4 @@
-class NodesController < ApplicationController
+class NodesController < AdminController
   before_action :set_node, only: [:show, :edit, :update, :destroy]
 
   active_scaffold :node do |config|

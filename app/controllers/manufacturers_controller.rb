@@ -1,4 +1,4 @@
-class ManufacturersController < ApplicationController
+class ManufacturersController < AdminController
   before_action :set_manufacturer, only: [:show, :edit, :update, :destroy]
 
   active_scaffold :manufacturer do |config|

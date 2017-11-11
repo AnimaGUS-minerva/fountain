@@ -1,4 +1,4 @@
-class CertificatesController < ApplicationController
+class CertificatesController < AdminController
   active_scaffold :certificate do |config|
     #config.columns = [ :eui64, :customer, :hostname ]
   end
