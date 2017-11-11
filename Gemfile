@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2'
+gem 'rails'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '0.20'
@@ -23,7 +23,7 @@ gem 'jwt'
 gem "fixture_save", :path => "../fixture_save"
 #gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
-gem 'active_scaffold'
+gem 'active_scaffold', :git => "https://github.com/activescaffold/active_scaffold.git"
 gem 'therubyracer', platforms: :ruby
 
 gem 'jbuilder', '~> 2.0'
@@ -36,7 +36,7 @@ gem 'uglifier'
 gem 'capistrano-rails', group: :development
 
 # CoAP server for Rails.
-gem 'david'
+gem 'david', :path => "../minerva/david"
 
 # encode/decode cbor messages
 gem 'cbor'
