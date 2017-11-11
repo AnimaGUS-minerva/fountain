@@ -36,7 +36,7 @@ gem 'uglifier'
 gem 'capistrano-rails', group: :development
 
 # CoAP server for Rails.
-#gem 'david'
+gem 'david'
 
 # encode/decode cbor messages
 gem 'cbor'
