@@ -5,6 +5,7 @@ require_relative '../config/boot'
 require 'openssl'
 require 'webrick'
 require 'webrick/https'
+require 'byebug'
 
 
 # THIS IS NEW:
@@ -12,14 +13,19 @@ require "rails/commands/server"
 module Rails
   class Server
     def default_options
-      super.merge({
-                    :BindAddress => '::2',
-                    :ServerAlias => ['fountain-test.sandelman.ca', 'localhost', 'fountain.sandelman.ca'],
-                    :Port        => 443,
-                    :SSLEnable => true,
-                    :SSLCertificate => OpenSSL::X509::Certificate.new(File.read('db/cert/jrc_prime256v1.crt')),
-                    :SSLPrivateKey => OpenSSL::PKey.read(File.read('db/cert/jrc_prime256v1.key'))
-      })
+      settings = {
+        :BindAddress => '::2',
+        :ServerAlias => ['fountain-test.sandelman.ca', 'localhost', 'fountain.sandelman.ca'],
+        :SSLEnable => true,
+        :SSLCertificate => OpenSSL::X509::Certificate.new(File.read('db/cert/jrc_prime256v1.crt')),
+        :SSLPrivateKey => OpenSSL::PKey.read(File.read('db/cert/jrc_prime256v1.key'))
+      }
+      if $COAPServer
+        settings[:Port] = 5683
+      else
+        settings[:Port] = 443
+      end
+      super.merge(settings)
     end
   end
 end
