@@ -1,7 +1,7 @@
 class EstController < ApplicationController
-  skip_before_filter :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
 
-  # GET /.well-known/est/requestvoucher
+  # POST /.well-known/est/requestvoucher
   def requestvoucher
     token = Base64.decode64(request.body.read)
     @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
@@ -29,6 +29,8 @@ class EstController < ApplicationController
       head 500
     end
   end
+
+  # GET /.well-known/core
 
 
   private
