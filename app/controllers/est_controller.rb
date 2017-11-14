@@ -11,12 +11,14 @@ class EstController < ApplicationController
       @voucherreq.tls_clientcert = clientcert_pem
     end
     @voucherreq.discover_manufacturer
+    @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
     @voucherreq.save!
+    logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
 
     begin
       @voucher = @voucherreq.get_voucher
     rescue VoucherRequest::BadMASA => e
-      logger.info "Invalid MASA response: #{e.message}"
+      logger.info "invalid MASA response: #{e.message}"
       head 404, text: e.message
     end
 
