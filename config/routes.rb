@@ -14,4 +14,10 @@ Rails.application.routes.draw do
 
   # EST processing at well known URLs
   post '/.well-known/est/requestvoucher', to: 'est#requestvoucher'
+  post '/.well-known/est/voucher_status', to: 'est#voucher_status'
+
+  post '/e/rv', to: 'est#requestvoucher', coap: true, rt: 'ace.est', short: '/e'
+  post '/e/vs', to: 'est#voucher_status', coap: true, rt: 'ace.est', short: '/e'
+
+  #
 end
