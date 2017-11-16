@@ -1,0 +1,9 @@
+#!/bin/sh
+
+thin start --ssl \
+  --address ::2  \
+  --port    443  \
+  --ssl-cert-file db/cert/jrc_prime256v1.crt \
+  --ssl-key-file db/cert/jrc_prime256v1.key
+
+

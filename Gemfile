@@ -48,6 +48,8 @@ group :development, :test do
   gem 'pry'
   gem 'pry-doc'
 
+  gem 'thin'
+
   #
   gem 'rspec-rails', '~> 3.0'
 end
