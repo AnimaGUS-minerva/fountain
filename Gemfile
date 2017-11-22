@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
+gem 'rails', "~> 5.1"
 
 # Use postgresql as the database for Active Record
 gem 'pg', '0.20'
@@ -23,7 +23,8 @@ gem 'jwt'
 gem "fixture_save", :path => "../fixture_save"
 #gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
-gem 'active_scaffold', :git => "https://github.com/activescaffold/active_scaffold.git"
+gem 'active_scaffold',  :git => "https://github.com/mcr/active_scaffold.git"
+#gem 'active_scaffold', :git => "https://github.com/activescaffold/active_scaffold.git", :branch => 'master'
 gem 'therubyracer', platforms: :ruby
 
 gem 'jbuilder', '~> 2.0'
