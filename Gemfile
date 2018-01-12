@@ -55,6 +55,7 @@ group :development, :test do
 
   #
   gem 'rspec-rails', '~> 3.0'
+  gem 'rails-controller-testing'
 end
 
 group :development do
