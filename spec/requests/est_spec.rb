@@ -18,7 +18,7 @@ RSpec.describe "Est", type: :request do
         }
       }
 
-      post "/.well-known/est/requestvoucher", voucherrequest.merge(format: 'json')
+      post "/.well-known/est/requestvoucher", params: voucherrequest.merge(format: 'json')
       expect(response).to have_http_status(200)
     end
   end
@@ -49,7 +49,7 @@ RSpec.describe "Est", type: :request do
       env["SSL_CLIENT_CERT"] = clientcert
       env["HTTP_ACCEPT"]  = "application/pkcs7-mime; smime-type=voucher"
       env["CONTENT_TYPE"] = "application/pkcs7-mime; smime-type=voucher-request"
-      post '/.well-known/est/requestvoucher', body, env
+      post '/.well-known/est/requestvoucher', :params => body, :headers => env
 
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
