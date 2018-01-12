@@ -4,35 +4,51 @@ RSpec.describe ManufacturersController, type: :routing do
   describe "routing" do
 
     it "routes to #index" do
-      expect(:get => "/manufacturers").to route_to("manufacturers#index")
+      expect(:get => "/manufacturers").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: 'index')
     end
 
     it "routes to #new" do
-      expect(:get => "/manufacturers/new").to route_to("manufacturers#new")
+      expect(:get => "/manufacturers/new").to route_to(concerts: :active_scaffold,
+                                                       controller: 'manufacturers',
+                                                       action: "new")
     end
 
     it "routes to #show" do
-      expect(:get => "/manufacturers/1").to route_to("manufacturers#show", :id => "1")
+      expect(:get => "/manufacturers/1").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: "show", id: "1")
     end
 
     it "routes to #edit" do
-      expect(:get => "/manufacturers/1/edit").to route_to("manufacturers#edit", :id => "1")
+      expect(:get => "/manufacturers/1/edit").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: "edit", id: "1")
     end
 
     it "routes to #create" do
-      expect(:post => "/manufacturers").to route_to("manufacturers#create")
+      expect(:post => "/manufacturers").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: "create")
     end
 
     it "routes to #update via PUT" do
-      expect(:put => "/manufacturers/1").to route_to("manufacturers#update", :id => "1")
+      expect(:put => "/manufacturers/1").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: "update", id: "1")
     end
 
     it "routes to #update via PATCH" do
-      expect(:patch => "/manufacturers/1").to route_to("manufacturers#update", :id => "1")
+      expect(:patch => "/manufacturers/1").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: "update", id: "1")
     end
 
     it "routes to #destroy" do
-      expect(:delete => "/manufacturers/1").to route_to("manufacturers#destroy", :id => "1")
+      expect(:delete => "/manufacturers/1").to route_to(concerts: :active_scaffold,
+                                                   controller: 'manufacturers',
+                                                   action: "destroy", id: "1")
     end
 
   end
