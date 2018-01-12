@@ -37,6 +37,8 @@ gem 'uglifier'
 gem 'capistrano-rails', group: :development
 
 # CoAP server for Rails.
+gem 'openssl', :path => "../minerva/ruby-openssl"
+gem 'celluloid-io', :path => "../minerva/celluloid-io"
 gem 'david', :path => "../minerva/david"
 
 # encode/decode cbor messages
