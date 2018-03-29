@@ -39,7 +39,7 @@ RSpec.describe "Est", type: :request do
   end
 
   describe "signed voucher request" do
-    it "should get posted to requestvoucher" do
+    it "should get HTTPS POSTed to requestvoucher" do
 
       result = IO.read("spec/files/voucher_081196FFFE0181E0.pkcs")
       voucher_request = nil
@@ -57,8 +57,6 @@ RSpec.describe "Est", type: :request do
 
       # get the Base64 of the signed request
       body = IO.read("spec/files/vr_081196FFFE0181E0.pkcs")
-
-      clientcert = IO.binread("spec/certs/081196FFFE0181E0.crt")
 
       env = Hash.new
       env["SSL_CLIENT_CERT"] = clientcert
@@ -79,6 +77,7 @@ RSpec.describe "Est", type: :request do
                                   )).to be true
 
     end
+
   end
 
 
