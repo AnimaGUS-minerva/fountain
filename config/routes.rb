@@ -16,8 +16,11 @@ Rails.application.routes.draw do
   post '/.well-known/est/requestvoucher', to: 'est#requestvoucher'
   post '/.well-known/est/voucher_status', to: 'est#voucher_status'
 
-  post '/e/rv', to: 'est#requestvoucher', coap: true, rt: 'ace.est', short: '/e'
-  post '/e/vs', to: 'est#voucher_status', coap: true, rt: 'ace.est', short: '/e'
+  if true # was $COAPSERVER, but it does not get set early enough.
+    #get '/.well-known/core',   to: 'core#index'
+    post '/e/rv', to: 'est#requestvoucher', coap: true, rt: 'ace.est', short: '/e'
+    post '/e/vs', to: 'est#voucher_status', coap: true, rt: 'ace.est', short: '/e'
+  end
 
   #
 end
