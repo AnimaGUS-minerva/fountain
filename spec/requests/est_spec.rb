@@ -23,6 +23,21 @@ RSpec.describe "Est", type: :request do
     end
   end
 
+  def clientcert
+    @clientcert ||= IO.binread("spec/certs/081196FFFE0181E0.crt")
+  end
+
+  describe "resource discovery" do
+    it "should return a location for the EST service" do
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = clientcert
+      get '/.well-known/core?rt=ace.est', :headers => env
+
+      things = CoRE::Link.parse(response.body)
+      expect(things.uri).to eq("/e")
+    end
+  end
+
   describe "signed voucher request" do
     it "should get posted to requestvoucher" do
 
