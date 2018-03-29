@@ -19,7 +19,7 @@ class Voucher < ActiveRecord::Base
   def details_from_pkcs7
     begin
       @cvoucher = Chariwt::Voucher.from_pkcs7(signed_voucher)
-    rescue ArgumentError
+    rescue ArgumentError, Chariwt::Voucher::RequestFailedValidation
       # some kind of pkcs7 error?
       raise VoucherFormatError
     end
