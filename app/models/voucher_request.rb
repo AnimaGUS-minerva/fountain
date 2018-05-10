@@ -42,7 +42,11 @@ class VoucherRequest < ApplicationRecord
 
   def self.from_pkcs7_withoutkey(token, json = nil)
     signed = false
-    vr = Chariwt::VoucherRequest.from_pkcs7_withoutkey(token)
+    begin
+      vr = Chariwt::VoucherRequest.from_pkcs7_withoutkey(token)
+    rescue Chariwt::Voucher::RequestFailedValidation
+      raise VoucherRequest::InvalidVoucherRequest
+    end
     if vr
       signed = true
       json = vr.vrhash

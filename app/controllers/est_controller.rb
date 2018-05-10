@@ -4,7 +4,12 @@ class EstController < ApplicationController
   # POST /.well-known/est/requestvoucher
   def requestvoucher
     token = Base64.decode64(request.body.read)
-    @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
+    begin
+      @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
+    rescue VoucherRequest::InvalidVoucherRequest
+      head 406
+      return
+    end
 
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     if clientcert_pem
