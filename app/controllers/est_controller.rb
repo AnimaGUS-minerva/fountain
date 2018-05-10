@@ -1,6 +1,11 @@
 class EstController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  # POST /e/rv (CBOR)
+  def cbor_rv
+    head 406
+  end
+
   # POST /.well-known/est/requestvoucher
   def requestvoucher
     token = Base64.decode64(request.body.read)
