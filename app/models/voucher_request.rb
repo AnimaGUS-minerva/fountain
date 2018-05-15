@@ -15,6 +15,12 @@ class VoucherRequest < ApplicationRecord
     vr
   end
 
+  def self.from_cbor(hash, signed = false)
+    vr = create(vdetails: hash, signed: signed)
+    vr.populate_explicit_fields
+    vr
+  end
+
   def self.from_json_jose(token, json)
     signed = false
     vr = Chariwt::VoucherRequest.from_json_jose(token)
@@ -92,27 +98,16 @@ class VoucherRequest < ApplicationRecord
     jwt = vreq.jose_sign(FountainKeys.ca.jrc_priv_key)
   end
 
-  # create a voucher request (PKCS7 signed JSON) appropriate for sending to the MASA.
-  # it shall always be signed.
-  def calc_registrar_voucher_request_pkcs7
-    # now build our voucher request from the one we got.
-    vreq = Chariwt::VoucherRequest.new
-    vreq.signing_cert = FountainKeys.ca.jrc_pub_key
-    vreq.nonce      = nonce
-    vreq.serialNumber = device_identifier
-    vreq.createdOn  = created_at
-    vreq.assertion  = :proximity
-    vreq.priorSignedVoucherRequest = pledge_request
-    self.request = vreq
-    token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
-  end
-
   def signing_cert
     request.try(:signing_cert)
   end
 
-  def registrar_voucher_request_pkcs7
-    @pkcs7_voucher ||= calc_registrar_voucher_request_pkcs7
+  def registrar_voucher_request
+    raise InvalidVoucherRequest
+  end
+
+  def registrar_voucher_request_type
+    raise InvalidVoucherRequest
   end
 
   def certificate
@@ -231,8 +226,8 @@ class VoucherRequest < ApplicationRecord
     puts "Contacting server at: #{target_uri} about #{self.device_identifier}"
 
     request = Net::HTTP::Post.new(target_uri)
-    request.body = registrar_voucher_request_pkcs7
-    request.content_type = 'application/pkcs7-mime; smime-type=voucher-request'
+    request.body = registrar_voucher_request
+    request.content_type = registrar_voucher_request_type
     response = http_handler.request request # Net::HTTPResponse object
 
     case response
@@ -266,4 +261,29 @@ class VoucherRequest < ApplicationRecord
     return nil
   end
 
+end
+
+class CmsVoucherRequest < VoucherRequest
+  # create a voucher request (PKCS7 signed JSON) appropriate for sending to the MASA.
+  # it shall always be signed.
+  def calc_registrar_voucher_request_pkcs7
+    # now build our voucher request from the one we got.
+    vreq = Chariwt::VoucherRequest.new
+    vreq.signing_cert = FountainKeys.ca.jrc_pub_key
+    vreq.nonce      = nonce
+    vreq.serialNumber = device_identifier
+    vreq.createdOn  = created_at
+    vreq.assertion  = :proximity
+    vreq.priorSignedVoucherRequest = pledge_request
+    self.request = vreq
+    token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
+  end
+
+  def registrar_voucher_request
+    @pkcs7_voucher ||= calc_registrar_voucher_request_pkcs7
+  end
+
+  def registrar_voucher_request_type
+    'application/pkcs7-mime; smime-type=voucher-request'
+  end
 end

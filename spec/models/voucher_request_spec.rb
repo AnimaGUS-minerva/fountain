@@ -25,9 +25,9 @@ RSpec.describe VoucherRequest, type: :model do
       vr1.created_at = '2017-09-15'.to_datetime
       # result is a BASE64 encoded PKCS7 object
       expect(vr1.nonce).to eq("abcd1234")
-      expect(vr1.registrar_voucher_request_pkcs7).to_not be_nil
+      expect(vr1.registrar_voucher_request).to_not be_nil
 
-      smime = vr1.registrar_voucher_request_pkcs7
+      smime = vr1.registrar_voucher_request
 
       expect(Chariwt.cmp_pkcs_file(smime,
                                    "voucher_request-00-D0-E5-F2-00-02")).to be_truthy

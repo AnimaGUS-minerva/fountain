@@ -46,3 +46,6 @@ class Voucher < ActiveRecord::Base
   end
 
 end
+
+class CmsVoucher < Voucher
+end
