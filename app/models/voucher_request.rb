@@ -33,6 +33,19 @@ class VoucherRequest < ApplicationRecord
     return voucher
   end
 
+  def self.from_cose_cbor(token, pubkey = nil)
+    signed = false
+    vr = Chariwt::VoucherRequest.from_cose_cbor(token, pubkey)
+    if vr
+      signed = true
+      hash = vr.vrhash
+    end
+    voucher = from_cbor(hash, signed)
+    voucher.request = vr
+    voucher.pledge_request = token
+    return voucher
+  end
+
   def self.from_pkcs7(token, json = nil)
     signed = false
     vr = Chariwt::VoucherRequest.from_pkcs7(token)
@@ -63,9 +76,17 @@ class VoucherRequest < ApplicationRecord
     return voucher
   end
 
+  def vdetails=(x)
+    @vdetails = x
+  end
+
   def vdetails
-    raise VoucherRequest::InvalidVoucherRequest unless details["ietf-voucher-request:voucher"]
-    @vdetails ||= details["ietf-voucher-request:voucher"]
+    unless @vdetails
+      return nil unless details
+      raise VoucherRequest::InvalidVoucherRequest unless details["ietf-voucher-request:voucher"]
+      @vdetails = details["ietf-voucher-request:voucher"]
+    end
+    @vdetails
   end
 
   def name

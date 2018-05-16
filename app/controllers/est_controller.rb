@@ -1,9 +1,39 @@
 class EstController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  # POST /e/rv (CBOR)
+  # POST /e/rv (CBOR, COSE)
   def cbor_rv
-    head 406
+    begin
+      # assumes *DTLS* version.
+      clientcert_pem = request.env["SSL_CLIENT_CERT"]
+      clientcert =  OpenSSL::X509::Certificate.new(clientcert_pem)
+      @voucherreq = VoucherRequest.from_cose_cbor(request.body.read, clientcert)
+      @voucherreq.tls_clientcert = clientcert
+      @voucherreq.discover_manufacturer
+      @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
+      @voucherreq.save!
+
+    rescue VoucherRequest::InvalidVoucherRequest
+      head 406
+      return
+    end
+
+    logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
+
+    begin
+      @voucher = @voucherreq.get_voucher
+    rescue VoucherRequest::BadMASA => e
+      logger.info "invalid MASA response: #{e.message}"
+      head 404, text: e.message
+    end
+
+    if @voucher
+      render :body => @voucher.base64_signed_voucher,
+             :content_type => 'application/pkcs7-mime; smime-type=voucher'
+    else
+      head 500
+    end
+
   end
 
   # POST /.well-known/est/requestvoucher
