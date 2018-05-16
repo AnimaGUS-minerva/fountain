@@ -265,7 +265,13 @@ class VoucherRequest < ApplicationRecord
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
         der = decode_pem(response.body)
-        voucher = Voucher.from_voucher(@voucher_response_type, der)
+
+        case
+        when @pkcs7
+          voucher = CmsVoucher.from_voucher(@voucher_response_type, der)
+        else
+          raise Voucher::UnknownVoucherType
+        end
         voucher.voucher_request = self
         voucher.node = self.node
         voucher.manufacturer = self.manufacturer

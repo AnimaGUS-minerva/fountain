@@ -118,6 +118,7 @@ RSpec.describe "Est", type: :request do
       env["SSL_CLIENT_CERT"] = cbor_clientcert
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
+      pending "EST"
       post '/e/rv', :params => body, :headers => env
 
       expect(assigns(:voucherreq)).to_not be_nil

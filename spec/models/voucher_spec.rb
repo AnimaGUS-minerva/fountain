@@ -20,7 +20,7 @@ RSpec.describe Voucher, type: :model do
       voucher_base64 = IO::read(File.join("spec","files","voucher_JADA_f2-00-01.pkcs"))
       voucher_binary = Base64.decode64(voucher_base64)
 
-      v1 = Voucher.from_voucher(:pkcs7, voucher_binary)
+      v1 = CmsVoucher.from_voucher(:pkcs7, voucher_binary)
 
       expect(v1.node).to eq(nodes(:jadaf20001))
     end
