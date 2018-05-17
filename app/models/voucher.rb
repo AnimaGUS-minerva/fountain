@@ -33,6 +33,10 @@ class Voucher < ActiveRecord::Base
     @owner
   end
 
+  def assertion
+    details['assertion']
+  end
+
   def proximity?
     'proximity' == assertion
   end

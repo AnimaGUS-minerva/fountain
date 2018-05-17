@@ -33,7 +33,7 @@ RSpec.describe Voucher, type: :model do
       v1 = CmsVoucher.from_voucher(:pkcs7, voucher_binary)
 
       expect(v1.node).to eq(nodes(:jadaf20001))
-      expect(v1).to proximity
+      expect(v1).to_not be_proximity
     end
 
     it "should create constrained voucher object and place the signed data in it" do
