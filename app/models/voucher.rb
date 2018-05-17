@@ -14,6 +14,8 @@ class Voucher < ActiveRecord::Base
     case type
     when :pkcs7
       return CmsVoucher.from_voucher(type, value)
+    when :cose
+      return CoseVoucher.from_voucher(type, value)
     else
       raise InvalidVoucher
     end
@@ -29,6 +31,10 @@ class Voucher < ActiveRecord::Base
 
   def owner_cert
     @owner
+  end
+
+  def proximity?
+    'proximity' == assertion
   end
 
 end
@@ -54,6 +60,36 @@ class CmsVoucher < Voucher
   def self.from_voucher(type, value)
     voucher = create(signed_voucher: value)
     voucher.details_from_pkcs7
+    voucher
+  end
+end
+
+class CoseVoucher < Voucher
+  def details_from_cose
+    byebug
+    begin
+      @cvoucher = Chariwt::Voucher.from_cose_cbor(signed_voucher)
+    rescue ArgumentError, Chariwt::Voucher::RequestFailedValidation, Chariwt::Voucher::InvalidKeyType
+      # some kind of pkcs7 error?
+      raise VoucherFormatError
+    rescue
+      puts "some kind of other problem: $!"
+      byebug
+      puts "hello"
+    end
+
+    self.nonce             = @cvoucher.nonce
+    self.details           = @cvoucher.attributes
+    self.device_identifier = @cvoucher.serialNumber
+    self.expires_at        = @cvoucher.expiresOn
+    self.node            = Node.find_or_make_by_number(device_identifier)
+    self.manufacturer    = node.manufacturer
+    save!
+  end
+
+  def self.from_voucher(type, value)
+    voucher = create(signed_voucher: value)
+    voucher.details_from_cose
     voucher
   end
 end
