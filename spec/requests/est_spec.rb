@@ -90,7 +90,7 @@ RSpec.describe "Est", type: :request do
 
 
     it "should get CoAPS POSTed to cbor_rv" do
-      result = IO.read("spec/files/voucher_00-D0-E5-01-00-09.cwt")
+      result = IO.read("spec/files/voucher_00-D0-E5-01-00-09.vch")
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)

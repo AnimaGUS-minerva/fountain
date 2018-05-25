@@ -16,12 +16,20 @@ RSpec.describe Voucher, type: :model do
   end
 
   describe "receiving vouchers" do
+    it "should raise an exception when reading a voucher without public key" do
+      voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789_bad.vch"))
+
+      expect {
+        v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
+      }.to raise_error(Voucher::MissingPublicKey)
+    end
+
     it "should read a sample voucher from a file" do
       voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789.vch"))
 
       v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
-      expect(v1).to proximity
-      expect(v1.serialNumber).to eq('JADA123456789')
+      expect(v1).to be_proximity
+      expect(v1.serial_number).to eq('JADA123456789')
       expect(v1.nonce).to        eq('abcd12345')
     end
 
@@ -36,13 +44,15 @@ RSpec.describe Voucher, type: :model do
       expect(v1).to_not be_proximity
     end
 
-    it "should create constrained voucher object and place the signed data in it" do
-      voucher_base64 = IO::read(File.join("spec","files","voucher_00-D0-E5-01-00-09.vch"))
-      voucher_binary = Base64.decode64(voucher_base64)
+    it "should find a constrained voucher in the specification" do
+      cv2 = vouchers(:cv2)
+      expect(cv2.node).to eq(nodes(:n3))
+    end
 
-      v1 = CmsVoucher.from_voucher(:pkcs7, voucher_binary)
-
-      expect(v1.node).to eq(nodes(:jadaf20001))
+    it "should load a constrained voucher representation, and create a database object for it" do
+      voucher_binary = IO::read(File.join("spec","files","voucher_jada123456789.vch"))
+      v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
+      expect(v1.node).to eq(nodes(:n3))
     end
 
     it "should get a voucher format error on empty voucher object" do

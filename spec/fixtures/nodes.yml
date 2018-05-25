@@ -14,5 +14,13 @@ jadaf20001:
   manufacturer_id: 1
   idevid: "JADA_f2-00-01"
 
-
-        
+n3:
+  id: 3
+  name: constrained 1
+  fqdn:
+  eui64:
+  device_type_id:
+  manufacturer_id:
+  idevid: "JADA123456789"
+  created_at: "2018-05-24 01:13:22"
+  updated_at: "2018-05-24 01:13:22"

@@ -9,6 +9,8 @@ class Voucher < ActiveRecord::Base
   end
   class UnknownVoucherType < Exception
   end
+  class MissingPublicKey < Exception
+  end
 
   def self.from_voucher(type, value)
     case type
@@ -22,7 +24,7 @@ class Voucher < ActiveRecord::Base
   end
 
   def serial_number
-    details.serialNumber
+    details['serial-number']
   end
 
   def base64_signed_voucher
@@ -70,16 +72,15 @@ end
 
 class CoseVoucher < Voucher
   def details_from_cose
-    byebug
     begin
       @cvoucher = Chariwt::Voucher.from_cose_cbor(signed_voucher)
-    rescue ArgumentError, Chariwt::Voucher::RequestFailedValidation, Chariwt::Voucher::InvalidKeyType
+    rescue Chariwt::Voucher::InvalidKeyType
+      # missing key to validate
+      raise MissingPublicKey
+
+    rescue ArgumentError, Chariwt::Voucher::RequestFailedValidation, Chariwt::Voucher::InvalidKeyType, CBOR::MalformedFormatError
       # some kind of pkcs7 error?
       raise VoucherFormatError
-    rescue
-      puts "some kind of other problem: $!"
-      byebug
-      puts "hello"
     end
 
     self.nonce             = @cvoucher.nonce
