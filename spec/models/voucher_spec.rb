@@ -28,9 +28,9 @@ RSpec.describe Voucher, type: :model do
       voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789.vch"))
 
       v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
-      expect(v1).to be_proximity
+      expect(v1).to               be_proximity
       expect(v1.serial_number).to eq('JADA123456789')
-      expect(v1.nonce).to        eq('abcd12345')
+      expect(v1.nonce).to         eq('abcd12345')
     end
 
 

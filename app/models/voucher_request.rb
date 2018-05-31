@@ -11,13 +11,13 @@ class VoucherRequest < ApplicationRecord
   class BadMASA          < Exception; end
 
   def self.from_json(json, signed = false)
-    vr = create(details: json, signed: signed)
+    vr = CmsVoucherRequest.create(details: json, signed: signed)
     vr.populate_explicit_fields
     vr
   end
 
   def self.from_cbor(hash, signed = false)
-    vr = create(vdetails: hash, signed: signed)
+    vr = CoseVoucherRequest.create(vdetails: hash, signed: signed)
     vr.populate_explicit_fields
     vr
   end
@@ -256,7 +256,7 @@ class VoucherRequest < ApplicationRecord
     puts "Contacting server at: #{target_uri} about #{self.device_identifier}"
 
     request = Net::HTTP::Post.new(target_uri)
-    request.body = registrar_voucher_request
+    request.body         = registrar_voucher_request
     request.content_type = registrar_voucher_request_type
     response = http_handler.request request # Net::HTTPResponse object
 
@@ -273,11 +273,15 @@ class VoucherRequest < ApplicationRecord
 
     when Net::HTTPSuccess
       if process_content_type(@content_type = response['Content-Type'])
-        der = decode_pem(response.body)
 
         case
         when @pkcs7
+          der = decode_pem(response.body)
           voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der)
+
+        when @cose
+          voucher = ::CoseVoucher.from_voucher(@voucher_response_type, response.body)
+
         else
           raise Voucher::UnknownVoucherType
         end
