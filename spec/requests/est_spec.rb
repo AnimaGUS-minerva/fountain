@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "Est", type: :request do
 
+  def temporary_key
+    ECDSA::Format::IntegerOctetString.decode(["20DB1328B01EBB78122CE86D5B1A3A097EC44EAC603FD5F60108EDF98EA81393"].pack("H*"))
+  end
+
   describe "unsigned voucher request" do
     it "should get posted to requestvoucher" do
 
@@ -118,7 +122,8 @@ RSpec.describe "Est", type: :request do
       env["SSL_CLIENT_CERT"] = cbor_clientcert
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
-      pending "EST"
+
+      $FAKED_TEMPORARY_KEY = temporary_key
       post '/e/rv', :params => body, :headers => env
 
       expect(assigns(:voucherreq)).to_not be_nil

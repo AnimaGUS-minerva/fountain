@@ -11,7 +11,9 @@ class CoseVoucherRequest < VoucherRequest
     vreq.assertion  = :proximity
     vreq.priorSignedVoucherRequest = pledge_request
     self.request = vreq
-    token = vreq.cose_sign(FountainKeys.ca.jrc_priv_key)
+    token = vreq.cose_sign(FountainKeys.ca.jrc_priv_key,
+                           ECDSA::Group::Nistp256,
+                           $FAKED_TEMPORARY_KEY)  # usually nil.
   end
 
   def registrar_voucher_request
