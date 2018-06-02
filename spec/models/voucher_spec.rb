@@ -25,6 +25,7 @@ RSpec.describe Voucher, type: :model do
     end
 
     it "should read a sample voucher from a file" do
+      # this input comes from chariwt/tmp/voucher_jada123456789.vch
       voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789.vch"))
 
       v1 = CoseVoucher.from_voucher(:cose, voucher_binary)

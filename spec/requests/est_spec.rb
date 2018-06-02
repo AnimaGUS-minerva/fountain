@@ -46,7 +46,7 @@ RSpec.describe "Est", type: :request do
     end
   end
 
-  describe "signed voucher request" do
+  describe "signed pledge voucher request" do
     it "should get HTTPS POSTed to requestvoucher" do
 
       result = IO.read("spec/files/voucher_081196FFFE0181E0.pkcs")
@@ -103,7 +103,7 @@ RSpec.describe "Est", type: :request do
         with(headers: {
                'Accept'=>'*/*',
                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-               'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
+               'Content-Type'=>'application/cbor+cose',
                'Host'=>'masa.wheezes.sandelman.ca',
                'User-Agent'=>'Ruby'
              }).
@@ -111,11 +111,10 @@ RSpec.describe "Est", type: :request do
                     voucher_request = request.body
                     result},
                   headers: {
-                    'Content-Type'=>'application/pkcs7-mime; smime-type=voucher'
+                    'Content-Type'=>'application/cbor+cose'
                   })
 
-
-      # get the Base64 of the signed request
+      # get the Base64 of the incoming signed request
       body = IO.read("spec/files/vr_00-D0-E5-01-00-09.cwt")
 
       env = Hash.new
@@ -132,11 +131,13 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).signed).to be_truthy
       expect(assigns(:voucherreq).node).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
+      pending "waiting for constrained voucher reply"
 
-      expect(Chariwt.cmp_pkcs_file(voucher_request,
-                                   "voucher_request_081196FFFE0181E0",
-                                   "spec/files/cert/certs.crt"
-                                  )).to be true
+      expect(Chariwt.cmp_vch_file(voucher_request,
+                                  "parboiled_vr_00-D0-E5-01-00-09")).to be true
+
+      expect(Chariwt.cmp_vch_file(assigns(:voucher).token,
+                                  "voucher_00-D0-E5-01-00-09")).to be true
 
     end
 
