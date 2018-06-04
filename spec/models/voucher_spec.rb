@@ -21,7 +21,7 @@ RSpec.describe Voucher, type: :model do
 
       expect {
         v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
-      }.to raise_error(Voucher::MissingPublicKey)
+      }.to raise_error(Chariwt::Voucher::MissingPublicKey)
     end
 
     it "should read a sample voucher from a file" do
