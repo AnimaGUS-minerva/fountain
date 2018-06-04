@@ -32,7 +32,7 @@ RSpec.describe "Est", type: :request do
   end
 
   def cbor_clientcert
-    @cbor_clientcert ||= IO.binread("spec/certs/010009-idevid.pem")
+    @cbor_clientcert ||= IO.binread("spec/certs/F21003-idevid.pem")
   end
 
   describe "resource discovery" do
@@ -94,18 +94,17 @@ RSpec.describe "Est", type: :request do
 
 
     it "should get CoAPS POSTed to cbor_rv" do
-      result = IO.read("spec/files/voucher_00-D0-E5-01-00-09.vch")
+      result = IO.read("spec/files/voucher_00-D0-E5-F2-10-03.vch")
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
 
-      stub_request(:post, "https://masa.wheezes.sandelman.ca/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers: {
                'Accept'=>'*/*',
                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                'Content-Type'=>'application/cbor+cose',
-               'Host'=>'masa.wheezes.sandelman.ca',
-               'User-Agent'=>'Ruby'
+               'Host'=>'highway.sandelman.ca',
              }).
         to_return(status: 200, body: lambda { |request|
                     voucher_request = request.body
@@ -115,7 +114,7 @@ RSpec.describe "Est", type: :request do
                   })
 
       # get the Base64 of the incoming signed request
-      body = IO.read("spec/files/vr_00-D0-E5-01-00-09.cwt")
+      body = IO.read("spec/files/vr_00-D0-E5-F2-10-03.vch")
 
       env = Hash.new
       env["SSL_CLIENT_CERT"] = cbor_clientcert
@@ -134,10 +133,10 @@ RSpec.describe "Est", type: :request do
       pending "waiting for constrained voucher reply"
 
       expect(Chariwt.cmp_vch_file(voucher_request,
-                                  "parboiled_vr_00-D0-E5-01-00-09")).to be true
+                                  "parboiled_vr_00-D0-E5-F2-10-03")).to be true
 
       expect(Chariwt.cmp_vch_file(assigns(:voucher).token,
-                                  "voucher_00-D0-E5-01-00-09")).to be true
+                                  "voucher_00-D0-E5-F2-10-03")).to be true
 
     end
 
