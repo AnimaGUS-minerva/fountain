@@ -28,8 +28,8 @@ class EstController < ApplicationController
     end
 
     if @voucher
-      render :body => @voucher.base64_signed_voucher,
-             :content_type => 'application/pkcs7-mime; smime-type=voucher'
+      render :body => @voucher.signed_voucher,
+             :content_type => 'application/voucher-cose+cbor'
     else
       head 500
     end
