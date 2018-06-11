@@ -1,4 +1,4 @@
-class CreateVoucherRequests < ActiveRecord::Migration
+class CreateVoucherRequests < ActiveRecord::Migration[4.2]
   def change
     create_table :voucher_requests do |t|
       t.integer    :node_id

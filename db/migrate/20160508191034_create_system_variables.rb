@@ -1,4 +1,4 @@
-class CreateSystemVariables < ActiveRecord::Migration
+class CreateSystemVariables < ActiveRecord::Migration[4.2]
   def self.up
     create_table :system_variables do |t|
       t.column :variable, :string
