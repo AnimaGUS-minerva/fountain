@@ -45,14 +45,8 @@ gem 'json'
 # chariwt = { :path => '../chariwt' }
 gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 
-group :mudcontroller do
-  gem 'sqlite3'
-end
-
-group :production, :production, :test do
-  # in some production instances, use postgresql
-  gem 'pg', '0.20'
-end
+gem 'sqlite3'
+#gem 'pg', '0.20'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
