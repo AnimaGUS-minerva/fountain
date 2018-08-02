@@ -4,9 +4,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', "~> 5.1"
 
-# Use postgresql as the database for Active Record
-gem 'pg', '0.20'
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 
@@ -52,7 +49,19 @@ gem 'david', :path => "../minerva/david"
 gem 'cbor'
 gem 'json'
 
+group :mudcontroller do
+  gem 'sqlite3'
+end
+
+group :production do
+  # in some production instances, use postgresql
+  gem 'pg', '0.20'
+end
+
 group :development, :test do
+  # Use postgresql as the database for Active Record
+  gem 'pg', '0.20'
+
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'pry'
