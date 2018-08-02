@@ -42,23 +42,19 @@ gem 'openssl'
 gem 'cbor'
 gem 'json'
 
+# chariwt = { :path => '../chariwt' }
+gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
+
 group :mudcontroller do
   gem 'sqlite3'
 end
 
-chariwt = { :git => 'https://github.com/mcr/ChariWTs.git' }
-
-group :production do
+group :production, :production, :test do
   # in some production instances, use postgresql
   gem 'pg', '0.20'
 end
 
 group :development, :test do
-  chariwt = { :path => '../chariwt' }
-
-  # Use postgresql as the database for Active Record
-  gem 'pg', '0.20'
-
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'pry'
@@ -74,7 +70,6 @@ group :development, :test do
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-rvm'
 end
-gem 'chariwt', chariwt
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
