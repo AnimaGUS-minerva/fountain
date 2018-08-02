@@ -13,9 +13,7 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem "turbolinks"
 
-gem 'chariwt', :path => '../chariwt'
 gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
-#gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
@@ -48,12 +46,16 @@ group :mudcontroller do
   gem 'sqlite3'
 end
 
+chariwt = { :git => 'https://github.com/mcr/ChariWTs.git' }
+
 group :production do
   # in some production instances, use postgresql
   gem 'pg', '0.20'
 end
 
 group :development, :test do
+  chariwt = { :path => '../chariwt' }
+
   # Use postgresql as the database for Active Record
   gem 'pg', '0.20'
 
@@ -68,7 +70,11 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'cbor-diag'
+
+  gem 'capistrano', '~> 3.0'
+  gem 'capistrano-rvm'
 end
+gem 'chariwt', chariwt
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
