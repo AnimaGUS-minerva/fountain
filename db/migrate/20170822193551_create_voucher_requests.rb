@@ -4,8 +4,8 @@ class CreateVoucherRequests < ActiveRecord::Migration[4.2]
       t.integer    :node_id
       t.integer    :manufacturer_id
       t.text       :device_identifier
-      t.inet       :requesting_ip
-      t.inet       :proxy_ip
+      t.text       :requesting_ip
+      t.text       :proxy_ip
       t.text       :nonce
       t.binary     :idevid
       t.json       :details
