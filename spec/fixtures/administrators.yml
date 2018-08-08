@@ -1,0 +1,8 @@
+admin1:
+  id: 1
+  name: First Administrator
+  admin: true
+  enabled: true
+  prospective: false
+
+
