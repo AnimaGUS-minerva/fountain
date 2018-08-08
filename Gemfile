@@ -53,10 +53,11 @@ group :mudcontroller do
   gem 'sqlite3'
 end
 
-group :production do
-  # in some production instances, use postgresql
-  gem 'pg', '0.20'
-end
+gem 'sqlite3'
+gem 'pg', '0.20'
+
+# used in production on SecureHomeGateway
+gem 'thin'
 
 group :development, :test do
   # Use postgresql as the database for Active Record
@@ -66,8 +67,6 @@ group :development, :test do
   gem 'byebug'
   gem 'pry'
   gem 'pry-doc'
-
-  gem 'thin'
 
   #
   gem 'rspec-rails', '~> 3.0'

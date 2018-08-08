@@ -1,0 +1,47 @@
+#!/bin/sh
+
+format=pem
+export dir=run/certs
+export cadir=run/certs
+export format
+mkdir -p $dir
+(cd $dir
+ mkdir -p certs crl csr newcerts private
+ chmod 700 private
+ touch index.txt
+ touch serial
+ )
+
+sn=8
+
+countryName="/C=CA"
+stateOrProvinceName="/ST=ON"
+localityName="/L=Ottawa"
+organizationName="/O=CIRA LABS"
+commonName="/CN=Secure Home Gateway"
+DN=$countryName$stateOrProvinceName$localityName
+DN=$DN$organizationName$organizationalUnitName$commonName
+
+export subjectAltName="email:securehomegateway@cira.ca"
+
+set -x
+openssl genpkey -algorithm ec\
+       -pkeyopt ec_paramgen_curve:prime256v1\
+       -outform $format -pkeyopt ec_param_enc:named_curve\
+       -out $dir/private/webserver.key.$format
+chmod 400 $dir/private/webserver.key.$format
+openssl pkey -inform $format -in $dir/private/webserver.key.$format -text -noout
+
+openssl req -config db/openssl-root.cnf\
+        -set_serial 0x$(openssl rand -hex $sn)\
+        -keyform $format -outform $format\
+        -key $dir/private/webserver.key.$format -subj "$DN"\
+        -new -x509 -days 7300 -sha256 \
+        -out $dir/certs/webserver.cert.$format
+
+openssl x509 -inform $format -in $dir/certs/webserver.cert.$format\
+        -text -noout
+
+openssl x509 -purpose -inform $format\
+        -in $dir/certs/webserver.cert.$format -inform $format
+
