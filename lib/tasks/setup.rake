@@ -29,7 +29,7 @@ namespace :fountain do
   end
 
   desc "Do initial setup of sytem variables"
-  task :setup_masa => :environment do
+  task :setup_jrc => :environment do
 
     SystemVariable.dump_vars
 
@@ -38,12 +38,6 @@ namespace :fountain do
 
     prompt_variable_value("Hostname for this instance",
                           :hostname)
-
-    prompt_variable_value("Inventory directory for this instance",
-                          :inventory_dir)
-
-    prompt_variable_value("Setup inventory base mac address",
-                          :base_mac)
 
     SystemVariable.dump_vars
   end
