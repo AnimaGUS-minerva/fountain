@@ -4,6 +4,7 @@ namespace :fountain do
 
   def prompt_variable(prompt, variable, previous)
     print prompt
+    previous = previous.to_s.chomp
     print "(default #{previous}): "
     value = STDIN.gets
 
