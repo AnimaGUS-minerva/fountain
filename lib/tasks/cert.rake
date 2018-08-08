@@ -97,6 +97,8 @@ namespace :fountain do
     end
   end
 
+  # XXX this method or the previous one should be removed.  This is probably the
+  # correct one.
   desc "Create a certificate for the Registration Authority to own devices with"
   task :create_registrar => :environment do
 
@@ -137,8 +139,13 @@ namespace :fountain do
     ef.issuer_certificate  = root_ca
     ef.config = OpenSSL::Config.load("registrar-ssl.cnf")
     jrc_crt.add_extension(ef.create_extension("basicConstraints","CA:FALSE",true))
-    n = ef.create_extension("extendedKeyUsage","cmcRA:TRUE",true)
-    jrc_crt.add_extension(n)
+
+    begin
+      n = ef.create_extension("extendedKeyUsage","cmcRA:TRUE",true)
+      jrc_crt.add_extension(n)
+    rescue OpenSSL::X509::ExtensionError
+      puts "Can not setup cmcRA extension, as openssl not patched, continuing anyway..."
+    end
     jrc_crt.sign(FountainKeys.ca.rootprivkey, OpenSSL::Digest::SHA256.new)
 
     File.open(certdir.join("jrc_#{curve}.crt"),'w') do |f|
