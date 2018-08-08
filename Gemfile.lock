@@ -143,6 +143,7 @@ GEM
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     openssl (2.1.1)
+    pg (0.20.0)
     polyglot (0.3.5)
     pry (0.11.3)
       coderay (~> 1.1.0)
@@ -280,6 +281,7 @@ DEPENDENCIES
   json
   jwt
   openssl
+  pg (= 0.20)
   pry
   pry-doc
   rails (~> 5.1)
@@ -297,4 +299,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.0
+   1.16.3

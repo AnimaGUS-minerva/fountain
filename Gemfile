@@ -46,15 +46,16 @@ gem 'json'
 gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 
 gem 'sqlite3'
-#gem 'pg', '0.20'
+gem 'pg', '0.20'
+
+# used in production on SecureHomeGateway
+gem 'thin'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'pry'
   gem 'pry-doc'
-
-  gem 'thin'
 
   #
   gem 'rspec-rails', '~> 3.0'
