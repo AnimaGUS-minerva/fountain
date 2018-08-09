@@ -19,7 +19,7 @@ namespace :fountain do
     adminprivkey_file = certdir.join("admin_#{curve}.key")
     adminpubkey_file  = certdir.join("admin_#{curve}.crt")
     if File.exists?(adminprivkey_file)
-      admin_key =  OpenSSL::PKey.read(File.open(adminprivkey))
+      admin_key =  OpenSSL::PKey.read(File.open(adminprivkey_file))
     else
       admin_key = OpenSSL::PKey::EC.new(curve)
       admin_key.generate_key
@@ -48,10 +48,14 @@ namespace :fountain do
     admin_crt.sign(FountainKeys.ca.rootprivkey, FountainKeys.ca.digest)
 
     File.open(adminpubkey_file,'w') do |f|
-      f.write server_crt.to_pem
+      f.write admin_crt.to_pem
     end
 
-    admin1.
+    admin1.enabled = true
+    admin1.admin   = true
+    admin1.public_key = admin_crt.to_pem
+    admin1.save!
+    system("ls -l #{adminpubkey_file} #{adminprivkey_file}")
 
   end
 
