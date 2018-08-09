@@ -1,6 +1,8 @@
 $ADMININTERFACE ||= ENV['ADMININTERFACE']
 
 Rails.application.routes.draw do
+  resources :administrators
+
   if $ADMININTERFACE or Rails.env == 'test'
     concern :active_scaffold
     concern :active_scaffold_association, ActiveScaffold::Routing::Association.new
