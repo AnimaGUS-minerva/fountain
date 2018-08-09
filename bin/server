@@ -5,8 +5,8 @@ cd $(dirname $0)/..
 echo RUNNING in `pwd`
 dir=$(pwd)
 
-priv=${dir}/db/cert/jrc_prime256v1.key
-cert=${dir}/db/cert/jrc_prime256v1.crt
+priv=${dir}/db/cert/jrc_prime384r1.key
+cert=${dir}/db/cert/jrc_prime384r1.crt
 #priv=${dir}/run/certs/private/webserver.key.pem
 #cert=${dir}/run/certs/certs/webserver.cert.pem
 
