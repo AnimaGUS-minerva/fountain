@@ -4,7 +4,7 @@ namespace :fountain do
 
   # really only used in testing: this should be corporate CA, or Verisign, etc.
   desc "Create initial administrative account with public key pair"
-  task :admin_cert => :environment do
+  task :3_admin_cert => :environment do
     curve = FountainKeys.ca.curve
 
     certdir = Rails.root.join('db').join('cert')
@@ -55,7 +55,11 @@ namespace :fountain do
     admin1.admin   = true
     admin1.public_key = admin_crt.to_pem
     admin1.save!
-    system("ls -l #{adminpubkey_file} #{adminprivkey_file}")
+
+    adminp12_file = certdir.join("admin_#{curve}.p12")
+    system("openssl pkcs12 -export -password pass: -inkey #{adminprivkey_file} -in #{adminpubkey_file} -out #{adminp12_file} -nodes")
+
+    system("ls -l #{adminpubkey_file} #{adminprivkey_file} #{adminp12_file}")
 
   end
 
