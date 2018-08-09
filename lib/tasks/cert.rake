@@ -4,7 +4,7 @@ namespace :fountain do
 
   # really only used in testing: this should be corporate CA, or Verisign, etc.
   desc "Create initial self-signed CA certificate for Registrar"
-  task :1_registrar_ca => :environment do
+  task :s1_registrar_ca => :environment do
     curve = FountainKeys.ca.curve
 
     certdir = Rails.root.join('db').join('cert')
@@ -52,9 +52,9 @@ namespace :fountain do
   end
 
   desc "Create a certificate for the Registration Authority to own devices with"
-  task :2_create_registrar => :environment do
+  task :s2_create_registrar => :environment do
 
-    curve = FountainKeys.ca.curve
+    curve = FountainKeys.ca.client_curve
 
     certdir = Rails.root.join('db').join('cert')
     FileUtils.mkpath(certdir)
