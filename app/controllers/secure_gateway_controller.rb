@@ -3,9 +3,9 @@ class SecureGatewayController < ApplicationController
 
   #protected
   def ssl_login
-    if request.env["SSL_CLIENT_CERT"]
-      clientcert_pem = request.env["SSL_CLIENT_CERT"]
-      clientcert =  OpenSSL::X509::Certificate.new(clientcert_pem)
+    peer_cert = request.env["SSL_CLIENT_CERT"] || request.env["rack.peer_cert"]
+    if peer_cert
+      clientcert =  OpenSSL::X509::Certificate.new(peer_cert)
 
       @administrator = Administrator.find_by_public_key(clientcert.to_der)
     end
