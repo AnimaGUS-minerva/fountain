@@ -39,9 +39,11 @@ gem 'ffi', '~> 1.9.24'
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
 
+#gem 'openssl', "~> 2.1.0"
+gem 'openssl', :path => "../minerva/ruby-openssl"
+
 # CoAP server for Rails.
 gem 'coap',    :path => "../minerva/coap"
-gem 'openssl', :path => "../minerva/ruby-openssl"
 gem 'celluloid-io', :path => "../minerva/celluloid-io"
 gem 'david', :path => "../minerva/david"
 
