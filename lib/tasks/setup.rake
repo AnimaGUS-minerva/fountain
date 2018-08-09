@@ -30,7 +30,7 @@ namespace :fountain do
   end
 
   desc "Do initial setup of sytem variables"
-  task :0_setup_jrc => :environment do
+  task :s0_setup_jrc => :environment do
 
     SystemVariable.dump_vars
 

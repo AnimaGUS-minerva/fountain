@@ -4,8 +4,8 @@ namespace :fountain do
 
   # really only used in testing: this should be corporate CA, or Verisign, etc.
   desc "Create initial administrative account with public key pair"
-  task :3_admin_cert => :environment do
-    curve = FountainKeys.ca.curve
+  task :s3_admin_cert => :environment do
+    curve = FountainKeys.ca.client_curve
 
     certdir = Rails.root.join('db').join('cert')
     FileUtils.mkpath(certdir)
