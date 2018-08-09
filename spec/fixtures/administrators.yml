@@ -4,5 +4,18 @@ admin1:
   admin: true
   enabled: true
   prospective: false
+  public_key: !binary |-
+    MIIB9jCCAXygAwIBAgIDAWNhMAoGCCqGSM49BAMDMHExEjAQBgoJkiaJk/IsZAEZ
+    FgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjFAMD4GA1UEAww3IzxTeXN0
+    ZW1WYXJpYWJsZToweDAwMDAwMDA0ZjkxMWEwPiBVbnN0cnVuZyBGb3VudGFpbiBD
+    QTAeFw0xODA4MDkwMDIxNTlaFw0yMDA4MDgwMDIxNTlaMEcxEjAQBgoJkiaJk/Is
+    ZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEWMBQGA1UEAwwNYWRt
+    aW5pc3RyYXRvcjB2MBAGByqGSM49AgEGBSuBBAAiA2IABKAq/HMaidbvbIBwbCsv
+    GNQQK1sIQjhrEm0yjjg7XkVZag3gN9343cb2DVzUYZoG1JVMaKcRy45jqHZDgS2t
+    wQ6aBY6RWirHzESiUotfmyAxpAF6ZZemG/tzRuyRurfhLaMQMA4wDAYDVR0TAQH/
+    BAIwADAKBggqhkjOPQQDAwNoADBlAjAWnRKppRgUdAUee3yli4FnDZB/ooTyKZNK
+    WJSp+jzZ0slAKuVPv4+z1lM965kuZYICMQD++Dnsiupvzy8zdd5XW52yX/eZi3WP
+    fqpzQDtoV93M3bHgG/HDjiZPwZGTMRlG5GI=
+
 
 
