@@ -17,7 +17,7 @@ thin start --ssl \
   --address ::  \
   --port    8081  \
   --ssl-cert-file ${cert} \
-  --ssl-key-file  ${priv}
+  --ssl-key-file  ${priv} "$@"
 
 
 
