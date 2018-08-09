@@ -4,7 +4,7 @@ namespace :fountain do
 
   # really only used in testing: this should be corporate CA, or Verisign, etc.
   desc "Create initial self-signed CA certificate for Registrar"
-  task :registrar_ca => :environment do
+  task :1_registrar_ca => :environment do
     curve = FountainKeys.ca.curve
 
     certdir = Rails.root.join('db').join('cert')
@@ -51,56 +51,8 @@ namespace :fountain do
     end
   end
 
-  desc "Create a certificate for the JRC web interface; also owns the devices"
-  task :jrc_cert => :environment do
-
-    curve = FountainKeys.ca.client_curve
-
-    certdir = Rails.root.join('db').join('cert')
-    FileUtils.mkpath(certdir)
-
-    serverprivkey=certdir.join("jrc_#{curve}.key")
-    if File.exists?(serverprivkey)
-      server_key = OpenSSL::PKey.read(File.open(serverprivkey))
-    else
-      # the MASA's public/private key - 3*1024 + 8
-      server_key = OpenSSL::PKey::EC.new(curve)
-      server_key.generate_key
-      File.open(serverprivkey, "w") do |f| f.write server_key.to_pem end
-    end
-
-    server_crt  = OpenSSL::X509::Certificate.new
-    # cf. RFC 5280 - to make it a "v3" certificate
-    server_crt.version = 2
-    server_crt.serial  = FountainKeys.ca.serial
-    server_crt.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=localhost"
-
-    root_ca = FountainKeys.ca.rootkey
-    # masa is signed by root_ca
-    server_crt.issuer = root_ca.subject
-    #root_ca.public_key = root_key.public_key
-    server_crt.public_key = server_key
-    server_crt.not_before = Time.now
-
-    # 2 years validity
-    server_crt.not_after = server_crt.not_before + 2 * 365 * 24 * 60 * 60
-
-    # Extension Factory
-    ef = OpenSSL::X509::ExtensionFactory.new
-    ef.subject_certificate = server_crt
-    ef.issuer_certificate  = root_ca
-    server_crt.add_extension(ef.create_extension("basicConstraints","CA:FALSE",true))
-    server_crt.sign(FountainKeys.ca.rootprivkey, FountainKeys.ca.digest)
-
-    File.open(certdir.join("jrc_#{curve}.crt"),'w') do |f|
-      f.write server_crt.to_pem
-    end
-  end
-
-  # XXX this method or the previous one should be removed.  This is probably the
-  # correct one.
   desc "Create a certificate for the Registration Authority to own devices with"
-  task :create_registrar => :environment do
+  task :2_create_registrar => :environment do
 
     curve = FountainKeys.ca.curve
 
