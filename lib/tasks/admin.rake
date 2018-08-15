@@ -10,14 +10,19 @@ namespace :fountain do
     certdir = Rails.root.join('db').join('cert')
     FileUtils.mkpath(certdir)
 
-    admin1 = Administrator.first || Administrator.create(:name => 'First Administrator')
+    if admin_name=ENV['ADMIN_NAME']
+      admin1 = Administrator.create(:name => admin_name)
+    else
+      admin1 = Administrator.first || Administrator.create(:name => 'First Administrator')
+      admin_name = "admin"
+    end
 
     # make sure admin1 bit is set.
     admin1.admin = true
 
     # make sure that there is a private key available.
-    adminprivkey_file = certdir.join("admin_#{curve}.key")
-    adminpubkey_file  = certdir.join("admin_#{curve}.crt")
+    adminprivkey_file = certdir.join("#{admin_name}_#{curve}.key")
+    adminpubkey_file  = certdir.join("#{admin_name}_#{curve}.crt")
     if File.exists?(adminprivkey_file)
       admin_key =  OpenSSL::PKey.read(File.open(adminprivkey_file))
     else
@@ -56,7 +61,7 @@ namespace :fountain do
     admin1.public_key = admin_crt.to_pem
     admin1.save!
 
-    adminp12_file = certdir.join("admin_#{curve}.p12")
+    adminp12_file = certdir.join("#{admin_name}_#{curve}.p12")
     system("openssl pkcs12 -export -password pass: -inkey #{adminprivkey_file} -in #{adminpubkey_file} -out #{adminp12_file} -nodes")
 
     system("ls -l #{adminpubkey_file} #{adminprivkey_file} #{adminp12_file}")
