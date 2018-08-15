@@ -142,6 +142,7 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
+    oj (3.6.5)
     openssl (2.1.1)
     pg (0.20.0)
     polyglot (0.3.5)
@@ -152,6 +153,8 @@ GEM
       pry (~> 0.11)
       yard (~> 0.9.11)
     public_suffix (3.0.2)
+    rabl (0.13.1)
+      activesupport (>= 2.3.14)
     rack (2.0.5)
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
@@ -280,10 +283,12 @@ DEPENDENCIES
   jquery-rails
   json
   jwt
+  oj
   openssl (~> 2.1.0)
   pg (= 0.20)
   pry
   pry-doc
+  rabl
   rails (~> 5.1)
   rails-controller-testing
   rake

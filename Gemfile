@@ -41,6 +41,8 @@ gem 'openssl', "~> 2.1.0"
 # encode/decode cbor messages
 gem 'cbor'
 gem 'json'
+gem 'rabl'
+gem 'oj'
 
 # chariwt = { :path => '../chariwt' }
 gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
