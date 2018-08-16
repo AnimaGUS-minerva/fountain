@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_08_212624) do
+ActiveRecord::Schema.define(version: 2018_08_16_011153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
-    t.boolean "admin"
-    t.boolean "enabled"
-    t.boolean "prospective"
+    t.boolean "admin", default: false
+    t.boolean "enabled", default: false
+    t.boolean "prospective", default: true
     t.binary "public_key"
     t.binary "previous_public_key"
     t.datetime "last_login"
