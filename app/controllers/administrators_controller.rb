@@ -1,7 +1,19 @@
 class AdministratorsController < SecureGatewayController
 
   def show
-    render json: {:hello => "there"}
+    case
+    when (@administrator.present? and @administrator.admin?)
+      @object = Administrator.find(params[:id])
+    when (@administrator.present? and params[:id].try(:to_i) == @administrator.id)
+      @object = @administrator
+    else
+      head 403
+    end
+    respond_to do |format|
+      format.json {
+        render
+      }
+    end
   end
 
   # create is generally called when a new administrator needs to be

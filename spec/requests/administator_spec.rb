@@ -3,9 +3,12 @@ require 'rails_helper'
 RSpec.describe "Administrators", type: :request do
   fixtures :all
 
-  def ssl_headers(client)
+  def ssl_headers(client = nil)
     env = Hash.new
-    env["SSL_CLIENT_CERT"] = client.certificate.to_pem
+    if(client)
+      env["SSL_CLIENT_CERT"] = client.certificate.to_pem
+    end
+    env['ACCEPT'] = 'application/json'
     env
   end
 
@@ -200,8 +203,19 @@ RSpec.describe "Administrators", type: :request do
 
       frank2 = administrators(:frank2)
 
-      get url_for(frank2, :format => 'json'), :headers => ssl_headers(frank2)
+      get url_for(frank2), {
+            :headers => ssl_headers(frank2),
+          }
       expect(response).to have_http_status(200)
+      reply = JSON::parse(response.body)
+      expect(reply["administrator"]).to_not be_nil
+      frank2_reply= reply["administrator"]
+      expect(frank2_reply["id"].to_i).to eq(2)
+      expect(frank2_reply["public_key"]).to_not be_nil
+      expect(frank2_reply["name"]).to_not be_nil
+      expect(frank2_reply["enabled"]).to_not     eq(false)
+      expect(frank2_reply["admin"]).to_not       eq(false)
+      expect(frank2_reply["prospective"]).to_not eq(true)
     end
 
     it "should return data for other administrators when admin true" do
