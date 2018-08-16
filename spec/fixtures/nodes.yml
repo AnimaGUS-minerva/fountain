@@ -24,3 +24,18 @@ n3:
   idevid: "JADA123456789"
   created_at: "2018-05-24 01:13:22"
   updated_at: "2018-05-24 01:13:22"
+
+thing1:
+  id: 4
+  name: "Upstairs Thermostat"
+  device_type_id:
+  manufacturer_id:
+  traffic_counts: { "bytes" : [ 1234, 45676 ], "packets" : [ 34587, 24324] }
+  mud_url:
+  profile_id:
+  current_vlan: "Sensor_LAN"
+  wan_enabled: false
+  lan_enabled: true
+  firewall_rules: {    "wan-restricted-to" : [ "http://example.com/firmware/things" ],    "lan-restricted-to" : [ "192.168.4.0/24" ],    "outgoing-ports"    : [ 80, 443 ],    "lan-incoming-enabled" : [ "192.168.1.0/24" ],    "wan-incoming-enabled" : [ ],    "lan-incoming-ports"   : [ 81, 5684 ],    "wan-incoming-ports"   : [ ],    }
+
+  

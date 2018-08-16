@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_16_011153) do
+ActiveRecord::Schema.define(version: 2018_08_16_162025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,13 @@ ActiveRecord::Schema.define(version: 2018_08_16_011153) do
     t.text "idevid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "traffic_counts"
+    t.text "mud_url"
+    t.integer "profile_id"
+    t.text "current_vlan"
+    t.boolean "wan_enabled"
+    t.boolean "lan_enabled"
+    t.json "firewall_rules"
   end
 
   create_table "system_variables", id: :serial, force: :cascade do |t|

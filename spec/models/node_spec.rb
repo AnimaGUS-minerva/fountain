@@ -26,4 +26,21 @@ RSpec.describe Node, type: :model do
     end
   end
 
+  describe "devices" do
+    it "should permit incrementing traffic counts" do
+      t1 = nodes(:thing1)
+      t1.increment_bytes(:incoming, 10)
+      expect(t1.traffic_counts["bytes"][0]).to eq(1244)
+    end
+
+    it "should init an empty device with zero counts" do
+      t1 = Node.create
+      t1.save
+      expect(t1.traffic_counts["bytes"][0]).to   eq(0)
+      expect(t1.traffic_counts["bytes"][1]).to   eq(0)
+      expect(t1.traffic_counts["packets"][0]).to eq(0)
+      expect(t1.traffic_counts["packets"][1]).to eq(0)
+    end
+  end
+
 end
