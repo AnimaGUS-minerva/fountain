@@ -225,8 +225,14 @@ RSpec.describe "Administrators", type: :request do
       ad1    = administrators(:admin1)
       frank2 = administrators(:frank2)
 
-      get url_for(frank2, :format => 'json'), :headers => ssl_headers(ad1)
+      get url_for(frank2), {
+            :headers => ssl_headers(ad1),
+          }
       expect(response).to have_http_status(200)
+      reply = JSON::parse(response.body)
+      expect(reply["administrator"]).to_not be_nil
+      frank2_reply= reply["administrator"]
+      expect(frank2_reply["id"].to_i).to eq(2)
     end
 
   end
