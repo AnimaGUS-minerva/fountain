@@ -1,6 +1,6 @@
 class AdministratorsController < SecureGatewayController
-
   def show
+    ssl_login
     case
     when (@administrator.present? and @administrator.admin?)
       @object = Administrator.find(params[:id])
@@ -38,6 +38,7 @@ class AdministratorsController < SecureGatewayController
   end
 
   def update
+    ssl_login
     head 403
   end
 

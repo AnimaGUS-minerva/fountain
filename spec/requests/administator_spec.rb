@@ -69,9 +69,8 @@ RSpec.describe "Administrators", type: :request do
                                        :name => 'New Guy'
                                      }}
       expect(response).to have_http_status(201)
-      byebug
       expect(response.location).to eq(url_for(assigns(:administrator)))
-      expect(assigns(:administrator).public_key.to_pem).to eq(newadmin_cert.to_pem)
+      expect(assigns(:administrator).certificate.to_pem).to eq(newadmin_cert.to_pem)
 
     end
 
@@ -180,19 +179,19 @@ RSpec.describe "Administrators", type: :request do
       # from the fixtures, then it will be found.
 
       (newadmin_key, newadmin_cert) = new_client_certificate
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = newadmin_cert.to_pem
 
-      post "/administrators.json", { :headers => env,
-                                     :params => {
-                                       :name => 'New Guy',
-                                       :admin => true
-                                     }
-                                   }
+      post "/administrators", { :headers => env,
+                                :params => {
+                                  :name => 'New Guy',
+                                  :admin => true
+                                }
+                              }
       expect(response).to have_http_status(201)
-      byebug
       expect(response.location).to eq(url_for(assigns(:administrator)))
       expect(assigns(:administrator).admin).to eq(false)
+      expect(assigns(:administrator).prospective).to eq(true)
     end
   end
 
@@ -213,9 +212,9 @@ RSpec.describe "Administrators", type: :request do
       expect(frank2_reply["id"].to_i).to eq(2)
       expect(frank2_reply["public_key"]).to_not be_nil
       expect(frank2_reply["name"]).to_not be_nil
-      expect(frank2_reply["enabled"]).to_not     eq(false)
-      expect(frank2_reply["admin"]).to_not       eq(false)
-      expect(frank2_reply["prospective"]).to_not eq(true)
+      expect(frank2_reply["enabled"]).to        eq(false)
+      expect(frank2_reply["admin"]).to          eq(false)
+      expect(frank2_reply["prospective"]).to    eq(true)
     end
 
     it "should return data for other administrators when admin true" do
