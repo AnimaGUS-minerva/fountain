@@ -1,14 +1,10 @@
 class AdministratorsController < SecureGatewayController
   def show
     ssl_login
-    case
-    when (@administrator.present? and @administrator.admin?)
-      @object = Administrator.find(params[:id])
-    when (@administrator.present? and params[:id].try(:to_i) == @administrator.id)
-      @object = @administrator
-    else
-      head 403
-    end
+    return unless @administrator
+    lookup_permitted_object
+    return unless @object
+
     respond_to do |format|
       format.json {
         render
@@ -37,9 +33,42 @@ class AdministratorsController < SecureGatewayController
     head 201, :location => url_for(@administrator)
   end
 
+  # must be logged in to update.
   def update
     ssl_login
-    head 403
+    lookup_permitted_object
+
+    case
+    when @administrator.admin?
+      @object.update_attributes(administrator_params)
+    when @object.nil?
+      return
+    else
+      @object.update_attributes(mortal_params)
+    end
+    head 200
+  end
+
+  protected
+
+  def administrator_params
+    params.require(:administrator).permit(:admin, :enabled, :name,
+                                          :prospective, :public_key,
+                                          :previous_public_key)
+  end
+  def mortal_params
+    params.require(:administrator).permit(:name)
+  end
+
+  def lookup_permitted_object
+    case
+    when (@administrator.present? and @administrator.admin?)
+      @object = Administrator.find(params[:id])
+    when (@administrator.present? and params[:id].try(:to_i) == @administrator.id)
+      @object = @administrator
+    else
+      head 403
+    end
   end
 
 end

@@ -61,13 +61,16 @@ RSpec.describe "Administrators", type: :request do
       # from the fixtures, then it will be found.
 
       (newadmin_key, newadmin_cert) = new_client_certificate
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = newadmin_cert.to_pem
 
       post "/administrators.json", { :headers => env,
                                      :params => {
-                                       :name => 'New Guy'
-                                     }}
+                                       :administrator => {
+                                         :name => 'New Guy'
+                                       }
+                                     }
+                                   }
       expect(response).to have_http_status(201)
       expect(response.location).to eq(url_for(assigns(:administrator)))
       expect(assigns(:administrator).certificate.to_pem).to eq(newadmin_cert.to_pem)
@@ -79,12 +82,14 @@ RSpec.describe "Administrators", type: :request do
       # from the fixtures, then it will be found.
 
       (newadmin_key, newadmin_cert) = new_client_certificate
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = newadmin_cert.to_pem
 
       post "/administrators.json", { :headers => env,
                                      :params => {
-                                       :name => 'New Guy'
+                                       :administrator => {
+                                         :name => 'New Guy'
+                                       }
                                      }
                                    }
       expect(response).to have_http_status(201)
@@ -94,7 +99,9 @@ RSpec.describe "Administrators", type: :request do
       # try a second time.
       post "/administrators.json", { :headers => env,
                                      :params => {
-                                       :name => 'New Guy'
+                                       :administrator => {
+                                         :name => 'New Guy'
+                                       }
                                      }
                                    }
       expect(response).to have_http_status(201)
@@ -106,51 +113,62 @@ RSpec.describe "Administrators", type: :request do
     it "should reject an attempt to update the admin bit, unless poster has one" do
       frank2 = administrators(:frank2)
       frank_admin_cert = OpenSSL::X509::Certificate.new(frank2.public_key)
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
-      post url_for(frank2), { :headers => env,
+      put url_for(frank2), { :headers => env,
                               :params => {
-                                :name => 'Frank Jones',
-                                :admin => true
+                               :administrator => {
+                                 :name => 'Frank Jones',
+                                 :admin => true
+                               }
                               }
-                            }
-      expect(response).to have_http_status(403)
+                           }
+
+      # it will succeed, but won't actually update anything
+      expect(response).to have_http_status(200)
+      frank2.reload
+      expect(frank2.admin).to be false
+
     end
 
     it "should rejecting a name to be update, when updating another entry" do
       frank2 = administrators(:frank2)
       frank_admin_cert = OpenSSL::X509::Certificate.new(frank2.public_key)
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
       ad1 = administrators(:admin1)
       oldname1 = ad1.name
       oldname2 = frank2.name
 
-      post url_for(ad1), { :headers => env,
+      put url_for(ad1), { :headers => env,
                            :params => {
-                             :name => 'Frank Jones',
+                            :administrator => {
+                              :name => 'Frank Jones',
+                            }
                            }
                          }
       expect(response).to have_http_status(403)
       ad1.reload
       expect(ad1.name).to eq(oldname1)
       frank2.reload
-      expect(frank.name).to eq(oldname2)
+      expect(frank2.name).to eq(oldname2)
     end
 
     it "should permit a name to be updated, even when not enabled" do
       frank2 = administrators(:frank2)
       frank_admin_cert = OpenSSL::X509::Certificate.new(frank2.public_key)
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
-      post url_for(frank2), { :headers => env,
-                              :params => {
-                                :name => 'Frank Jones',
-                              }
-                            }
+      put url_for(frank2), { :headers => env,
+                             :params => {
+                               :administrator => {
+                                 :name => 'Frank Jones',
+                               }
+                             }
+                           }
       expect(response).to have_http_status(200)
       frank2.reload
       expect(frank2.name).to eq("Frank Jones")
@@ -159,17 +177,19 @@ RSpec.describe "Administrators", type: :request do
     it "should reject updates to other fields, when not enabled" do
       frank2 = administrators(:frank2)
       frank_admin_cert = OpenSSL::X509::Certificate.new(frank2.public_key)
-      env = Hash.new
+      env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
       oldpubkey = frank2.public_key
 
-      post url_for(frank2), { :headers => env,
+      put url_for(frank2), { :headers => env,
                               :params => {
-                                :public_key => 'Baloney',
-                                :prospective => false
+                               :administrator => {
+                                 :public_key => 'Baloney',
+                                 :prospective => false
+                               }
                               }
                             }
-      expect(response).to have_http_status(403)
+      expect(response).to have_http_status(200)
       frank2.reload
       expect(frank2.public_key).to eq(oldpubkey)
     end
@@ -184,8 +204,10 @@ RSpec.describe "Administrators", type: :request do
 
       post "/administrators", { :headers => env,
                                 :params => {
-                                  :name => 'New Guy',
-                                  :admin => true
+                                  :administrator => {
+                                    :name => 'New Guy',
+                                    :admin => true
+                                  }
                                 }
                               }
       expect(response).to have_http_status(201)
