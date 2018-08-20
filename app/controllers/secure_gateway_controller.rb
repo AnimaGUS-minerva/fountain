@@ -17,11 +17,12 @@ class SecureGatewayController < ApplicationController
     end
     unless @administrator
       head 401
+      return false
     end
   end
 
   def admin_login
-    ssl_login
+    return false unless ssl_login
     unless @administrator.admin?
       head 401
       return false
