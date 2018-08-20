@@ -5,5 +5,9 @@
 
 server "mud-controller", user: "mud", roles: %{app db web}
 
-set :rvm_ruby_string, "2.4.1"
+before 'deploy:setup', 'rvm:install_rvm'  # install/update RVM
+before 'deploy:setup', 'rvm:install_ruby' # install Ruby and create gemset, OR:
+
+set :rvm_type, :system
+set :rvm_ruby_version, '2.4.1'
 
