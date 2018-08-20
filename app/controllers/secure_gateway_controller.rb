@@ -1,4 +1,5 @@
 class SecureGatewayController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :ssl_authenticator_lookup
 
   #protected
