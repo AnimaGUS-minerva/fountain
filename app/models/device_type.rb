@@ -1,3 +1,3 @@
 class DeviceType < ActiveRecord::Base
-  has_many :nodes
+  has_many :devices
 end

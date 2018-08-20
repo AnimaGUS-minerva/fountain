@@ -6,7 +6,7 @@ RSpec.describe DeviceType, type: :model do
   describe "relations" do
     it "should have one or more nodes" do
       b1 = device_types(:bulbs)
-      expect(b1.nodes.count).to be >= 1
+      expect(b1.devices.count).to be >= 1
     end
   end
 end

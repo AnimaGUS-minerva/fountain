@@ -1,4 +1,4 @@
-class Node < ActiveRecord::Base
+class Device < ActiveRecord::Base
   belongs_to :manufacturer
   belongs_to :device_type
 

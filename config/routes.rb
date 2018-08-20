@@ -2,6 +2,7 @@ $ADMININTERFACE ||= ENV['ADMININTERFACE']
 
 Rails.application.routes.draw do
   resources :administrators
+  resources :devices
 
   if $ADMININTERFACE or Rails.env == 'test'
     concern :active_scaffold
@@ -12,7 +13,6 @@ Rails.application.routes.draw do
     resources :voucher_requests, concerns: :active_scaffold
     resources :device_types,     concerns: :active_scaffold
     resources :manufacturers,    concerns: :active_scaffold
-    resources :nodes,            concerns: :active_scaffold
     resources :certificates,     concerns: :active_scaffold
   end
 

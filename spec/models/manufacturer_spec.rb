@@ -6,7 +6,7 @@ RSpec.describe Manufacturer, type: :model do
   describe "relations" do
     it "should have one or more nodes" do
       b1 = manufacturers(:widget1)
-      expect(b1.nodes.count).to be >= 1
+      expect(b1.devices.count).to be >= 1
     end
 
     it "should have one or more voucher requests" do

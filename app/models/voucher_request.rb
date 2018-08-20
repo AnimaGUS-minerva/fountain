@@ -1,6 +1,6 @@
 class VoucherRequest < ApplicationRecord
 
-  belongs_to :node
+  belongs_to :device
   belongs_to :manufacturer
   has_many   :vouchers
 
@@ -101,7 +101,7 @@ class VoucherRequest < ApplicationRecord
 
   def populate_explicit_fields
     self.device_identifier = vdetails["serial-number"]
-    self.node              = Node.find_or_make_by_number(device_identifier)
+    self.device            = Device.find_or_make_by_number(device_identifier)
     self.nonce             = vdetails["nonce"]
   end
 
@@ -286,7 +286,7 @@ class VoucherRequest < ApplicationRecord
           raise Voucher::UnknownVoucherType
         end
         voucher.voucher_request = self
-        voucher.node = self.node
+        voucher.device          = self.device
         voucher.manufacturer = self.manufacturer
         voucher.save!
         return voucher

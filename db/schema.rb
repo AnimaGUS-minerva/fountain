@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_16_162025) do
+ActiveRecord::Schema.define(version: 2018_08_20_041302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,15 +40,7 @@ ActiveRecord::Schema.define(version: 2018_08_16_162025) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "manufacturers", id: :serial, force: :cascade do |t|
-    t.text "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "masa_url"
-    t.binary "issuer_public_key"
-  end
-
-  create_table "nodes", id: :serial, force: :cascade do |t|
+  create_table "devices", id: :serial, force: :cascade do |t|
     t.text "name"
     t.text "fqdn"
     t.text "eui64"
@@ -66,6 +58,14 @@ ActiveRecord::Schema.define(version: 2018_08_16_162025) do
     t.json "firewall_rules"
   end
 
+  create_table "manufacturers", id: :serial, force: :cascade do |t|
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "masa_url"
+    t.binary "issuer_public_key"
+  end
+
   create_table "system_variables", id: :serial, force: :cascade do |t|
     t.string "variable"
     t.string "value"
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 2018_08_16_162025) do
   end
 
   create_table "voucher_requests", id: :serial, force: :cascade do |t|
-    t.integer "node_id"
+    t.integer "device_id"
     t.integer "manufacturer_id"
     t.text "device_identifier"
     t.text "requesting_ip"
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 2018_08_16_162025) do
     t.text "nonce"
     t.integer "manufacturer_id"
     t.integer "voucher_request_id"
-    t.integer "node_id"
+    t.integer "device_id"
     t.text "device_identifier"
     t.date "expires_at"
     t.json "details"

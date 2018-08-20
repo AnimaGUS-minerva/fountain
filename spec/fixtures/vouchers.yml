@@ -1,7 +1,7 @@
 voucher1:
   id: 1
   manufacturer_id: 1
-  node_id: 1
+  device_id: 1
   voucher_request_id: 1
   device_identifier: "JADA123456789"
   nonce: "abcd1234"
@@ -14,7 +14,7 @@ cv2:
   nonce: "abcd12345"
   manufacturer_id: nil
   voucher_request_id: nil
-  node_id: 3
+  device_id: 3
   device_identifier: "JADA123456789"
   expires_at: "2017-09-30"
   details:

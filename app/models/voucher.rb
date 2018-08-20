@@ -1,6 +1,6 @@
 class Voucher < ActiveRecord::Base
   belongs_to :manufacturer
-  belongs_to :node
+  belongs_to :device
   belongs_to :voucher_request
 
   class VoucherFormatError < Exception

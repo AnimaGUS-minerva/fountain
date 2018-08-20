@@ -1,6 +1,6 @@
 vr1:
   id: 1
-  node_id: 1
+  device_id: 1
   manufacturer_id: 1
   device_identifier: "JADA123456789"
   requesting_ip: fe80::1234

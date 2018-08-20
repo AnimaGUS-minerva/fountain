@@ -16,8 +16,8 @@ class CoseVoucher < Voucher
     self.details           = @cvoucher.attributes
     self.device_identifier = @cvoucher.serialNumber
     self.expires_at        = @cvoucher.expiresOn
-    self.node            = Node.find_or_make_by_number(device_identifier)
-    self.manufacturer    = node.manufacturer
+    self.device            = Device.find_or_make_by_number(device_identifier)
+    self.manufacturer      = device.manufacturer
     save!
   end
 

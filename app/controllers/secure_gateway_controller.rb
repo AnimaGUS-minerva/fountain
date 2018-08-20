@@ -12,10 +12,21 @@ class SecureGatewayController < ApplicationController
   end
 
   def ssl_login
-    ssl_authenticator_lookup
+    unless @administrator
+      ssl_authenticator_lookup
+    end
     unless @administrator
       head 401
     end
+  end
+
+  def admin_login
+    ssl_login
+    unless @administrator.admin?
+      head 401
+      return false
+    end
+    true
   end
 
 end

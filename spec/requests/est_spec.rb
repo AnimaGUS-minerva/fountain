@@ -84,7 +84,7 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).pledge_request).to_not be_nil
       expect(assigns(:voucherreq).signed).to be_truthy
-      expect(assigns(:voucherreq).node).to_not be_nil
+      expect(assigns(:voucherreq).device).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
 
       expect(Chariwt.cmp_pkcs_file(voucher_request,
@@ -130,7 +130,7 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).pledge_request).to_not be_nil
       expect(assigns(:voucherreq).signed).to be_truthy
-      expect(assigns(:voucherreq).node).to_not be_nil
+      expect(assigns(:voucherreq).device).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
       pending "waiting for constrained voucher reply"
 

@@ -6,6 +6,8 @@ bulb1:
   device_type_id: 1
   manufacturer_id: 1
   idevid: O=bulb,CN=12ea91
+  created_at: 2017-01-01
+  updated_at: "2018-05-24 01:13:22"
 
 jadaf20001:
   id: 2
@@ -13,6 +15,8 @@ jadaf20001:
   device_type_id: 1
   manufacturer_id: 1
   idevid: "JADA_f2-00-01"
+  created_at: 2017-01-01
+  updated_at: "2018-05-24 01:13:22"
 
 n3:
   id: 3
@@ -27,6 +31,8 @@ n3:
 
 thing1:
   id: 4
+  created_at: "2018-05-24 01:13:22"
+  updated_at: "2018-05-24 01:13:22"
   name: "Upstairs Thermostat"
   device_type_id:
   manufacturer_id:
