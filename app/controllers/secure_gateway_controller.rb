@@ -19,12 +19,13 @@ class SecureGatewayController < ApplicationController
       head 401
       return false
     end
+    return true
   end
 
   def admin_login
     return false unless ssl_login
     unless @administrator.admin?
-      head 401
+      head 403
       return false
     end
     true
