@@ -5,3 +5,5 @@
 
 server "mud-controller", user: "mud", roles: %{app db web}
 
+set :rvm_ruby_string, "2.4.1"
+
