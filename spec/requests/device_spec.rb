@@ -85,6 +85,54 @@ RSpec.describe "Devices", type: :request do
       expect(thing1.name).to eq(oname)
     end
 
+    it "should permit updates to fqdn" do
+      thing1 = devices(:thing1)
+      oname   = thing1.name
+      old_fqdn = thing1.fqdn
+      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
+                             :params  => { :device => { :name => "Downstairs Thermostat",
+                                                        :fqdn => "new.example.com",
+                                                      }}}
+      expect(response).to have_http_status(200)
+
+      # get the object again and verify that it changed appropriately
+      thing1.reload
+      expect(thing1.name).to_not eq(oname)
+      expect(thing1.fqdn).to_not eq(old_fqdn)
+    end
+
+    it "should permit updates to eui64" do
+      thing1 = devices(:thing1)
+      oname   = thing1.name
+      old_eui64 = thing1.eui64
+      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
+                             :params  => { :device => { :name => "Downstairs Thermostat",
+                                                        :eui64 => "new.example.com",
+                                                      }}}
+      expect(response).to have_http_status(200)
+
+      # get the object again and verify that it changed appropriately
+      thing1.reload
+      expect(thing1.name).to_not eq(oname)
+      expect(thing1.eui64).to_not eq(old_eui64)
+    end
+
+    it "should silently ignore attempts to update traffic_counts" do
+      thing1 = devices(:thing1)
+      oname   = thing1.name
+      old_tcounts = thing1.traffic_counts
+      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
+                             :params  => { :device => { :name => "Downstairs Thermostat",
+                                                        :traffic_counts => { "planets" => [ 0,0 ] }
+                                                      }}}
+      expect(response).to have_http_status(200)
+
+      # get the object again and verify that it changed appropriately
+      thing1.reload
+      expect(thing1.name).to_not eq(oname)
+      expect(thing1.traffic_counts).to  eq(old_tcounts)
+    end
+
 
   end
 
