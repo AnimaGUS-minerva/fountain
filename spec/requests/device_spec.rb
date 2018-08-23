@@ -12,6 +12,25 @@ RSpec.describe "Devices", type: :request do
     env
   end
 
+  def mud1_stub(url, filename = nil)
+    voucher_request = nil
+    result   = ""
+    if filename
+      result = File.read(filename)
+    end
+    stub_request(:get, url).
+      with(headers: {
+             'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+             'Host'=>'highway.sandelman.ca',
+           }).
+      to_return(status: 200, body: lambda { |request|
+                  voucher_request = request.body
+                  result},
+                headers: {
+                  'Content-Type'=>'application/mud+json',
+                })
+  end
+
   describe "permissions" do
     it "should fail with no login" do
       thing1 = devices(:thing1)
@@ -115,6 +134,24 @@ RSpec.describe "Devices", type: :request do
       thing1.reload
       expect(thing1.name).to_not eq(oname)
       expect(thing1.eui64).to_not eq(old_eui64)
+    end
+
+    it "should permit updates to mud_url, loading the new mud policy" do
+      new_url = "https://bigcorp.example.com/product1234/mud.der"
+      mud1_stub(new_url)
+      thing1 = devices(:thing1)
+      oname   = thing1.name
+      old_mud_url = thing1.mud_url
+      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
+                             :params  => { :device => { :name => "Downstairs Thermostat",
+                                                        :mud_url => new_url,
+                                                      }}}
+      expect(response).to have_http_status(200)
+
+      # get the object again and verify that it changed appropriately
+      thing1.reload
+      expect(thing1.name).to_not eq(oname)
+      expect(thing1.mud_url).to_not eq(old_mud_url)
     end
 
     it "should silently ignore attempts to update traffic_counts" do
