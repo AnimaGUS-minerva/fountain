@@ -15,7 +15,7 @@ RSpec.describe "Devices", type: :request do
   describe "permissions" do
     it "should fail with no login" do
       thing1 = devices(:thing1)
-      get url_for(thing1), :headers => ssl_headers()
+      get url_for(thing1), :headers => ssl_headers(nil)
       expect(response).to have_http_status(401)
     end
 
@@ -32,7 +32,7 @@ RSpec.describe "Devices", type: :request do
     end
   end
 
-  describe "devices" do
+  describe "access" do
     it "should show a single device with attributes" do
       thing1 = devices(:thing1)
       get url_for(thing1), :headers => ssl_headers(administrators(:admin1))
@@ -54,6 +54,38 @@ RSpec.describe "Devices", type: :request do
       get "/devices", :headers => ssl_headers(administrators(:frank2))
       expect(response).to have_http_status(403)
     end
+  end
+
+  describe "update" do
+    it "should permit updates by administrator" do
+      thing1 = devices(:thing1)
+      oname  = thing1.name
+      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
+                             :params  => { :device => { :name => "Downstairs Thermostat" }}}
+      expect(response).to have_http_status(200)
+      thing1.reload
+      expect(thing1.name).to_not eq(oname)
+    end
+    it "should deny updates by non-administrators" do
+      thing1 = devices(:thing1)
+      oname  = thing1.name
+      put url_for(thing1), { :headers => ssl_headers(administrators(:frank2)),
+                             :params  => { :device => { :name => "Downstairs Thermostat" }}}
+      expect(response).to have_http_status(403)
+      thing1.reload
+      expect(thing1.name).to eq(oname)
+    end
+    it "should deny updates when no login" do
+      thing1 = devices(:thing1)
+      oname  = thing1.name
+      put url_for(thing1), { :headers => ssl_headers(nil),
+                             :params  => { :device => { :name => "Downstairs Thermostat" }}}
+      expect(response).to have_http_status(401)
+      thing1.reload
+      expect(thing1.name).to eq(oname)
+    end
+
+
   end
 
 

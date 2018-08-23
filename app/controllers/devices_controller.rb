@@ -14,7 +14,6 @@ class DevicesController < SecureGatewayController
   end
 
   def index
-
     # what default scope should we use?
     @objects = Device.all
 
@@ -24,4 +23,23 @@ class DevicesController < SecureGatewayController
       }
     end
   end
+
+  def update
+    @object = Device.find(params[:id])
+
+    if @object.update_attributes(device_params)
+      head 200
+    else
+      head 500
+    end
+
+  end
+
+  protected
+
+  def device_params
+    params.require(:device).permit(:name, :fqdn, :eui64, :idevid, :mud_url, :current_vlan, :wan_enabled, :lan_enabled, :firewall_rules)
+  end
+
+
 end
