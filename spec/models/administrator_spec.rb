@@ -22,4 +22,19 @@ RSpec.describe Administrator, type: :model do
     expect(n1.admin).to       be false
     expect(n1.prospective).to be true
   end
+
+  it "should find admins by public DER encoded key" do
+    admin1 = administrators(:admin1)
+    cert =  OpenSSL::X509::Certificate.new(admin1.public_key)
+    expect(Administrator.find_by_cert(cert)).to_not be_nil
+  end
+
+  it "should find admins by public PEM encoded key" do
+    admin1 = administrators(:admin1)
+    cert =  OpenSSL::X509::Certificate.new(admin1.public_key)
+    admin1.public_key = cert.to_pem
+    admin1.save
+    expect(Administrator.find_by_cert(cert)).to_not be_nil
+  end
+
 end

@@ -58,7 +58,7 @@ namespace :fountain do
 
     admin1.enabled = true
     admin1.admin   = true
-    admin1.public_key = admin_crt.to_pem
+    admin1.public_key = admin_crt.to_der
     admin1.save!
 
     adminp12_file = certdir.join("#{admin_name}_#{curve}.p12")

@@ -8,7 +8,7 @@ class SecureGatewayController < ApplicationController
     if @peer_cert
       @clientcert =  OpenSSL::X509::Certificate.new(@peer_cert)
 
-      @administrator = Administrator.find_by_public_key(@clientcert.to_der)
+      @administrator = Administrator.find_by_cert(@clientcert)
     end
   end
 

@@ -17,6 +17,10 @@ class Administrator < ApplicationRecord
     certificate.to_pem
   end
 
+  def self.find_by_cert(cert)
+    Administrator.find_by_public_key(cert.to_der) || Administrator.find_by_public_key(cert.to_pem)
+  end
+
   def pubkey_from_file(file)
     File.open(file, "rb") { |file|
       cert = OpenSSL::X509::Certificate.new(file)
