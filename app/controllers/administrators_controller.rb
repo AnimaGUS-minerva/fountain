@@ -35,11 +35,11 @@ class AdministratorsController < SecureGatewayController
 
   # must be logged in to update.
   def update
-    ssl_login
-    lookup_permitted_object
+    return unless ssl_login
+    return unless lookup_permitted_object
 
     case
-    when @administrator.admin?
+    when (@administrator.present? and @administrator.admin?)
       @object.update_attributes(administrator_params)
     when @object.nil?
       return
@@ -68,6 +68,7 @@ class AdministratorsController < SecureGatewayController
       @object = @administrator
     else
       head 403
+      return false
     end
   end
 
