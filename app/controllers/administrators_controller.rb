@@ -1,4 +1,15 @@
 class AdministratorsController < SecureGatewayController
+
+  def index
+    return unless admin_login
+
+    @objects = Administrator.all
+
+    respond_to do |format|
+      format.json
+    end
+  end
+
   def show
     ssl_login
     return unless @administrator

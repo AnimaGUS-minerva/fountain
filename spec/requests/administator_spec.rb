@@ -217,6 +217,24 @@ RSpec.describe "Administrators", type: :request do
     end
   end
 
+  describe "list" do
+    it "should return a list of administrators" do
+      ad1 = administrators(:admin1)
+
+      get "/administrators", { :headers => ssl_headers(ad1) }
+      expect(response).to have_http_status(200)
+      reply = JSON::parse(response.body)
+      expect(reply["administrators"].size).to eq(Administrator.count)
+    end
+
+    it "should deny the list of administrator if not enabled" do
+      frank2 = administrators(:frank2)
+
+      get "/administrators", { :headers => ssl_headers(frank2) }
+      expect(response).to have_http_status(403)
+    end
+  end
+
   describe "show" do
     it "should return data for self administrator, when admin false" do
       # need to create a new certificate here. If we try to take one
