@@ -1,4 +1,17 @@
 bulbs:
   id: 1
   name: Light Bulbs
+  manufacturer_id: 1
+  mud_url: ''
+  mud_url_sig: ''
+  validated_mud_json: {}
+
+toasters:
+  id: 2
+  name: Toaster Ovens
+  manufacturer_id: 1
+  mud_url: 'http://example.com/mud/toaster_mud.json'
+  mud_url_sig: 'http://example.com/mud/toaster_mud.json.sig'
+  validated_mud_json: {}
+
   

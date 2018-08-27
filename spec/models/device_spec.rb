@@ -41,6 +41,15 @@ RSpec.describe Device, type: :model do
       expect(t1.traffic_counts["packets"][0]).to eq(0)
       expect(t1.traffic_counts["packets"][1]).to eq(0)
     end
+
+    it "should setup of a new device_type given a new mud_url" do
+      toaster = devices(:toaster1)
+      expect(toaster.device_type).to     be_nil
+
+      toaster.mud_url = "mud/toaster_mud.json"
+      expect(toaster.device_type).to_not be_nil
+    end
+
   end
 
 end
