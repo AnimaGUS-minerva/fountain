@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_20_041302) do
+ActiveRecord::Schema.define(version: 2018_08_27_005705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,10 @@ ActiveRecord::Schema.define(version: 2018_08_20_041302) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "mud_url"
+    t.text "mud_url_sig"
+    t.json "validated_mud_json"
+    t.integer "manufacturer_id"
   end
 
   create_table "devices", id: :serial, force: :cascade do |t|
