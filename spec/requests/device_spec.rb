@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/mud_toaster'
 
 RSpec.describe "Devices", type: :request do
   fixtures :all
@@ -10,25 +11,6 @@ RSpec.describe "Devices", type: :request do
     end
     env['ACCEPT'] = 'application/json'
     env
-  end
-
-  def mud1_stub(url, filename = nil)
-    voucher_request = nil
-    result   = ""
-    if filename
-      result = File.read(filename)
-    end
-    stub_request(:get, url).
-      with(headers: {
-             'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-             'Host'=>'highway.sandelman.ca',
-           }).
-      to_return(status: 200, body: lambda { |request|
-                  voucher_request = request.body
-                  result},
-                headers: {
-                  'Content-Type'=>'application/mud+json',
-                })
   end
 
   describe "permissions" do
@@ -137,8 +119,10 @@ RSpec.describe "Devices", type: :request do
     end
 
     it "should permit updates to mud_url, loading the new mud policy" do
-      new_url = "https://bigcorp.example.com/product1234/mud.der"
-      mud1_stub(new_url)
+      new_url = "https://bigcorp.example.com/product1234/mud.json"
+      mud1_stub(new_url, "spec/files/mud/thermostat.json")
+      mud_stub_sig(new_url+".sig", "spec/files/mud/thermostat.json.sig")
+
       thing1 = devices(:thing1)
       oname   = thing1.name
       old_mud_url = thing1.mud_url
