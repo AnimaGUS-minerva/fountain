@@ -14,6 +14,7 @@ class DeviceType < ActiveRecord::Base
     end
 
     dt.validate_mud_url
+    dt.save!
     dt
   end
 
@@ -26,7 +27,7 @@ class DeviceType < ActiveRecord::Base
     self.mud_url_sig = URI.join(mud_uri, rsig).to_s
   end
   def mud_url_sig
-    attributes[:mud_url_sig] || build_sig_url
+    self[:mud_url_sig] || build_sig_url
   end
 
   def validate_mud_url
@@ -49,11 +50,12 @@ class DeviceType < ActiveRecord::Base
     flags         = OpenSSL::PKCS7::NOCHAIN|OpenSSL::PKCS7::NOVERIFY
     result        = pkcs7activity.verify(certlist, cert_store, raw_json, flags)
 
-    self.validated_mud_json = mud_json
-
     # find manufacturer by signer of mudfile.
+    if result
+      self.validated_mud_json = mud_json
+    end
+    # do something if result == false?  raise exception?
 
-    # do something if result == false?
     result
   end
 

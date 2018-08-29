@@ -28,6 +28,7 @@ class DevicesController < SecureGatewayController
     @object = Device.find(params[:id])
 
     if @object.update_attributes(device_params)
+      @object.save!
       head 200
     else
       head 500

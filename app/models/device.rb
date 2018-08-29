@@ -33,8 +33,8 @@ class Device < ActiveRecord::Base
   # when the mud_url is set up, look for a device_type with the same mud_url, and
   # if it does not exist, device_type will create it.
   def mud_url=(x)
-    attributes[:mud_url] = x
     self.device_type = DeviceType.find_or_create_by_mud_url(x)
+    self[:mud_url] = x
   end
 
   protected
