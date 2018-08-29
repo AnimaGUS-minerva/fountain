@@ -84,6 +84,7 @@ group :development do
   gem 'spring'
   gem 'webmock'
 
+  gem 'sprockets', "~> 3.7.2"
 
 end
 
