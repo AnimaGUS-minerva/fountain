@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require 'support/mud_toaster'
+
 RSpec.describe Device, type: :model do
   fixtures :all
 
@@ -43,10 +45,11 @@ RSpec.describe Device, type: :model do
     end
 
     it "should setup of a new device_type given a new mud_url" do
+      mu = toaster_mud
       toaster = devices(:toaster1)
       expect(toaster.device_type).to     be_nil
 
-      toaster.mud_url = "mud/toaster_mud.json"
+      toaster.mud_url = mu
       expect(toaster.device_type).to_not be_nil
     end
 

@@ -36,3 +36,14 @@ def mud1_stub_sig(url, filename = nil)
   get_stub(url, result, 'application/pkcs7-signature')
 end
 
+def toaster_mud
+  mud_file = "spec/files/mud/toaster_mud.json"
+  mud_url  = "http://example.com/mud/toaster_mud.json"
+  mud1_stub(mud_url, mud_file)
+
+  mud_sig_file = "spec/files/mud/toaster_mud.json.sig"
+  mud_sig_url  = "http://example.com/mud/toaster_mud.json.sig"
+  mud1_stub_sig(mud_sig_url, mud_sig_file)
+
+  mud_url
+end

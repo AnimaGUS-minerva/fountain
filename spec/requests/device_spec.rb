@@ -119,9 +119,9 @@ RSpec.describe "Devices", type: :request do
     end
 
     it "should permit updates to mud_url, loading the new mud policy" do
-      new_url = "https://bigcorp.example.com/product1234/mud.json"
-      mud1_stub(new_url, "spec/files/mud/thermostat.json")
-      mud_stub_sig(new_url+".sig", "spec/files/mud/thermostat.json.sig")
+      new_url = "https://bigcorp.example.com/product1234/thermostat-example.json"
+      mud1_stub(new_url, "spec/files/mud/thermostat-example.json")
+      mud1_stub_sig(new_url+".sig", "spec/files/mud/thermostat-example.json.sig")
 
       thing1 = devices(:thing1)
       oname   = thing1.name
@@ -134,7 +134,7 @@ RSpec.describe "Devices", type: :request do
 
       # get the object again and verify that it changed appropriately
       thing1.reload
-      expect(thing1.name).to_not eq(oname)
+      expect(thing1.name).to_not    eq(oname)
       expect(thing1.mud_url).to_not eq(old_mud_url)
     end
 
