@@ -48,6 +48,9 @@ class DeviceType < ActiveRecord::Base
 
     # do not attempt to validate the certificates.
     flags         = OpenSSL::PKCS7::NOCHAIN|OpenSSL::PKCS7::NOVERIFY
+
+    # make sure the json is loaded, side effect, sets raw_json
+    mud_json
     result        = pkcs7activity.verify(certlist, cert_store, raw_json, flags)
 
     # find manufacturer by signer of mudfile.

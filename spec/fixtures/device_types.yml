@@ -12,6 +12,6 @@ toasters:
   manufacturer_id: 1
   mud_url: 'http://example.com/mud/toaster_mud.json'
   mud_url_sig: 'http://example.com/mud/toaster_mud.json.sig'
-  validated_mud_json: {}
+  validated_mud_json: nil
 
   
