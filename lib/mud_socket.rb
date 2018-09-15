@@ -21,11 +21,23 @@ class MudSocket
 
   def sendmsg(cmd)
     @out.write(cmd)
+    @out.write("\n")
   end
   def recvmsg
     @in.gets("\n")
   end
 
+  def cmd(cmd, args)
+    opt = {}.merge! args
+    opt[:action] = cmd
+    sendmsg(opt.to_json)
+
+    begin
+      res = JSON::parse(recvmsg)
+    rescue TypeError
+      nil
+    end
+  end
 
 end
 
