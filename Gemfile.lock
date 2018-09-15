@@ -237,6 +237,8 @@ GEM
     sshkit (1.16.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    sucker_punch (2.1.1)
+      concurrent-ruby (~> 1.0)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -298,6 +300,7 @@ DEPENDENCIES
   spring
   sprockets (~> 3.7.2)
   sqlite3
+  sucker_punch
   therubyracer
   thin
   turbolinks
@@ -305,4 +308,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.3
+   1.16.4

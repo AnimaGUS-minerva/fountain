@@ -1,3 +1,4 @@
+# coding: utf-8
 source 'https://rubygems.org'
 
 
@@ -52,6 +53,11 @@ gem 'pg', '0.20'
 
 # used in production on SecureHomeGateway
 gem 'thin'
+
+# use for background processing of mud files, and interaction with
+# mud-controller.
+gem 'sucker_punch'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
