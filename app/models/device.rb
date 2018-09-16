@@ -38,7 +38,7 @@ class Device < ActiveRecord::Base
   end
 
   def empty_firewall_rules?
-    firewall_rules.nil? || firewall_rules.size == 0
+    firewall_rule_names.nil? || firewall_rule_names.size == 0
   end
 
   # a device needs activation if it is
@@ -47,8 +47,26 @@ class Device < ActiveRecord::Base
   #   c) has no firewall_rules listed
   #
   def need_activation?
-    device_enabled? && !deleted? && firewall_rules.nil
+    device_enabled? && !deleted? && empty_firewall_rules?
+  end
 
+  # a device needs de-activation if it is
+  #   a) device_enabled == false
+  #   b) not deleted
+  #   c) has firewall_rules listed
+  #   d) has not been quaranteed
+  #
+  def need_deactivation?
+    !device_enabled? && !quaranteed? && !deleted? && !empty_firewall_rules?
+  end
+
+  # a device needs quanteeing if it is
+  #   a) device_enabled == true
+  #   b) not deleted
+  #   c) has been marked quaranteed
+  #
+  def need_quaranteeing?
+    device_enabled? && !deleted? && quaranteed?
   end
 
   protected

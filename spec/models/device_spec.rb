@@ -51,7 +51,7 @@ RSpec.describe Device, type: :model do
 
     it "with zero-length firewall_rules should have empty firewall rules" do
       t1 = Device.create
-      t1.firewall_rules = []
+      t1.firewall_rule_names = []
       expect(t1.empty_firewall_rules?).to be true
     end
 
@@ -63,6 +63,22 @@ RSpec.describe Device, type: :model do
       toaster.mud_url = mu
       expect(toaster.device_type).to_not be_nil
     end
+
+    it "should consider a device newly added, if it is not deleted, but has empty rule_names" do
+      toaster = devices(:toaster1)
+      expect(toaster).to be_need_activation
+    end
+
+    it "should consider a device newly deleted, if marked deleted, but has non-empty rule_names" do
+      microwave = devices(:microwave)
+      expect(microwave).to be_need_deactivation
+    end
+
+    it "should consider a device quanranteed, if not deleted, " do
+      fridge = devices(:stinky_fridge)
+      expect(fridge).to be_need_quaranteeing
+    end
+
 
   end
 

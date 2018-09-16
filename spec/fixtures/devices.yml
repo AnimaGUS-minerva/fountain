@@ -51,6 +51,7 @@ toaster1:
   name: "Kitchen Toaster"
   device_type_id:
   manufacturer_id:
+  device_enabled: true
   traffic_counts: { "bytes" : [ 1234, 45676 ], "packets" : [ 34587, 24324] }
   mud_url: ""
   profile_id:
@@ -85,6 +86,9 @@ stinky_fridge:
   manufacturer_id:
   traffic_counts: { "bytes" : [ 1234, 45676 ], "packets" : [ 34587, 24324] }
   mud_url: ""
+  device_enabled: true
+  quaranteed: true
+  firewall_rule_names: [ "hello", "handsome", "so", "nice", "to", "meat", "you"]
   profile_id:
   current_vlan: "Appliance_LAN"
   wan_enabled: false
