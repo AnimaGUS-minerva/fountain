@@ -37,6 +37,20 @@ class Device < ActiveRecord::Base
     self[:mud_url] = x
   end
 
+  def empty_firewall_rules?
+    firewall_rules.nil? || firewall_rules.size == 0
+  end
+
+  # a device needs activation if it is
+  #   a) device_enabled
+  #   b) not deleted
+  #   c) has no firewall_rules listed
+  #
+  def need_activation?
+    device_enabled? && !deleted? && firewall_rules.nil
+
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts

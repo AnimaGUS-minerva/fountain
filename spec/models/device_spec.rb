@@ -44,6 +44,17 @@ RSpec.describe Device, type: :model do
       expect(t1.traffic_counts["packets"][1]).to eq(0)
     end
 
+    it "with nil firewall_rules should have empty firewall rules" do
+      t1 = Device.create
+      expect(t1.empty_firewall_rules?).to be true
+    end
+
+    it "with zero-length firewall_rules should have empty firewall rules" do
+      t1 = Device.create
+      t1.firewall_rules = []
+      expect(t1.empty_firewall_rules?).to be true
+    end
+
     it "should setup of a new device_type given a new mud_url" do
       mu = toaster_mud
       toaster = devices(:toaster1)
