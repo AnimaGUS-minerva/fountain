@@ -55,3 +55,13 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+class MockMudSocket < MudSocket
+  def initialize(input, output)
+    @fin  = File::open(input,  "r")
+    @fout = File::open(output, "w")
+    super(@fin, @fout)
+
+    @@mudsocket = self
+  end
+end

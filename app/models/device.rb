@@ -119,6 +119,21 @@ class Device < ActiveRecord::Base
     return file, pubname
   end
 
+  # writes the JSON associated with the MUD file out, returns
+  # the temporary file name
+  def mud_file
+    file, pubname = mud_tmp_file_name
+    file.write device_type.validated_mud_json
+    file.close
+
+    pubname
+  end
+
+  def do_activation!
+    MudSocket.add(:mac_addr  => eui64,
+                  :file_path => mud_file)
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts

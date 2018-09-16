@@ -55,6 +55,18 @@ RSpec.describe Device, type: :model do
       expect(pubname).to eq(File.join($MUD_TMPDIR_PUBLIC, "00005.json"))
     end
 
+    it "should get written during activation of a device" do
+      mu = toaster_mud
+      toaster = devices(:toaster1)
+      toaster.mud_url = mu
+
+      mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
+                              "tmp/toaster_load.tout")
+
+      toaster.do_activation!
+      expect(File.exists?("tmp/mudfiles/00005.json")).to be true
+    end
+
     it "should setup of a new device_type given a new mud_url" do
       mu = toaster_mud
       toaster = devices(:toaster1)
