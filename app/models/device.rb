@@ -99,6 +99,26 @@ class Device < ActiveRecord::Base
     return false
   end
 
+  # return [FILE, publicname]
+  #   - the FILE with the tmpfile open,
+  #   - the publicname is the public name
+  #
+  # visible path is in: $MUD_TMPDIR_PUBLIC
+  # path to write to:   $MUD_TMPDIR
+  #
+  # probably should accept an optional block.
+  def mud_tmp_file_name
+    # make safe file by device ID
+    basename = sprintf("%05d.json", self.id)
+
+    # make the directory, just in case
+    FileUtils::mkdir_p($MUD_TMPDIR);
+
+    file = File.open(File.join($MUD_TMPDIR, basename), "w")
+    pubname = File.join($MUD_TMPDIR_PUBLIC, basename)
+    return file, pubname
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts

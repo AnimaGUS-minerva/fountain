@@ -47,6 +47,14 @@ RSpec.describe Device, type: :model do
   end
 
   describe "mud files" do
+    it "export a mud file to disk with a reachable name" do
+      toaster = devices(:toaster1)
+
+      (file,pubname) = toaster.mud_tmp_file_name
+      expect(file).to be_kind_of IO
+      expect(pubname).to eq(File.join($MUD_TMPDIR_PUBLIC, "00005.json"))
+    end
+
     it "should setup of a new device_type given a new mud_url" do
       mu = toaster_mud
       toaster = devices(:toaster1)
