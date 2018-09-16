@@ -28,7 +28,7 @@ RSpec.describe Device, type: :model do
     end
   end
 
-  describe "devices" do
+  describe "traffic counts" do
     it "should permit incrementing traffic counts" do
       t1 = devices(:thing1)
       t1.increment_bytes(:incoming, 10)
@@ -44,6 +44,39 @@ RSpec.describe Device, type: :model do
       expect(t1.traffic_counts["packets"][1]).to eq(0)
     end
 
+  end
+
+  describe "mud files" do
+    it "should setup of a new device_type given a new mud_url" do
+      mu = toaster_mud
+      toaster = devices(:toaster1)
+      expect(toaster.device_type).to     be_nil
+
+      toaster.mud_url = mu
+      expect(toaster.device_type).to_not be_nil
+    end
+
+    it "should communicate a new mud entry to the mud-super" do
+      toaster = devices(:toaster1)
+      toaster.mud_url = toaster_mud
+      expect(toaster.device_type).to_not be_nil
+      expect(toaster.mud_install_job).to_not be_nil
+    end
+
+    it "should communicate mud entry using a socket" do
+      toaster = devices(:toaster1)
+      toaster.mud_url = toaster_mud
+      expect(toaster.device_type).to_not be_nil
+      expect(toaster.mud_install_job).to_not be_nil
+    end
+
+    it "should save mud-filter names to device_type" do
+      toaster = devices(:toaster1)
+      toaster.mud_url = toaster_mud
+    end
+  end
+
+  describe "state" do
     it "with nil firewall_rules should have empty firewall rules" do
       t1 = Device.create
       expect(t1.empty_firewall_rules?).to be true
@@ -53,15 +86,6 @@ RSpec.describe Device, type: :model do
       t1 = Device.create
       t1.firewall_rule_names = []
       expect(t1.empty_firewall_rules?).to be true
-    end
-
-    it "should setup of a new device_type given a new mud_url" do
-      mu = toaster_mud
-      toaster = devices(:toaster1)
-      expect(toaster.device_type).to     be_nil
-
-      toaster.mud_url = mu
-      expect(toaster.device_type).to_not be_nil
     end
 
     it "should consider a device newly added, if it is not deleted, but has empty rule_names" do
@@ -78,8 +102,6 @@ RSpec.describe Device, type: :model do
       fridge = devices(:stinky_fridge)
       expect(fridge).to be_need_quaranteeing
     end
-
-
   end
 
 end

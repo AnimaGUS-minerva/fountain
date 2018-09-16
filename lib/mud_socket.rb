@@ -12,6 +12,12 @@ class MudSocket
   def self.mudsocket
     @@mudsocket ||= self.socknew
   end
+  def self.add(args)
+    mudsocket.cmd(:add, args)
+  end
+  def self.delete(args)
+    mudsocket.cmd(:delete, args)
+  end
 
   def initialize(io_in, io_out = nil)
     @in = io_in

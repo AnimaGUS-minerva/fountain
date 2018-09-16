@@ -69,6 +69,36 @@ class Device < ActiveRecord::Base
     device_enabled? && !deleted? && quaranteed?
   end
 
+  # is device in desired device state.
+  def device_state_correct?
+    case device_state
+    when "enabled"
+      return true if need_activation?
+
+    when "disabled"
+      return true if need_deactivation?
+
+    when "quaranteed"
+      return true if need_quaranteeing?
+    end
+    return false
+  end
+
+  def switch_to_state!
+    case device_state
+    when "enabled"
+      do_activation!
+
+    when "disabled"
+      do_deactivation!
+
+    when "quaranteed"
+      do_deactivation!
+      do_quaranteeing!
+    end
+    return false
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts
