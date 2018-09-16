@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_27_005705) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 2018_09_15_230540) do
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -29,12 +26,12 @@ ActiveRecord::Schema.define(version: 2018_08_27_005705) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "certificates", id: :serial, force: :cascade do |t|
+  create_table "certificates", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "device_types", id: :serial, force: :cascade do |t|
+  create_table "device_types", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -44,7 +41,7 @@ ActiveRecord::Schema.define(version: 2018_08_27_005705) do
     t.integer "manufacturer_id"
   end
 
-  create_table "devices", id: :serial, force: :cascade do |t|
+  create_table "devices", force: :cascade do |t|
     t.text "name"
     t.text "fqdn"
     t.text "eui64"
@@ -60,9 +57,13 @@ ActiveRecord::Schema.define(version: 2018_08_27_005705) do
     t.boolean "wan_enabled"
     t.boolean "lan_enabled"
     t.json "firewall_rules"
+    t.json "firewall_rule_names"
+    t.boolean "deleted"
+    t.boolean "quaranteed"
+    t.boolean "device_enabled"
   end
 
-  create_table "manufacturers", id: :serial, force: :cascade do |t|
+  create_table "manufacturers", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -70,13 +71,13 @@ ActiveRecord::Schema.define(version: 2018_08_27_005705) do
     t.binary "issuer_public_key"
   end
 
-  create_table "system_variables", id: :serial, force: :cascade do |t|
+  create_table "system_variables", force: :cascade do |t|
     t.string "variable"
     t.string "value"
     t.integer "number"
   end
 
-  create_table "voucher_requests", id: :serial, force: :cascade do |t|
+  create_table "voucher_requests", force: :cascade do |t|
     t.integer "device_id"
     t.integer "manufacturer_id"
     t.text "device_identifier"
@@ -93,7 +94,7 @@ ActiveRecord::Schema.define(version: 2018_08_27_005705) do
     t.string "type", default: "CmsVoucherRequest"
   end
 
-  create_table "vouchers", id: :serial, force: :cascade do |t|
+  create_table "vouchers", force: :cascade do |t|
     t.text "nonce"
     t.integer "manufacturer_id"
     t.integer "voucher_request_id"
