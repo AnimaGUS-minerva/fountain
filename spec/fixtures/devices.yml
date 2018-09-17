@@ -44,6 +44,7 @@ thing1:
   lan_enabled: true
   firewall_rules: {    "wan-restricted-to" : [ "http://example.com/firmware/things" ],    "lan-restricted-to" : [ "192.168.4.0/24" ],    "outgoing-ports"    : [ 80, 443 ],    "lan-incoming-enabled" : [ "192.168.1.0/24" ],    "wan-incoming-enabled" : [ ],    "lan-incoming-ports"   : [ 81, 5684 ],    "wan-incoming-ports"   : [ ],    }
 
+# this device has a MUD URL yet to be set.
 toaster1:
   id: 5
   created_at: "2018-05-24 01:13:22"
@@ -60,12 +61,14 @@ toaster1:
   lan_enabled: true
   firewall_rules: {    "wan-restricted-to" : [ "http://example.com/firmware/things" ],    "lan-restricted-to" : [ "192.168.4.0/24" ],    "outgoing-ports"    : [ 80, 443 ],    "lan-incoming-enabled" : [ "192.168.1.0/24" ],    "wan-incoming-enabled" : [ ],    "lan-incoming-ports"   : [ 81, 5684 ],    "wan-incoming-ports"   : [ ],    }
 
-microwave:
+# this device already has a MUD URL set, and the MUD JSON
+# has been loaded.
+microwave1:
   id: 6
   created_at: "2018-05-24 01:19:22"
   updated_at: "2018-05-24 01:23:22"
   name: "Kitchen Microwave"
-  device_type_id:
+  device_type_id: 2
   manufacturer_id:
   traffic_counts: { "bytes" : [ 1234, 45676 ], "packets" : [ 34587, 24324] }
   mud_url: ""

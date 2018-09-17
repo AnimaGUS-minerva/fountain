@@ -56,14 +56,12 @@ RSpec.describe Device, type: :model do
     end
 
     it "should get written during activation of a device" do
-      mu = toaster_mud
-      toaster = devices(:toaster1)
-      toaster.mud_url = mu
+      mwave = devices(:microwave1)
 
       mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
                               "tmp/toaster_load.tout")
 
-      toaster.do_activation!
+      mwave.do_activation!
       expect(File.exists?("tmp/mudfiles/00005.json")).to be true
     end
 
@@ -114,7 +112,7 @@ RSpec.describe Device, type: :model do
     end
 
     it "should consider a device newly deleted, if marked deleted, but has non-empty rule_names" do
-      microwave = devices(:microwave)
+      microwave = devices(:microwave1)
       expect(microwave).to be_need_deactivation
     end
 
