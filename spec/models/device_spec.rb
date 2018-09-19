@@ -74,6 +74,7 @@ RSpec.describe Device, type: :model do
       expect(toaster.device_type).to     be_nil
 
       toaster.mud_url = mu
+      toaster.reload
       expect(toaster.device_type).to_not be_nil
     end
 
@@ -81,15 +82,10 @@ RSpec.describe Device, type: :model do
       toaster = devices(:toaster1)
       toaster.mud_url = toaster_mud
 
+      toaster.reload
       expect(toaster.device_type).to_not be_nil
+      expect(toaster.firewall_rule_names).to_not be_nil
       expect(toaster).to be_activated
-    end
-
-    it "should communicate mud entry using a socket" do
-      toaster = devices(:toaster1)
-      toaster.mud_url = toaster_mud
-      expect(toaster.device_type).to_not be_nil
-      expect(toaster.mud_install_job).to_not be_nil
     end
 
     it "should save mud-filter names to device_type" do

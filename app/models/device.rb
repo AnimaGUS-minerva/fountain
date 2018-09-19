@@ -157,13 +157,23 @@ class Device < ActiveRecord::Base
 
   def do_activation!
     self.device_type ||= DeviceType.find_or_create_by_mud_url(mud_url)
-    MudSocket.add(:mac_addr  => eui64,
-                  :file_path => mud_file)
+    results = MudSocket.add(:mac_addr  => eui64,
+                            :file_path => mud_file)
+
+    if results and results["status"]=="ok"
+      self.firewall_rule_names = results["rules"]
+      self.failure_details = results
+    else
+      self.failure_details = results || { "status" => "unknown error" }
+    end
+    save!
   end
 
   def do_deactivation!
-    MudSocket.delete(:mac_addr  => eui64,
-                     :firewall_rules => firewall_rule_names)
+    if firewall_rule_names and firewall_rule_names.try(:size) > 0
+      MudSocket.delete(:mac_addr  => eui64,
+                       :firewall_rules => firewall_rule_names)
+    end
   end
 
   protected
