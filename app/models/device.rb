@@ -161,6 +161,11 @@ class Device < ActiveRecord::Base
                   :file_path => mud_file)
   end
 
+  def do_deactivation!
+    MudSocket.delete(:mac_addr  => eui64,
+                     :firewall_rules => firewall_rule_names)
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts
