@@ -33,8 +33,13 @@ class Device < ActiveRecord::Base
   # when the mud_url is set up, look for a device_type with the same mud_url, and
   # if it does not exist, device_type will create it.
   def mud_url=(x)
-    self.device_type = DeviceType.find_or_create_by_mud_url(x)
+    want_enabled!
+    if x != self[:mud_url] and self[:mud_url]
+      want_reactivation!
+    end
     self[:mud_url] = x
+    save!
+    MudSuperJob.new.perform(id)
   end
 
   def empty_firewall_rules?
@@ -48,6 +53,17 @@ class Device < ActiveRecord::Base
   #
   def need_activation?
     device_enabled? && !deleted? && empty_firewall_rules?
+  end
+
+  # a device is activated if enabled, and firewall_rules are non-empty
+  def activated?
+    device_enabled? and !empty_firewall_rules?
+  end
+  def want_enabled!
+    self.device_state = "enabled"
+  end
+  def want_reactivation!
+    self.device_state = "reactivation"
   end
 
   # a device needs de-activation if it is
@@ -78,6 +94,9 @@ class Device < ActiveRecord::Base
     when "disabled"
       return true if need_deactivation?
 
+    when "reactivation"
+      return false
+
     when "quaranteed"
       return true if need_quaranteeing?
     end
@@ -89,12 +108,19 @@ class Device < ActiveRecord::Base
     when "enabled"
       do_activation!
 
+    when "reactivation"
+      do_deactivation!
+      do_activation!
+      want_enabled!
+
     when "disabled"
       do_deactivation!
 
     when "quaranteed"
       do_deactivation!
       do_quaranteeing!
+    when nil
+      byebug
     end
     return false
   end
@@ -130,6 +156,7 @@ class Device < ActiveRecord::Base
   end
 
   def do_activation!
+    self.device_type = DeviceType.find_or_create_by_mud_url(mud_url)
     MudSocket.add(:mac_addr  => eui64,
                   :file_path => mud_file)
   end

@@ -5,6 +5,11 @@ require 'support/mud_toaster'
 RSpec.describe Device, type: :model do
   fixtures :all
 
+  before(:each) do
+    @mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
+                             "tmp/toaster_load.tout")
+  end
+
   describe "relations" do
     it "should have a manufacturer" do
       b1 = devices(:bulb1)
@@ -58,9 +63,6 @@ RSpec.describe Device, type: :model do
     it "should get written during activation of a device" do
       mwave = devices(:microwave1)
 
-      mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
-                              "tmp/toaster_load.tout")
-
       mwave.do_activation!
       expect(File.exists?("tmp/mudfiles/00005.json")).to be true
     end
@@ -77,8 +79,9 @@ RSpec.describe Device, type: :model do
     it "should communicate a new mud entry to the mud-super" do
       toaster = devices(:toaster1)
       toaster.mud_url = toaster_mud
+
       expect(toaster.device_type).to_not be_nil
-      expect(toaster.mud_install_job).to_not be_nil
+      expect(toaster).to be_activated
     end
 
     it "should communicate mud entry using a socket" do

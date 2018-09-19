@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_15_230540) do
+ActiveRecord::Schema.define(version: 2018_09_16_011830) do
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2018_09_15_230540) do
     t.boolean "deleted"
     t.boolean "quaranteed"
     t.boolean "device_enabled"
+    t.text "device_state"
   end
 
   create_table "manufacturers", force: :cascade do |t|

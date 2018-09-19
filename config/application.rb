@@ -22,5 +22,9 @@ module Fountain
 
     config.autoload_paths << Rails.root.join('lib')
 
+    # use sucker_punch for background jobs, uses threads.
+    config.active_job.queue_adapter = :sucker_punch
+
+    config.active_record.schema_format = :ruby
   end
 end
