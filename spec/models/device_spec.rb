@@ -65,7 +65,7 @@ RSpec.describe Device, type: :model do
       mwave = devices(:microwave1)
 
       mwave.do_activation!
-      expect(File.exists?("tmp/mudfiles/00005.json")).to be true
+      expect(File.exists?("tmp/mudfiles/00006.json")).to be true
     end
 
     it "should setup of a new device_type given a new mud_url" do
