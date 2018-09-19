@@ -6,6 +6,7 @@ RSpec.describe Device, type: :model do
   fixtures :all
 
   before(:each) do
+    Dir.glob("tmp/mudfiles/*.json") do |f| File.delete(f) end
     @mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
                              "tmp/toaster_load.tout")
   end
