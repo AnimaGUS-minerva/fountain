@@ -44,5 +44,7 @@ Rabl.configure do |config|
   config.raise_on_missing_attribute = true
 end
 
+$MUD_TMPDIR_PUBLIC = "/tmp/mudfiles"
+$MUD_TMPDIR        = "/tmp/mudfiles"
 
 

@@ -1,3 +1,5 @@
+require 'lib/mud_socket'
+
 class Device < ActiveRecord::Base
   belongs_to :manufacturer
   belongs_to :device_type
