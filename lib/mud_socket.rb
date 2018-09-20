@@ -16,7 +16,7 @@ class MudSocket
     mudsocket.cmd(:add, args)
   end
   def self.delete(args)
-    mudsocket.cmd(:delete, args)
+    mudsocket.cmd(:del, args)
   end
 
   def initialize(io_in, io_out = nil)

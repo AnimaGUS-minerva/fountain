@@ -174,7 +174,7 @@ class Device < ActiveRecord::Base
   def do_deactivation!
     if firewall_rule_names and firewall_rule_names.try(:size) > 0
       MudSocket.delete(:mac_addr  => eui64,
-                       :firewall_rules => firewall_rule_names)
+                       :rules => firewall_rule_names)
     end
   end
 
