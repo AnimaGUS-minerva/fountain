@@ -99,3 +99,42 @@ stinky_fridge:
   quaranteed: true
   firewall_rules: {    "wan-restricted-to" : [ "http://example.com/firmware/things" ],    "lan-restricted-to" : [ "192.168.4.0/24" ],    "outgoing-ports"    : [ 80, 443 ],    "lan-incoming-enabled" : [ "192.168.1.0/24" ],    "wan-incoming-enabled" : [ ],    "lan-incoming-ports"   : [ 81, 5684 ],    "wan-incoming-ports"   : [ ],    }
 
+# seeed demo device stove:
+stove1wifi:
+  id: 7
+  created_at: "2018-05-24 01:19:22"
+  updated_at: "2018-05-24 01:23:22"
+  name: "Seeed Demo Stove 1"
+  device_type_id: 3
+  manufacturer_id:
+  current_vlan: "Appliance_LAN"
+  wan_enabled: false
+  lan_enabled: true
+  eui64: "a8:40:41:19:50:64"
+
+# seeed demo device stove:
+stove1wiredA:
+  id: 8
+  created_at: "2018-05-24 01:19:22"
+  updated_at: "2018-05-24 01:23:22"
+  name: "Seeed Demo Stove 1 (wired1)"
+  device_type_id: 3
+  manufacturer_id:
+  current_vlan: "Appliance_LAN"
+  wan_enabled: false
+  lan_enabled: true
+  eui64: "a8:40:41:19:50:66"
+
+# seeed demo device stove:
+stove1wiredB:
+  id: 9
+  created_at: "2018-05-24 01:19:22"
+  updated_at: "2018-05-24 01:23:22"
+  name: "Seeed Demo Stove 1 (wired1)"
+  device_type_id: 3
+  manufacturer_id:
+  current_vlan: "Appliance_LAN"
+  wan_enabled: false
+  lan_enabled: true
+  eui64: "a8:40:41:19:50:67"
+
