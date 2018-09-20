@@ -1,4 +1,4 @@
-require 'lib/mud_socket'
+require 'mud_socket'
 
 class Device < ActiveRecord::Base
   belongs_to :manufacturer
@@ -151,7 +151,7 @@ class Device < ActiveRecord::Base
   # the temporary file name
   def mud_file
     file, pubname = mud_tmp_file_name
-    file.write device_type.validated_mud_json
+    file.write device_type.validated_mud_json.to_json
     file.close
 
     pubname
