@@ -47,4 +47,8 @@ end
 $MUD_TMPDIR_PUBLIC = "/tmp/mudfiles"
 $MUD_TMPDIR        = "/tmp/mudfiles"
 
+# setup the MockMudSocket, this will overide the parent,
+# and mock out the environment environment.
+@mms = MockMudSocket.new(nil, "tmp/devel_mud_super.tout")
+
 

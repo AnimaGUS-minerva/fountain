@@ -46,4 +46,3 @@ class MudSocket
   end
 
 end
-
