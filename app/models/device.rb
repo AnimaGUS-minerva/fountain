@@ -97,7 +97,7 @@ class Device < ActiveRecord::Base
       return true if need_deactivation?
 
     when "reactivation"
-      return false
+      return true
 
     when "quaranteed"
       return true if need_quaranteeing?
