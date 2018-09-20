@@ -24,6 +24,16 @@ class DevicesController < SecureGatewayController
     end
   end
 
+  def create
+    @object = Device.create(device_params)
+    if @object
+      @object.save
+      head 201, :location => url_for(@object)
+    else
+      head 500
+    end
+  end
+
   def update
     @object = Device.find(params[:id])
 
@@ -41,6 +51,5 @@ class DevicesController < SecureGatewayController
   def device_params
     params.require(:device).permit(:name, :fqdn, :eui64, :idevid, :mud_url, :current_vlan, :wan_enabled, :lan_enabled, :firewall_rules)
   end
-
 
 end

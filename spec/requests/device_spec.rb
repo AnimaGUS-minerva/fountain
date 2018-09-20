@@ -33,6 +33,16 @@ RSpec.describe "Devices", type: :request do
     end
   end
 
+  describe "create" do
+    it "should permit an administrator to create a new device" do
+      post devices_path, :headers => ssl_headers(administrators(:admin1)),
+           :params  => { :device => { :name => "Downstairs Thermostat",
+                                      :fqdn => "new.example.com",
+                                    }}
+      expect(response).to have_http_status(201)
+    end
+  end
+
   describe "access" do
     it "should show a single device with attributes" do
       thing1 = devices(:thing1)
