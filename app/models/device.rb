@@ -87,7 +87,7 @@ class Device < ActiveRecord::Base
     device_enabled? && !deleted? && quaranteed?
   end
 
-  # is device in desired device state.
+  # return true if the device is in desired device state.
   def device_state_correct?
     case device_state
     when "enabled"
@@ -97,7 +97,7 @@ class Device < ActiveRecord::Base
       return true if need_deactivation?
 
     when "reactivation"
-      return true
+      return false
 
     when "quaranteed"
       return true if need_quaranteeing?
