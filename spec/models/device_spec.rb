@@ -88,6 +88,16 @@ RSpec.describe Device, type: :model do
       expect(toaster).to be_activated
     end
 
+    it "should update the mud-super when the mud_url changes" do
+      toaster = devices(:toaster1)
+      toaster.mud_url = mwave_mud
+
+      toaster.reload
+      expect(toaster.device_type).to_not be_nil
+      expect(toaster.firewall_rule_names).to_not be_nil
+      expect(toaster).to be_activated
+    end
+
     it "should save mud-filter names to device_type" do
       toaster = devices(:toaster1)
       toaster.mud_url = toaster_mud
