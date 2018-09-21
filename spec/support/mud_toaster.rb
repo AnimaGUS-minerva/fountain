@@ -47,3 +47,15 @@ def toaster_mud
 
   mud_url
 end
+
+def mwave_mud
+  mud_file = "spec/files/mud/mwave_mud.json"
+  mud_url  = "http://example.com/mud/mwave_mud.json"
+  mud1_stub(mud_url, mud_file)
+
+  mud_sig_file = "spec/files/mud/mwave_mud.json.sig"
+  mud_sig_url  = "http://example.com/mud/mwave_mud.json.sig"
+  mud1_stub_sig(mud_sig_url, mud_sig_file)
+
+  mud_url
+end
