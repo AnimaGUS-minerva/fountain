@@ -71,7 +71,7 @@ microwave1:
   device_type_id: 3
   manufacturer_id:
   traffic_counts: { "bytes" : [ 1234, 45676 ], "packets" : [ 34587, 24324] }
-  mud_url: ""
+  mud_url: "http://example.com/mud/toaster_mud.json"
   profile_id:
   current_vlan: "Appliance_LAN"
   firewall_rule_names: [ "hello", "handsome", "so", "nice", "to", "meat", "you"]
