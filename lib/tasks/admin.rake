@@ -2,7 +2,7 @@
 
 namespace :fountain do
 
-  # really only used in testing: this should be corporate CA, or Verisign, etc.
+  # really only used in testing: this should be replaced by a proper enrolment system
   desc "Create initial administrative account with public key pair"
   task :s3_admin_cert => :environment do
     curve = FountainKeys.ca.client_curve
