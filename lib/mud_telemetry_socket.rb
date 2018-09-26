@@ -41,17 +41,34 @@ class MudTelemetrySocket
     @in.accept
   end
 
+  def add_device(details)
+    mac_addr = details[:mac_addr]
+    details.delete(:mac_addr)
+
+    dev = Device.find_or_create_by_mac(mac_addr)
+    if dev.update_attributes(details)
+      sendstatus("ok")
+    else
+      sendstatus("failed")
+    end
+  end
+
   def process_cmd(json)
     begin
-      res = JSON::parse(json)
+      res = JSON::parse(json).with_indifferent_access
     rescue TypeError, JSON::ParserError
 
       return [true, nil]
     end
 
-    if cmd=res["cmd"]
+    if cmd=res[:cmd]
       case cmd.downcase
       when "add"
+        if details = res[:details].try(:with_indifferent_access)
+          add_device(details)
+        else
+          sendstatus("missing arguments")
+        end
 
       when "old"
 
@@ -59,6 +76,9 @@ class MudTelemetrySocket
 
       when "exit"
         return [true, nil]
+
+      else
+        sendstatus("unknown cmd: #{cmd.downcase}")
       end
     end
     return [false, true]

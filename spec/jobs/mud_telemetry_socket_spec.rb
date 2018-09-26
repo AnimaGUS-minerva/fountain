@@ -39,8 +39,10 @@ RSpec.describe MudTelemetrySocket  do
                                      "tmp/cmdreplies.json")
 
     MudTelemetrySocket.loop
-    expect(Device.where(:eui64 => "00:12:12:77:88:99")).to exist
-
+    devL = Device.where(:eui64 => "00:12:12:77:88:99")
+    expect(devL).to exist
+    dev = devL.take
+    expect(dev.device_type).to be_present
   end
 
 end
