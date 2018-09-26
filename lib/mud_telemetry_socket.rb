@@ -6,7 +6,7 @@ class MudTelemetrySocket
   @@sock_name = File.join(ENV['HOME'], "mud_telemetry.sock")
 
   def self.socknew
-    sock = UNIXSocket.open(sock_name)
+    sock = UNIXServer.open(sock_name)
     self.new(sock, sock)
   end
 
@@ -75,6 +75,7 @@ class MudTelemetrySocket
       when "del"
 
       when "exit"
+        @exitnow = true
         return [true, nil]
 
       else
@@ -89,8 +90,8 @@ class MudTelemetrySocket
   end
 
   def loop
-    finished = false
-    while !finished do
+    @exitnow = false
+    while !@exitnow do
       @nsock = nsock
 
       while !finished && jsoncmd=recvmsg(@nsock)
