@@ -2,9 +2,9 @@ require 'mud_socket'
 
 class MockMudSocket < MudSocket
   def initialize(input, output)
-    @fin  = File::open(input,  "r")
+    @fout = File::open(output, "w")
     if input
-      @fout = File::open(output, "w")
+      @fin  = File::open(input,  "r")
     end
     super(@fin, @fout)
 

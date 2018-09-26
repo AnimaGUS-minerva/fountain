@@ -1,3 +1,5 @@
+require 'mock_mud_socket'
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -38,17 +40,19 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # setup the MockMudSocket, this will overide the parent,
+  # and mock out the environment environment.
+  MockMudSocket.new(nil, "tmp/devel_mud_super.tout")
 end
 
 Rabl.configure do |config|
   config.raise_on_missing_attribute = true
+
 end
 
 $MUD_TMPDIR_PUBLIC = "/tmp/mudfiles"
 $MUD_TMPDIR        = "/tmp/mudfiles"
 
-# setup the MockMudSocket, this will overide the parent,
-# and mock out the environment environment.
-@mms = MockMudSocket.new(nil, "tmp/devel_mud_super.tout")
 
 
