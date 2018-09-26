@@ -41,6 +41,33 @@ RSpec.describe "Devices", type: :request do
                                     }}
       expect(response).to have_http_status(201)
     end
+
+    it "should permit new device by mac_addr" do
+      post devices_path, :headers => ssl_headers(administrators(:admin1)),
+           :params  => { :device => { :eui64 => "00:11:33:88:77:44",
+                                      :fqdn => "new.example.com",
+                                    }}
+      expect(response).to have_http_status(201)
+    end
+
+    it "should permit new device by mac_addr, but not duplicate it" do
+      post devices_path, :headers => ssl_headers(administrators(:admin1)),
+           :params  => { :device => { :eui64 => "00:11:33:88:77:44",
+                                      :fqdn => "new.example.com",
+                                    }}
+      expect(response).to have_http_status(201)
+      dev1 = assigns(:object)
+      location = response.headers["Location"]
+
+      post devices_path, :headers => ssl_headers(administrators(:admin1)),
+           :params  => { :device => { :eui64 => "00:11:33:88:77:44",
+                                      :fqdn => "newer.example.com",
+                                    }}
+      expect(response).to                     have_http_status(201)
+      expect(assigns(:object).id).to          eq(dev1.id)
+      expect(response.headers["Location"]).to eq(location)
+    end
+
   end
 
   describe "access" do

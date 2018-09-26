@@ -25,7 +25,12 @@ class DevicesController < SecureGatewayController
   end
 
   def create
-    @object = Device.create(device_params)
+    if device_params[:eui64]
+      @object = Device.find_or_create_by_mac(device_params[:eui64])
+      @object.update_attributes(device_params)
+    else
+      @object = Device.create(device_params)
+    end
     if @object
       @object.save
       head 201, :location => url_for(@object)
