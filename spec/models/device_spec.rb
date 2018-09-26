@@ -104,6 +104,26 @@ RSpec.describe Device, type: :model do
     end
   end
 
+  describe "creating" do
+    it "should create a new device with a unique mac address" do
+      m="00:01:02:44:55:66"
+      t1 = Device.find_or_create_by_mac(m)
+      expect(t1).to_not be_nil
+      expect(t1.eui64).to eq(m)
+    end
+
+    it "should not create a duplicate when mac address repeated" do
+      m="00:01:02:44:55:66"
+      t1 = Device.find_or_create_by_mac(m)
+      expect(t1).to_not be_nil
+      expect(t1.eui64).to eq(m)
+
+      t2 = Device.find_or_create_by_mac(m)
+      expect(t2).to    eq(t1)
+      expect(t2.eui64).to eq(m)
+    end
+  end
+
   describe "state" do
     it "with nil firewall_rules should have empty firewall rules" do
       t1 = Device.create

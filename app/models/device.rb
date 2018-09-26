@@ -10,6 +10,10 @@ class Device < ActiveRecord::Base
     where(idevid: idevid).take || create(idevid: idevid)
   end
 
+  def self.find_or_create_by_mac(mac)
+    where(eui64: mac).take || create(eui64: mac)
+  end
+
   def increment_bytes(kind, amount)
     validate_counts
     case kind
