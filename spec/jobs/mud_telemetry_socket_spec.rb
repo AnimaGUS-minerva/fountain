@@ -1,6 +1,8 @@
 require 'rails_helper'
 #require 'mock_mud_telemetry_socket'
 
+require 'support/mud_toaster'
+
 RSpec.describe MudTelemetrySocket  do
 
   it "should open a socket to a file" do
@@ -24,6 +26,21 @@ RSpec.describe MudTelemetrySocket  do
 
     MudTelemetrySocket.loop
     expect(MudTelemetrySocket.tele_socket.cmd_count).to eq(4)
+  end
+
+  it "should accept canned command to create a new device" do
+    # mock out all the sockets and http requests
+    @mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
+                             "tmp/toaster_load.tout")
+    mwave_mud
+
+    # now take commands from the mocked telemetry socket.
+    mms = MockMudTelemetrySocket.new("spec/files/mud/cmdone.json",
+                                     "tmp/cmdreplies.json")
+
+    MudTelemetrySocket.loop
+    expect(Device.where(:eui64 => "00:12:12:77:88:99")).to exist
+
   end
 
 end
