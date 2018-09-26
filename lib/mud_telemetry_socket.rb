@@ -44,7 +44,7 @@ class MudTelemetrySocket
   def process_cmd(json)
     begin
       res = JSON::parse(json)
-    rescue TypeError
+    rescue TypeError, JSON::ParserError
 
       return [true, nil]
     end

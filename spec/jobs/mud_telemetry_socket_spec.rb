@@ -10,8 +10,16 @@ RSpec.describe MudTelemetrySocket  do
     expect(MudTelemetrySocket.tele_socket).to eq(mms)
   end
 
-  it "should accept canned comamnds and act on them" do
+  it "should accept canned commands and exit when told" do
     mms = MockMudTelemetrySocket.new("spec/files/mud/cmdfiles.json",
+                                     "tmp/cmdreplies.json")
+
+    MudTelemetrySocket.loop
+    expect(MudTelemetrySocket.tele_socket.cmd_count).to eq(4)
+  end
+
+  it "should accept canned commands and exit at eof" do
+    mms = MockMudTelemetrySocket.new("spec/files/mud/cmdeof.json",
                                      "tmp/cmdreplies.json")
 
     MudTelemetrySocket.loop
