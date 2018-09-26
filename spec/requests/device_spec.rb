@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'support/mud_toaster'
 
+
 RSpec.describe "Devices", type: :request do
   fixtures :all
 
@@ -156,6 +157,9 @@ RSpec.describe "Devices", type: :request do
     end
 
     it "should permit updates to mud_url, loading the new mud policy" do
+      @mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
+                               "tmp/toaster_load.tout")
+
       new_url = "https://bigcorp.example.com/product1234/thermostat-example.json"
       mud1_stub(new_url, "spec/files/mud/thermostat-example.json")
       mud1_stub_sig(new_url+".sig", "spec/files/mud/thermostat-example.json.sig")
