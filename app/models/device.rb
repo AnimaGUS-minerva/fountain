@@ -166,7 +166,7 @@ class Device < ActiveRecord::Base
   end
 
   def do_activation!
-    self.device_type ||= DeviceType.find_or_create_by_mud_url(mud_url)
+    self.device_type = DeviceType.find_or_create_by_mud_url(mud_url)
     results = MudSocket.add(:mac_addr  => eui64,
                             :file_path => mud_file)
 
