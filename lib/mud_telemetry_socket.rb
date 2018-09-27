@@ -2,6 +2,7 @@ class MudTelemetrySocket
   cattr_accessor :sock_name
   cattr_accessor :tele_socket
   attr_accessor :cmd_count
+  attr_accessor :end_eof
 
   @@sock_name = File.join(ENV['HOME'], "mud_telemetry.sock")
 
@@ -130,7 +131,9 @@ class MudTelemetrySocket
         @cmd_count += 1
         (finished, item) = process_cmd(jsoncmd)
       end
-
+      if @end_eof
+        @exitnow = true
+      end
     end
   end
 

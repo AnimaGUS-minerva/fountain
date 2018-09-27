@@ -24,6 +24,7 @@ RSpec.describe MudTelemetrySocket  do
     mms = MockMudTelemetrySocket.new("spec/files/mud/cmdeof.json",
                                      "tmp/cmdreplies.json")
 
+    MudTelemetrySocket.telemetry_socket.end_eof = true
     MudTelemetrySocket.loop
     expect(MudTelemetrySocket.tele_socket.cmd_count).to eq(4)
   end
@@ -38,6 +39,7 @@ RSpec.describe MudTelemetrySocket  do
     mms = MockMudTelemetrySocket.new("spec/files/mud/cmdone.json",
                                      "tmp/cmdreplies.json")
 
+    MudTelemetrySocket.telemetry_socket.end_eof = true
     MudTelemetrySocket.loop
     devL = Device.where(:eui64 => "00:12:12:77:88:99")
     expect(devL).to exist
