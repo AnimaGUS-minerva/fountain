@@ -5,18 +5,30 @@ class MudSocket
   @@sock_name = File.join(ENV['HOME'], "mud_controller_skt")
 
   def self.socknew
-    sock = UNIXSocket.new(sock_name)
-    self.new(sock, sock)
+    begin
+      sock = UNIXSocket.new(sock_name)
+      self.new(sock, sock)
+    rescue Errno::ECONNREFUSED
+      return nil
+    end
   end
 
   def self.mudsocket
     @@mudsocket ||= self.socknew
   end
   def self.add(args)
-    mudsocket.cmd(:add, args)
+    if mudsocket
+      mudsocket.cmd(:add, args)
+    else
+      return { :status => "failed -- no socket" }.with_indifferent_access
+    end
   end
   def self.delete(args)
-    mudsocket.cmd(:del, args)
+    if mudsocket
+      mudsocket.cmd(:del, args)
+    else
+      return { :status => "failed -- no socket" }.with_indifferent_access
+    end
   end
 
   def initialize(io_in, io_out = nil)
@@ -39,7 +51,7 @@ class MudSocket
     sendmsg(opt.to_json)
 
     begin
-      res = JSON::parse(recvmsg)
+      res = JSON::parse(recvmsg).with_indifferent_access
     rescue TypeError
       nil
     end
