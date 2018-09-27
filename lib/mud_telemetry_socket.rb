@@ -80,6 +80,7 @@ class MudTelemetrySocket
 
   def process_cmd(json)
     begin
+      log.info("processing #{json}")
       res = JSON::parse(json).with_indifferent_access
     rescue TypeError, JSON::ParserError
 
@@ -113,6 +114,8 @@ class MudTelemetrySocket
       else
         sendstatus("unknown cmd: #{cmd.downcase}")
       end
+    else
+      log.info("json had no command: #{res}")
     end
     return [false, true]
   end
@@ -130,8 +133,14 @@ class MudTelemetrySocket
 
       while !finished && jsoncmd = recvmsg(@nsock)
         @cmd_count += 1
-        (finished, item) = process_cmd(jsoncmd)
+        begin
+          (finished, item) = process_cmd(jsoncmd)
+        rescue Errno::ENOTCONN
+          # eof on write.
+          finished = true
+        end
       end
+      log.info("client exited, #{finished} #{jsoncmd} on #{@nsock}")
       if @end_eof
         @exitnow = true
       end
