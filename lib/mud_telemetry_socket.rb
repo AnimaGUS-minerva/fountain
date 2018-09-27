@@ -7,6 +7,7 @@ class MudTelemetrySocket
   @@sock_name = File.join(ENV['HOME'], "mud_telemetry.sock")
 
   def self.socknew
+    File.delete(sock_name) if File.exists?(sock_name)
     sock = UNIXServer.open(sock_name)
     self.new(sock, sock)
   end
