@@ -14,6 +14,10 @@ class Device < ActiveRecord::Base
     where(eui64: mac).take || create(eui64: mac)
   end
 
+  def self.find_by_mac(mac)
+    where(eui64: mac).take
+  end
+
   def increment_bytes(kind, amount)
     validate_counts
     case kind

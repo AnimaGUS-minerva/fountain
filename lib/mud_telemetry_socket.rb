@@ -14,6 +14,10 @@ class MudTelemetrySocket
     @@tele_socket ||= self.socknew
   end
 
+  def log
+    Rails.logger
+  end
+
   def initialize(io_in, io_out = nil)
     @cmd_count = 0
     @in = io_in
@@ -38,7 +42,9 @@ class MudTelemetrySocket
   end
 
   def nsock
-    @in.accept
+    sock = @in.accept
+    log.info "MUD server has new client"
+    sock
   end
 
   def add_device(details)
@@ -47,6 +53,23 @@ class MudTelemetrySocket
 
     dev = Device.find_or_create_by_mac(mac_addr)
     if dev.update_attributes(details)
+      log.info("added device: #{dev.name}")
+      sendstatus("ok")
+    else
+      sendstatus("failed")
+    end
+  end
+
+  def old_device(details)
+    mac_addr = details[:mac_addr]
+    details.delete(:mac_addr)
+
+    dev = Device.find_by_mac(mac_addr)
+    if !dev
+      sendstatus("not found")
+    elsif dev.update_attributes(details)
+      log.info("old device: #{dev.name}")
+      dev.do_activation!
       sendstatus("ok")
     else
       sendstatus("failed")
@@ -62,6 +85,8 @@ class MudTelemetrySocket
     end
 
     if cmd=res[:cmd]
+      log.info("telemetry processing cmd: #{cmd}")
+
       case cmd.downcase
       when "add"
         if details = res[:details].try(:with_indifferent_access)
@@ -71,6 +96,11 @@ class MudTelemetrySocket
         end
 
       when "old"
+        if details = res[:details].try(:with_indifferent_access)
+          old_device(details)
+        else
+          sendstatus("missing arguments")
+        end
 
       when "del"
 
@@ -90,11 +120,13 @@ class MudTelemetrySocket
   end
 
   def loop
+    log.info "MUD telemetry server start"
     @exitnow = false
+    finished = false
     while !@exitnow do
       @nsock = nsock
 
-      while !finished && jsoncmd=recvmsg(@nsock)
+      while !finished && jsoncmd = recvmsg(@nsock)
         @cmd_count += 1
         (finished, item) = process_cmd(jsoncmd)
       end
