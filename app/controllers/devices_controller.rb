@@ -51,9 +51,12 @@ class DevicesController < SecureGatewayController
 
   end
 
-  def delete
+  def destroy
     @object = Device.find(params[:id])
-    @object.deleted = true
+    if @object
+      @object.deleted = true
+      @object.save
+    end
   end
 
   protected

@@ -194,8 +194,16 @@ RSpec.describe "Devices", type: :request do
       expect(thing1.name).to_not eq(oname)
       expect(thing1.traffic_counts).to  eq(old_tcounts)
     end
+  end
 
-
+  describe "deleting" do
+    it "should allow administrators to mark the device as deleted" do
+      thing1 = devices(:thing1)
+      delete url_for(thing1), { :headers => ssl_headers(administrators(:admin1)) }
+      expect(response).to have_http_status(204)
+      thing1.reload
+      expect(thing1).to be_deleted
+    end
   end
 
 
