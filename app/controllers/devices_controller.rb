@@ -51,10 +51,15 @@ class DevicesController < SecureGatewayController
 
   end
 
+  def delete
+    @object = Device.find(params[:id])
+    @object.deleted = true
+  end
+
   protected
 
   def device_params
-    params.require(:device).permit(:name, :fqdn, :eui64, :idevid, :mud_url, :current_vlan, :wan_enabled, :lan_enabled, :firewall_rules)
+    params.require(:device).permit(:name, :fqdn, :eui64, :idevid, :mud_url, :current_vlan, :wan_enabled, :lan_enabled, :firewall_rules, :deleted, :quaranteed, :device_enabled)
   end
 
 end
