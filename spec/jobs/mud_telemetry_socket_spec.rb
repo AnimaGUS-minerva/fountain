@@ -45,6 +45,8 @@ RSpec.describe MudTelemetrySocket  do
     expect(devL).to exist
     dev = devL.take
     expect(dev.device_type).to be_present
+    expect(dev.ipv4).to eq("192.168.19.22")
+    expect(dev.ipv6).to eq("fd19:49f8:89e2::f2de:f1ff:fe80:57c1")
   end
 
 end

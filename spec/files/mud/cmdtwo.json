@@ -1,0 +1,4 @@
+{ "cmd" : "add", "details" : { "mac_addr" : "00:12:12:77:aa:99", "mud_url" : "http://example.com/mud/mwave_mud.json", "ipv4" : "192.168.19.22" }}
+
+
+
