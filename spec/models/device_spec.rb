@@ -64,6 +64,7 @@ RSpec.describe Device, type: :model do
     it "should get written during activation of a device" do
       mwave = devices(:microwave1)
 
+      toaster_mud
       mwave.do_activation!
       expect(File.exists?("tmp/mudfiles/00006.json")).to be true
     end
