@@ -127,11 +127,12 @@ class MudTelemetrySocket
   def loop
     log.info "MUD telemetry server start"
     @exitnow = false
-    finished = false
     while !@exitnow do
       @nsock = nsock
 
-      while !finished && jsoncmd = recvmsg(@nsock)
+      jsoncmd = nil
+      finished = false
+      while !finished && (jsoncmd = recvmsg(@nsock))
         @cmd_count += 1
         begin
           (finished, item) = process_cmd(jsoncmd)
