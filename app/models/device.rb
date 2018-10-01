@@ -43,6 +43,7 @@ class Device < ActiveRecord::Base
   # when the mud_url is set up, look for a device_type with the same mud_url, and
   # if it does not exist, device_type will create it.
   def mud_url=(x)
+    x = nil if x == "-"
     want_enabled!
     if x != self[:mud_url] and self[:mud_url]
       want_reactivation!
@@ -167,6 +168,10 @@ class Device < ActiveRecord::Base
 
   def do_activation!
     self.device_type = DeviceType.find_or_create_by_mud_url(mud_url)
+    unless self.device_type
+      return false
+    end
+
     results = MudSocket.add(:mac_addr  => eui64,
                             :file_path => mud_file)
 

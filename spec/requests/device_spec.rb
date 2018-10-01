@@ -156,7 +156,7 @@ RSpec.describe "Devices", type: :request do
       expect(thing1.eui64).to_not eq(old_eui64)
     end
 
-    it "should permit updates to mud_url, loading the new mud policy" do
+    it "should permit mud_url to be changed, loading the new mud policy" do
       @mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
                                "tmp/toaster_load.tout")
 
@@ -177,6 +177,23 @@ RSpec.describe "Devices", type: :request do
       thing1.reload
       expect(thing1.name).to_not    eq(oname)
       expect(thing1.mud_url).to_not eq(old_mud_url)
+    end
+
+    it "should consider a mud_url of - to be empty" do
+      new_url = "-"
+      thing1 = devices(:thing1)
+      oname   = thing1.name
+      old_mud_url = thing1.mud_url
+      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
+                             :params  => { :device => { :name => "Downstairs Thermostat",
+                                                        :mud_url => new_url,
+                                                      }}}
+      expect(response).to have_http_status(200)
+
+      # get the object again and verify that it changed appropriately
+      thing1.reload
+      expect(thing1.name).to_not    eq(oname)
+      expect(thing1.mud_url).to     be_nil
     end
 
     it "should silently ignore attempts to update traffic_counts" do

@@ -8,6 +8,10 @@ class DeviceType < ActiveRecord::Base
   attr_accessor :raw_json
 
   def self.find_or_create_by_mud_url(mu)
+    if mu.blank? or mu == "-"
+      return nil
+    end
+
     dt = find_by_mud_url(mu)
     unless dt
       dt = create(:mud_url => mu)
@@ -32,9 +36,17 @@ class DeviceType < ActiveRecord::Base
 
   def validate_mud_url
     signature = nil
-    open(mud_url_sig) { |f|
-      signature = f.read
-    }
+    if mud_url_sig.blank? or mud_url_sig == "-"
+      return false
+    end
+
+    begin
+      open(mud_url_sig) { |f|
+        signature = f.read
+      }
+    rescue error::ENOENT
+      return false
+    end
 
     # empty certificate store.
     cert_store    = OpenSSL::X509::Store.new

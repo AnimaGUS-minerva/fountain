@@ -151,6 +151,13 @@ RSpec.describe Device, type: :model do
       fridge = devices(:stinky_fridge)
       expect(fridge).to be_need_quaranteeing
     end
+
+    it "should cause the MUD policy to be removed" do
+      thing1 = devices(:thing1)
+      thing1.deleted!
+      pending "MUD POLICY TO BE DELETED"
+    end
+
   end
 
 end
