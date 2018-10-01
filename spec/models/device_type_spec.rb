@@ -33,6 +33,15 @@ RSpec.describe DeviceType, type: :model do
       expect(dt.mud_url_sig).to eq(mud_url + ".sig")
     end
 
+    it "should mark device type as invalid, on HTTP 404" do
+      mud_url      = fridge_404_mud
+      dt = DeviceType.find_or_create_by_mud_url(mud_url)
+
+      expect(dt).to_not be_nil
+      expect(dt.mud_url).to     eq(mud_url)
+      expect(dt).to_not be_mud_valid
+    end
+
     it "should validate an existing entry" do
       toaster_mud
 

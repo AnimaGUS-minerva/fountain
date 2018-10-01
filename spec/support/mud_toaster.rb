@@ -60,3 +60,20 @@ def mwave_mud
 
   mud_url
 end
+
+def fridge_404_mud
+  voucher_request = nil
+
+  mud_file = "/dev/null"
+  mud_url  = "http://example.com/mud/fridge_404_mud.json"
+
+  stub_request(:get, mud_url).
+    with(headers: {
+           'Accept'          => '*/*',
+           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+           'User-Agent'      => 'Ruby'
+         }).
+    to_return(status: 404, body: "")
+
+  mud_url
+end

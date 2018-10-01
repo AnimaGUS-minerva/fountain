@@ -6,6 +6,9 @@ class Device < ActiveRecord::Base
 
   before_save :validate_counts
 
+  class DeviceDeleted < Exception
+  end
+
   def self.find_or_make_by_number(idevid)
     where(idevid: idevid).take || create(idevid: idevid)
   end
@@ -37,6 +40,12 @@ class Device < ActiveRecord::Base
     when :outgoing
       self.traffic_counts["packets"][1] += amount
     end
+    save!
+  end
+
+  def deleted!
+    self.deleted = true
+    raise DeviceDeleted
     save!
   end
 
@@ -172,14 +181,18 @@ class Device < ActiveRecord::Base
       return false
     end
 
-    results = MudSocket.add(:mac_addr  => eui64,
-                            :file_path => mud_file)
+    if self.device_type.valid?
+      results = MudSocket.add(:mac_addr  => eui64,
+                              :file_path => mud_file)
 
-    if results and results["status"]=="ok"
-      self.firewall_rule_names = results["rules"]
-      self.failure_details = results
+      if results and results["status"]=="ok"
+        self.firewall_rule_names = results["rules"]
+        self.failure_details = results
+      else
+        self.failure_details = results || { "status" => "unknown error" }
+      end
     else
-      self.failure_details = results || { "status" => "unknown error" }
+      self.failure_details = { "status" => device_type.failure_details }
     end
     save!
   end

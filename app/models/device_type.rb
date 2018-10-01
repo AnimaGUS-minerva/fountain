@@ -27,9 +27,12 @@ class DeviceType < ActiveRecord::Base
   end
 
   def build_sig_url
-    rsig = mud_json_ietf["mud-signature"]
-    self.mud_url_sig = URI.join(mud_uri, rsig).to_s
+    if mud_json_ietf
+      rsig = mud_json_ietf["mud-signature"]
+      self.mud_url_sig = URI.join(mud_uri, rsig).to_s
+    end
   end
+
   def mud_url_sig
     self[:mud_url_sig] || build_sig_url
   end
@@ -44,7 +47,12 @@ class DeviceType < ActiveRecord::Base
       open(mud_url_sig) { |f|
         signature = f.read
       }
-    rescue error::ENOENT
+    rescue Errno::ENOENT
+      return false
+
+    rescue OpenURI::HTTPError
+      self.failure_details = "HTTP ERROR"
+      self.mud_valid = false
       return false
     end
 
@@ -68,6 +76,7 @@ class DeviceType < ActiveRecord::Base
     # find manufacturer by signer of mudfile.
     if result
       self.validated_mud_json = mud_json
+      self.mud_valid = true
     end
     # do something if result == false?  raise exception?
 
@@ -76,10 +85,19 @@ class DeviceType < ActiveRecord::Base
 
   def mud_json
     unless @mud_json.kind_of? Hash
-      open(mud_url) {|f|
-        @raw_json = f.read
-        self.mud_json = JSON::parse(@raw_json)
-      }
+      begin
+        open(mud_url) {|f|
+          @raw_json = f.read
+          self.mud_json = JSON::parse(@raw_json)
+        }
+      rescue Errno::ENOENT
+        return false
+
+      rescue OpenURI::HTTPError
+        self.failure_details = "HTTP ERROR"
+        self.mud_valid = false
+        return false
+      end
     end
     @mud_json
   end
@@ -88,6 +106,8 @@ class DeviceType < ActiveRecord::Base
   end
 
   def mud_json_ietf
-    mud_json["ietf-mud:mud"]
+    if mud_json
+      mud_json["ietf-mud:mud"]
+    end
   end
 end
