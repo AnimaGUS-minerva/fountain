@@ -56,6 +56,7 @@ class MudTelemetrySocket
     dev = Device.find_or_create_by_mac(mac_addr)
     if dev.update_attributes(details)
       log.info("added device: #{dev.name}")
+      dev.save!
       sendstatus("ok")
     else
       sendstatus("failed")
@@ -72,6 +73,7 @@ class MudTelemetrySocket
     elsif dev.update_attributes(details)
       log.info("old device: #{dev.name}")
       dev.do_activation!
+      dev.save!
       sendstatus("ok")
     else
       sendstatus("failed")
@@ -83,7 +85,7 @@ class MudTelemetrySocket
       log.info("processing #{json}")
       res = JSON::parse(json).with_indifferent_access
     rescue TypeError, JSON::ParserError
-
+      log.info("error #{$!}")
       return [true, nil]
     end
 
@@ -141,7 +143,7 @@ class MudTelemetrySocket
           finished = true
         end
       end
-      log.info("client exited, #{finished} #{jsoncmd} on #{@nsock}")
+      log.info("#{@cmd_count}: client exited, #{finished} #{jsoncmd} on #{@nsock}")
       if @end_eof
         @exitnow = true
       end

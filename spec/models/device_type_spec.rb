@@ -17,15 +17,10 @@ RSpec.describe DeviceType, type: :model do
     end
   end
 
-  describe "mud_url" do
+  describe "mud_url access" do
 
     it "should create new device_type" do
-      mud_file     = "spec/files/mud/toaster_mud.json"
-      mud_url      = "http://mud1.example.com/mud/toaster_mud.json"
-      mud_sig_file = "spec/files/mud/toaster_mud.json.sig"
-      mud_sig_url  = "http://mud1.example.com/mud/toaster_mud.json.sig"
-      mud1_stub(mud_url,         mud_file)
-      mud1_stub_sig(mud_sig_url, mud_sig_file)
+      mud_url      = toaster_mud
       dt = DeviceType.find_or_create_by_mud_url(mud_url)
 
       expect(dt).to_not be_nil
