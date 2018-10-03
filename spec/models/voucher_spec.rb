@@ -15,7 +15,7 @@ RSpec.describe Voucher, type: :model do
     end
   end
 
-  describe "receiving vouchers" do
+  describe "receiving" do
     it "should raise an exception when reading a voucher without public key" do
       voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789_bad.vch"))
 
@@ -64,6 +64,19 @@ RSpec.describe Voucher, type: :model do
         v1 = Voucher.from_voucher(:pkcs7, voucher_binary)
       }.to raise_exception(Voucher::VoucherFormatError)
     end
+
+    it "should process a multipart voucher response into two parts" do
+      voucher_mime = Mail.read(File.join("spec","files","voucher_00-D0-E5-F2-10-03.mvch"))
+
+      expect(voucher_mime).to_not be_nil
+
+      expect(voucher_mime.parts[0]).to_not be_nil
+      expect(voucher_mime.parts[0].content_type).to eq("application/voucher-cose+cbor")
+      expect(voucher_mime.parts[1]).to_not be_nil
+      expect(voucher_mime.parts[1].content_type).to eq("application/pkcs7-mime; smime-type=certs-only")
+    end
+
+
   end
 
 
