@@ -34,6 +34,13 @@ PATH
       timers (>= 4.1.1)
 
 PATH
+  remote: ../minerva/coap
+  specs:
+    coap (0.1.5.pre)
+      celluloid-io (~> 0.17.3)
+      resolv-ipv6favor (~> 0)
+
+PATH
   remote: ../minerva/david
   specs:
     david (0.5.1.pre)
@@ -130,9 +137,6 @@ GEM
       timers (>= 4.1.1)
     celluloid-supervision (0.20.6)
       timers (>= 4.1.1)
-    coap (0.1.4)
-      celluloid-io (~> 0.17.3)
-      resolv-ipv6favor (~> 0)
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     crack (0.4.3)
@@ -312,6 +316,7 @@ DEPENDENCIES
   cbor-diag
   celluloid-io!
   chariwt!
+  coap!
   david!
   ecdsa!
   fixture_save!
@@ -319,6 +324,7 @@ DEPENDENCIES
   jquery-rails
   json
   jwt
+  mail
   openssl!
   pg (= 0.20)
   pry

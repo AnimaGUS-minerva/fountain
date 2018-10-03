@@ -34,10 +34,13 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0'
 gem 'uglifier'
 
+gem 'mail'
+
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
 
 # CoAP server for Rails.
+gem 'coap',    :path => "../minerva/coap"
 gem 'openssl', :path => "../minerva/ruby-openssl"
 gem 'celluloid-io', :path => "../minerva/celluloid-io"
 gem 'david', :path => "../minerva/david"
