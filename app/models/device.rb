@@ -43,10 +43,15 @@ class Device < ActiveRecord::Base
     save!
   end
 
+  def want_disabled!
+    self.device_state = "disabled"
+  end
+
   def deleted!
     self.deleted = true
-    raise DeviceDeleted
+    want_disabled!
     save!
+    MudSuperJob.new.perform(id)
   end
 
   # when the mud_url is set up, look for a device_type with the same mud_url, and

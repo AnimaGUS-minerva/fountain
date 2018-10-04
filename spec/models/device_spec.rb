@@ -7,6 +7,7 @@ RSpec.describe Device, type: :model do
 
   before(:each) do
     Dir.glob("tmp/mudfiles/*.json") do |f| File.delete(f) end
+    Dir.glob("tmp/*.tout") do |f| File.delete(f) end
     @mms = MockMudSocket.new("spec/files/mud/toaster_load.tin",
                              "tmp/toaster_load.tout")
   end
@@ -153,9 +154,10 @@ RSpec.describe Device, type: :model do
     end
 
     it "should cause the MUD policy to be removed" do
-      thing1 = devices(:thing1)
+      thing1 = devices(:stinky_fridge)
       thing1.deleted!
-      pending "MUD POLICY TO BE DELETED"
+
+      expect(IO.read("tmp/toaster_load.tout").size).to be > 0
     end
 
   end

@@ -11,6 +11,11 @@ class MockMudSocket < MudSocket
     @@mudsocket = self
   end
 
+  def sendmsg(cmd)
+    super(cmd)
+    @out.flush
+  end
+
   def recvmsg
     if @in
       @in.gets("\n")
