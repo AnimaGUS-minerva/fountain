@@ -6,6 +6,11 @@ RSpec.describe "Est", type: :request do
     ECDSA::Format::IntegerOctetString.decode(["20DB1328B01EBB78122CE86D5B1A3A097EC44EAC603FD5F60108EDF98EA81393"].pack("H*"))
   end
 
+  # set up JRC keys to testing ones
+  before(:each) do
+    FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+  end
+
   describe "unsigned voucher request" do
     it "should get posted to requestvoucher" do
 
@@ -103,14 +108,14 @@ RSpec.describe "Est", type: :request do
         with(headers: {
                'Accept'=>'*/*',
                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-               'Content-Type'=>'application/cbor+cose',
+               'Content-Type'=>'application/voucher-cose+cbor',
                'Host'=>'highway.sandelman.ca',
              }).
         to_return(status: 200, body: lambda { |request|
                     voucher_request = request.body
                     result},
                   headers: {
-                    'Content-Type'=>'application/cbor+cose'
+                    'Content-Type'=>'multipart/related'
                   })
 
       # get the Base64 of the incoming signed request
@@ -130,10 +135,16 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).signed).to be_truthy
       expect(assigns(:voucherreq).node).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
-      pending "waiting for constrained voucher reply"
+
+      # validate that the voucher_request can be validated with the key used.
+      vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request, FountainKeys.ca.jrc_pub_key)
+      expect(vr0).to_not be_nil
 
       expect(Chariwt.cmp_vch_file(voucher_request,
                                   "parboiled_vr_00-D0-E5-F2-10-03")).to be true
+
+      pending "waiting for constrained voucher reply"
+      #byebug
 
       expect(Chariwt.cmp_vch_file(assigns(:voucher).token,
                                   "voucher_00-D0-E5-F2-10-03")).to be true
