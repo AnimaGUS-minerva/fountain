@@ -12,12 +12,12 @@ class Voucher < ActiveRecord::Base
   class MissingPublicKey < Exception
   end
 
-  def self.from_voucher(type, value)
+  def self.from_voucher(type, value, pubkey = nil)
     case type
     when :pkcs7
       return CmsVoucher.from_voucher(type, value)
     when :cose
-      return CoseVoucher.from_voucher(type, value)
+      return CoseVoucher.from_voucher(type, value, pubkey)
     else
       raise InvalidVoucher
     end

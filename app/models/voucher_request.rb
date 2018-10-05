@@ -36,7 +36,7 @@ class VoucherRequest < ApplicationRecord
 
   def self.from_cose_cbor(token, pubkey = nil)
     signed = false
-    vr = Chariwt::VoucherRequest.from_cose_cbor(token, pubkey)
+    vr = Chariwt::VoucherRequest.from_cbor_cose(token, pubkey)
     if vr
       signed = true
       hash = vr.vrhash
