@@ -21,6 +21,13 @@ class CoseVoucher < Voucher
     save!
   end
 
+  def signed_voucher=(x)
+    self[:signed_voucher]=Base64.urlsafe_encode64(x)
+  end
+  def signed_voucher
+    Base64.urlsafe_decode64(self[:signed_voucher])
+  end
+ 
   def self.from_voucher(type, value)
     voucher = create(signed_voucher: value)
     voucher.details_from_cose
