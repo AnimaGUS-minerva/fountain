@@ -23,6 +23,43 @@ class Voucher < ActiveRecord::Base
     end
   end
 
+  def self.from_multipart(type, mimecontents)
+    voucher_mime = Mail.read_from_string(mimecontents)
+
+    unless voucher_mime.mime_type == "multipart/mixed"
+      raise InvalidVoucher.exception("invalid content-type: #{voucher_mime.mime_type}")
+    end
+
+
+    pubkey = nil
+    contents = nil
+    type = nil
+    voucher_mime.parts.each { |part|
+      case part.mime_type.downcase
+      when 'application/voucher-cose+cbor'
+        type = :cose
+        contents = part.body.decoded
+
+      when 'application/pkcs7-mime'
+        case part.content_type_parameters['smime-type']
+        when 'certs-only'
+          pubkey = part.body.decoded
+        end
+      end
+    }
+
+    if pubkey.blank?
+      raise MissingPublicKey
+    end
+
+    if type.blank? or contents.blank?
+      raise InvalidVoucher
+    end
+
+    from_voucher(type, contents, pubkey)
+  end
+
+
   def serial_number
     details['serial-number']
   end
