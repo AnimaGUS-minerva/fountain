@@ -101,7 +101,12 @@ RSpec.describe "Est", type: :request do
 
 
     it "should get CoAPS POSTed to cbor_rv" do
-      result = IO.read("spec/files/voucher_00-D0-E5-F2-10-03.vch")
+      resultio = File.open("spec/files/voucher_00-D0-E5-F2-10-03.mvch","rb")
+      ct = resultio.gets
+      ctvalue = ct[14..-3]
+      ct2= resultio.gets
+      result=resultio.read
+
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
@@ -114,10 +119,11 @@ RSpec.describe "Est", type: :request do
                'Host'=>'highway.sandelman.ca',
              }).
         to_return(status: 200, body: lambda { |request|
+
                     voucher_request = request.body
                     result},
                   headers: {
-                    'Content-Type'=>'multipart/related'
+                    'Content-Type'=>ctvalue
                   })
 
       # get the Base64 of the incoming signed request

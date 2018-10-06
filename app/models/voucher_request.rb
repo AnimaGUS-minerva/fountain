@@ -190,48 +190,49 @@ class VoucherRequest < ApplicationRecord
                         :use_ssl => masa_uri.scheme == 'https'})
   end
 
-  def process_content_type_arguments(args)
-    args.each { |param|
-      param.strip!
-      (thing,value) = param.split(/=/)
-      case thing.downcase
-      when 'smime-type'
-        @smimetype = value.downcase
-        process_smime_type
-        @responsetype = :pkcs7_voucher
-      end
-    }
-  end
+  def process_content_type(type, bodystr)
+    ct = Mail::Parsers::ContentTypeParser.parse(type)
 
-  def process_smime_type
-    case @smimetype.downcase
-    when 'voucher'
-      @pkcs7voucher = true
+    return [false,nil] unless ct
+
+    parameters = ct.parameters.first
+
+    case [ct.main_type,ct.sub_type]
+    when ['application','pkcs7-mime'], ['application','cms']
       @voucher_response_type = :pkcs7
-    end
-  end
 
-  def process_content_type(value)
-    things = value.split(/;/)
-    majortype = things.shift
-    return false unless majortype
 
-    @apptype = majortype.downcase
-    case @apptype
-    when 'application/pkcs7-mime'
-      @pkcs7 = true
-      process_content_type_arguments(things)
-      return true
-    when 'application/cms'
-      @pkcs7 = true
-      process_content_type_arguments(things)
-      return true
-    when 'application/cbor+cms'
+      @smimetype = parameters['smime-type']
+      if @smimetype == 'voucher'
+        @responsetype = :pkcs7_voucher
+        @pkcs7voucher = true
+      end
+
+      der = decode_pem(bodystr)
+      voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der)
+
+    when ['application','voucher-cms+cbor']
+      @voucher_response_type = :pkcs7
+      voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
+
+    when ['application','voucher-cose+cbor']
+      @voucher_response_type = :cbor
       @cose = true
-      @pkcs7 = false
-      return true
+      voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
+
+    when ['multipart','mixed']
+      @voucher_response_type = :cbor
+      @cose = true
+      @boundary = parameters["boundary"]
+      mailbody = Mail::Body.new(bodystr)
+      mailbody.split!(@boundary)
+      voucher = Voucher.from_parts(mailbody.parts)
+    else
+      byebug
     end
+    return voucher
   end
+
   def response_pkcs7?
     @pkcs7
   end
@@ -258,7 +259,7 @@ class VoucherRequest < ApplicationRecord
     request = Net::HTTP::Post.new(target_uri)
     request.body         = registrar_voucher_request
     request.content_type = registrar_voucher_request_type
-    response = http_handler.request request # Net::HTTPResponse object
+    response = http_handler.request request     # Net::HTTPResponse object
 
     case response
     when Net::HTTPBadRequest
@@ -272,28 +273,17 @@ class VoucherRequest < ApplicationRecord
       raise VoucherRequest::BadMASA.new(response.message)
 
     when Net::HTTPSuccess
-      if process_content_type(@content_type = response['Content-Type'])
-
-        case
-        when @pkcs7
-          der = decode_pem(response.body)
-          voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der)
-
-        when @cose
-          voucher = ::CoseVoucher.from_voucher(@voucher_response_type, response.body)
-
-        else
-          raise Voucher::UnknownVoucherType
-        end
-        voucher.voucher_request = self
-        voucher.device          = self.device
-        voucher.manufacturer = self.manufacturer
-        voucher.save!
-        return voucher
-      else
-        puts "Content type #{response['Content-Type']} is wrong"
-        nil
+      ct = response['Content-Type']
+      logger.info "MASA provided voucher of type #{ct}"
+      voucher = process_content_type(ct, response.body)
+      unless voucher
+        raise VoucherRequest::BadMASA.new("invalid returned content-type: #{ct}")
       end
+      voucher.voucher_request = self
+      voucher.device       = self.device
+      voucher.manufacturer = self.manufacturer
+      voucher.save!
+      return voucher
 
     when Net::HTTPRedirection
       nil
