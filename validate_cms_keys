@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# first generate a signature across
+dir=db/cert
+key=${dir}/jrc_prime256v1.key
+pub=${dir}/jrc_prime256v1.crt
+
+# sign it.
+openssl cms -sign -in Gemfile -out /tmp/g1.pem \
+        -signer $pub -inkey $key -outform pem
+
+# verify it.
+openssl cms -verify -CAfile $dir/ownerca_secp384r1.crt \
+        -signer $pub -in /tmp/g1.pem -inform pem -content Gemfile
+
+
