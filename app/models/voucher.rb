@@ -23,18 +23,11 @@ class Voucher < ActiveRecord::Base
     end
   end
 
-  def self.from_multipart(type, mimecontents)
-    voucher_mime = Mail.read_from_string(mimecontents)
-
-    unless voucher_mime.mime_type == "multipart/mixed"
-      raise InvalidVoucher.exception("invalid content-type: #{voucher_mime.mime_type}")
-    end
-
-
+  def self.from_parts(parts)
     pubkey = nil
     contents = nil
     type = nil
-    voucher_mime.parts.each { |part|
+    parts.each { |part|
       case part.mime_type.downcase
       when 'application/voucher-cose+cbor'
         type = :cose
@@ -57,6 +50,17 @@ class Voucher < ActiveRecord::Base
     end
 
     from_voucher(type, contents, pubkey)
+  end
+
+  def self.from_multipart(type, mimecontents)
+    voucher_mime = Mail.read_from_string(mimecontents)
+
+    unless voucher_mime.mime_type == "multipart/mixed"
+      raise InvalidVoucher.exception("invalid content-type: #{voucher_mime.mime_type}")
+    end
+
+    byebug
+    from_parts(voucher_mime.parts)
   end
 
 
