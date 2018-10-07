@@ -151,10 +151,10 @@ RSpec.describe "Est", type: :request do
       expect(Chariwt.cmp_vch_file(voucher_request,
                                   "parboiled_vr_00-D0-E5-F2-10-03")).to be true
 
-      pending "waiting for constrained voucher reply"
-      #byebug
+      expect(Chariwt.cmp_vch_file(assigns(:voucher).signed_voucher,
+                                  "voucher_00-D0-E5-F2-10-03")).to be true
 
-      expect(Chariwt.cmp_vch_file(assigns(:voucher).token,
+      expect(Chariwt.cmp_vch_file(response.body,
                                   "voucher_00-D0-E5-F2-10-03")).to be true
 
     end
