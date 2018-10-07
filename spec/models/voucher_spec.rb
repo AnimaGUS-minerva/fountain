@@ -76,6 +76,15 @@ RSpec.describe Voucher, type: :model do
       expect(voucher_mime.parts[1].content_type).to eq("application/pkcs7-mime; smime-type=certs-only")
     end
 
+    it "should process a multipart voucher response into a validated voucher" do
+      input_voucher = IO::binread(File.join("spec","files","voucher_00-D0-E5-F2-10-03.mvch"))
+
+      v1 = Voucher.from_multipart(:cbor, input_voucher)
+      expect(v1).to_not be_nil
+      expect(v1.type).to eq("CoseVoucher")
+      expect(v1).to be_valid
+    end
+
 
   end
 

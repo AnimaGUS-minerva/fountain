@@ -62,11 +62,12 @@ RSpec.describe VoucherRequest, type: :model do
     end
 
     it "should process content-type to extract voucher/response" do
-      vr1= voucher_requests(:vr1)
-      expect(vr1.process_content_type('application/pkcs7-mime; smime-type=voucher')).to be_truthy
-      expect(vr1).to be_response_pkcs7
-      expect(vr1).to be_response_voucher
-      expect(vr1.response_type).to eq(:pkcs7_voucher)
+      vr1 = voucher_requests(:vr1)
+      bodystr = IO::read(File.join('spec', 'files', 'voucher_081196FFFE0181E0.pkcs'))
+      voucher = vr1.process_content_type('application/pkcs7-mime; smime-type=voucher', bodystr)
+      expect(voucher).to_not be_nil
+      expect(voucher.type).to eq("CmsVoucher")
+      expect(voucher.assertion).to eq("logged")
     end
 
     it "should have a dozen voucher responses which are broken/mis-formatted" do
