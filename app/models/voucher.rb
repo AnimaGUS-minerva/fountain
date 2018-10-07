@@ -59,7 +59,6 @@ class Voucher < ActiveRecord::Base
       raise InvalidVoucher.exception("invalid content-type: #{voucher_mime.mime_type}")
     end
 
-    byebug
     from_parts(voucher_mime.parts)
   end
 
