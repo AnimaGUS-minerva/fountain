@@ -1,9 +1,10 @@
 GIT
-  remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
-  revision: a04e039ec483fc4aaeb671618258c8ceb4200ac5
-  branch: ecdsa_interface_openssl
+  remote: https://github.com/mcr/ChariWTs.git
+  revision: 5dbb7787d2f29c5f303f1707f33c15cb66fe664d
   specs:
-    ecdsa (1.3.0)
+    chariwt (0.6.0)
+      cbor (~> 0.5.0)
+      ecdsa (~> 1.3.0)
 
 GIT
   remote: https://github.com/mcr/ChariWTs.git
@@ -21,9 +22,14 @@ GIT
       ice_nine (~> 0.11)
       rails (>= 4.0.5)
 
+<<<<<<< HEAD
 GIT
   remote: https://github.com/mcr/fixture_save.git
   revision: 307851690b31face4b83c464b4260eae44fb3f4c
+=======
+PATH
+  remote: ../fixture_save
+>>>>>>> switch chariwt and ruby_ecdsa back to github copies
   specs:
     fixture_save (0.0.1)
 
@@ -56,6 +62,11 @@ PATH
   specs:
     openssl (2.2.0.pre.mcr1)
       ipaddr
+
+PATH
+  remote: ../minerva/ruby_ecdsa
+  specs:
+    ecdsa (1.3.0)
 
 GEM
   remote: https://rubygems.org/
