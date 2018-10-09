@@ -1,6 +1,12 @@
 class EstController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  # CACERTS return
+  def cacerts
+    render :plain => FountainKeys.ca.jrc_pub_key.to_pem,
+           :content_type => 'application/pkcs7-mime; smime-type=certs-only'
+  end
+
   # POST /e/rv (CBOR, COSE)
   def cbor_rv
     begin
