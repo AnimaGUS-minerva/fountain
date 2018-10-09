@@ -153,7 +153,7 @@ GEM
     erubi (1.7.1)
     eventmachine (1.2.7)
     execjs (2.7.0)
-    ffi (1.9.23)
+    ffi (1.9.25)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     hashdiff (0.3.7)
@@ -332,6 +332,7 @@ DEPENDENCIES
   coap!
   david!
   ecdsa!
+  ffi (~> 1.9.24)
   fixture_save!
   jbuilder (~> 2.0)
   jquery-rails

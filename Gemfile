@@ -30,6 +30,7 @@ gem 'sdoc', '~> 0.4.0'
 gem 'uglifier'
 
 gem 'mail'
+gem 'ffi', '~> 1.9.24'
 
 # Use Capistrano for deployment
 gem 'capistrano-rails', group: :development
