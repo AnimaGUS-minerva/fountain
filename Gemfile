@@ -16,9 +16,11 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem "turbolinks"
 
-gem 'chariwt', :path => '../chariwt'
-gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
-#gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
+gem 'ecdsa',   :path => '../minerva/ruby_ecdsa'
+#gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
+
+#gem 'chariwt', :path => '../chariwt'
+gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 gem 'jwt'
 
 gem "fixture_save", :path => "../fixture_save"
