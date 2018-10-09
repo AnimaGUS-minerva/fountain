@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   # EST processing at well known URLs
   post '/.well-known/est/requestvoucher', to: 'est#requestvoucher'
   post '/.well-known/est/voucher_status', to: 'est#voucher_status'
+  get  '/.well-known/est/cacerts',        to: 'est#cacerts'
 
   if true # was $COAPSERVER, but it does not get set early enough.
     #get '/.well-known/core',   to: 'core#index'
