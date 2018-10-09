@@ -5,6 +5,10 @@ require 'support/mud_toaster'
 
 RSpec.describe MudTelemetrySocket  do
 
+  before(:all) do
+    FileUtils.mkdir_p("tmp")
+  end
+
   it "should open a socket to a file" do
     mms = MockMudTelemetrySocket.new("spec/files/mud/cmdfiles.json",
                                      "tmp/cmdreplies.json")

@@ -5,6 +5,10 @@ require 'support/mud_toaster'
 RSpec.describe Device, type: :model do
   fixtures :all
 
+  before(:all) do
+    FileUtils.mkdir_p("tmp")
+  end
+
   before(:each) do
     Dir.glob("tmp/mudfiles/*.json") do |f| File.delete(f) end
     Dir.glob("tmp/*.tout") do |f| File.delete(f) end
