@@ -59,6 +59,14 @@ RSpec.describe "Est", type: :request do
     expect(response.content_type).to eq('application/pkcs7-mime; smime-type=certs-only')
   end
 
+  it "should return list of CAs from /crts" do
+    get '/e/crts'
+    expect(response).to have_http_status(200)
+    root = OpenSSL::X509::Certificate.new(response.body)
+    expect(root.issuer.to_s).to include("Fountain CA")
+    expect(response.content_type).to eq('application/pkcs7-mime; smime-type=certs-only')
+  end
+
   describe "signed pledge voucher request" do
     it "should get HTTPS POSTed to requestvoucher" do
 

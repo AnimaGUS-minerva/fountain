@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     #get '/.well-known/core',   to: 'core#index'
     post '/e/rv', to: 'est#cbor_rv', coap: true, rt: 'ace.est', short: '/e'
     post '/e/vs', to: 'est#cbor_vs', coap: true, rt: 'ace.est', short: '/e'
+
+    # get /cacerts
+    get '/e/crts', to: 'est#cbor_crts', coap: true, rt: 'ace.est', short: '/e'
   end
 
   #
