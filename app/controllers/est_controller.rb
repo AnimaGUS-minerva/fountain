@@ -7,6 +7,11 @@ class EstController < ApplicationController
            :content_type => 'application/pkcs7-mime; smime-type=certs-only'
   end
 
+  def cbor_crts
+    render :plain => FountainKeys.ca.jrc_pub_key.to_pem,
+           :content_type => 'application/pkcs7-mime; smime-type=certs-only'
+  end
+
   # POST /e/rv (CBOR, COSE)
   def cbor_rv
     begin
