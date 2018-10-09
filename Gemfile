@@ -37,6 +37,7 @@ gem 'mail'
 gem 'ffi', '~> 1.9.24'
 
 # Use Capistrano for deployment
+gem 'capistrano', '~> 3.10.2', group: :development
 gem 'capistrano-rails',  group: :development
 gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
@@ -78,9 +79,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'rails-controller-testing'
   gem 'cbor-diag'
-
-  gem 'capistrano', '~> 3.0'
-  gem 'capistrano-rvm'
 end
 
 group :development do

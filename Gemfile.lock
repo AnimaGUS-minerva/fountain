@@ -106,7 +106,7 @@ GEM
     arel (9.0.0)
     builder (3.2.3)
     byebug (10.0.2)
-    capistrano (3.11.0)
+    capistrano (3.10.2)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -321,7 +321,7 @@ PLATFORMS
 DEPENDENCIES
   active_scaffold!
   byebug
-  capistrano (~> 3.0)
+  capistrano (~> 3.10.2)
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
