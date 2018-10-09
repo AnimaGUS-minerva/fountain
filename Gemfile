@@ -37,6 +37,7 @@ gem 'mail'
 gem 'ffi', '~> 1.9.24'
 
 # Use Capistrano for deployment
+gem 'capistrano', '~> 3.10.2', group: :development
 gem 'capistrano-rails',  group: :development
 gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
@@ -60,9 +61,6 @@ gem 'pg', '0.20'
 gem 'thin'
 
 group :development, :test do
-  # Use postgresql as the database for Active Record
-  gem 'pg', '0.20'
-
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
   gem 'pry'

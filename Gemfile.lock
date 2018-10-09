@@ -314,6 +314,7 @@ PLATFORMS
 DEPENDENCIES
   active_scaffold!
   byebug
+  capistrano (~> 3.10.2)
   capistrano-bundler
   capistrano-rails
   capistrano-rvm

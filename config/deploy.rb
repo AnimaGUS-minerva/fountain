@@ -6,10 +6,10 @@ set :repo_url, "http://github.com/AnimaGUS-minerva/fountain.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
-set :branch, 'fountain-mud-controller'
+set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/home/mud/fountain"
+set :deploy_to, "/home/fountain/fountain"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
