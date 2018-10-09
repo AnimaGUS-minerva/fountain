@@ -37,7 +37,9 @@ gem 'mail'
 gem 'ffi', '~> 1.9.24'
 
 # Use Capistrano for deployment
-gem 'capistrano-rails', group: :development
+gem 'capistrano-rails',  group: :development
+gem 'capistrano-rvm',    group: :development
+gem 'capistrano-bundler',group: :development
 
 #gem 'openssl', "~> 2.1.0"
 gem 'openssl', :path => "../minerva/ruby-openssl"
@@ -50,10 +52,6 @@ gem 'david', :path => "../minerva/david"
 # encode/decode cbor messages
 gem 'cbor'
 gem 'json'
-
-group :mudcontroller do
-  gem 'sqlite3'
-end
 
 gem 'sqlite3'
 gem 'pg', '0.20'
