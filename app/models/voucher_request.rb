@@ -259,6 +259,7 @@ class VoucherRequest < ApplicationRecord
     request = Net::HTTP::Post.new(target_uri)
     request.body         = registrar_voucher_request
     request.content_type = registrar_voucher_request_type
+    request.add_field("Accept", registrar_voucher_desired_type)
     response = http_handler.request request     # Net::HTTPResponse object
 
     case response
