@@ -24,4 +24,8 @@ class CoseVoucherRequest < VoucherRequest
   def registrar_voucher_request_type
     'application/voucher-cose+cbor'
   end
+  def registrar_voucher_desired_type
+    'application/voucher-cose+cbor'
+  end
+
 end
