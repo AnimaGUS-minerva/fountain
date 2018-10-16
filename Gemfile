@@ -13,8 +13,8 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem "turbolinks"
 
-gem 'ecdsa',   :path => '../minerva/ruby_ecdsa'
-#gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
+#gem 'ecdsa',   :path => '../minerva/ruby_ecdsa'
+gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
 #gem 'chariwt', :path => '../chariwt'
 gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
@@ -46,9 +46,14 @@ gem 'capistrano-bundler',group: :development
 gem 'openssl', :path => "../minerva/ruby-openssl"
 
 # CoAP server for Rails.
-gem 'coap',    :path => "../minerva/coap"
-gem 'celluloid-io', :path => "../minerva/celluloid-io"
-gem 'david', :path => "../minerva/david"
+gem 'coap',    :git => 'git@github.com:AnimaGUS-minerva/coap.git'
+#gem 'coap',    :path => "../minerva/coap"
+
+gem 'celluloid-io', :git => 'git@github.com:AnimaGUS-minerva/celluloid-io.git'
+#gem 'celluloid-io', :path => "../minerva/celluloid-io"
+
+gem 'david', :git => 'git@github.com:AnimaGUS-minerva/david.git'
+#gem 'david', :path => "../minerva/david"
 
 # encode/decode cbor messages
 gem 'cbor'
