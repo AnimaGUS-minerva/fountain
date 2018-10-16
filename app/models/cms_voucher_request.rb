@@ -21,4 +21,7 @@ class CmsVoucherRequest < VoucherRequest
   def registrar_voucher_request_type
     'application/pkcs7-mime; smime-type=voucher-request'
   end
+  def registrar_voucher_desired_type
+    'application/pkcs7-mime; smime-type=voucher'
+  end
 end
