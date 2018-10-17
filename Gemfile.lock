@@ -1,4 +1,39 @@
 GIT
+  remote: git@github.com:AnimaGUS-minerva/celluloid-io.git
+  revision: 43439625828cb1821ab01e6a1f1658e13bd5e20a
+  submodules: true
+  specs:
+    celluloid-io (0.17.3)
+      celluloid (>= 0.17.2)
+      nio4r (>= 1.1)
+      timers (>= 4.1.1)
+
+GIT
+  remote: git@github.com:AnimaGUS-minerva/coap.git
+  revision: 02542b173f2ce176fe429646220ba64a13c417a1
+  specs:
+    coap (0.1.5.pre)
+      celluloid-io (~> 0.17.3)
+      resolv-ipv6favor (~> 0)
+
+GIT
+  remote: git@github.com:AnimaGUS-minerva/david.git
+  revision: f7b4b0ca5b206891b4473487ffca614779914b0f
+  specs:
+    david (0.5.1.pre)
+      celluloid (~> 0.17.3)
+      celluloid-io (~> 0.17.3)
+      coap (~> 0.1)
+      rack (~> 2.0)
+
+GIT
+  remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
+  revision: e3840d25a60b8cb6eff9247062663542d332130a
+  branch: ecdsa_interface_openssl
+  specs:
+    ecdsa (1.3.0)
+
+GIT
   remote: https://github.com/mcr/ChariWTs.git
   revision: 5dbb7787d2f29c5f303f1707f33c15cb66fe664d
   specs:
@@ -20,38 +55,9 @@ PATH
     fixture_save (0.0.1)
 
 PATH
-  remote: ../minerva/celluloid-io
-  specs:
-    celluloid-io (0.17.3)
-      celluloid (>= 0.17.2)
-      nio4r (>= 1.1)
-      timers (>= 4.1.1)
-
-PATH
-  remote: ../minerva/coap
-  specs:
-    coap (0.1.5.pre)
-      celluloid-io (~> 0.17.3)
-      resolv-ipv6favor (~> 0)
-
-PATH
-  remote: ../minerva/david
-  specs:
-    david (0.5.1.pre)
-      celluloid (~> 0.17.3)
-      celluloid-io (~> 0.17.3)
-      coap (~> 0.1)
-      rack (~> 2.0)
-
-PATH
   remote: ../minerva/ruby-openssl
   specs:
     openssl (2.2.0.pre.mcr1)
-
-PATH
-  remote: ../minerva/ruby_ecdsa
-  specs:
-    ecdsa (1.3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -153,7 +159,7 @@ GEM
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     hashdiff (0.3.7)
-    hitimes (1.2.6)
+    hitimes (1.3.0)
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
