@@ -49,8 +49,8 @@ gem 'openssl', :path => "../minerva/ruby-openssl"
 gem 'coap',    :path => "../minerva/coap"
 #gem 'coap',    :git => 'git@github.com:AnimaGUS-minerva/coap.git'
 
-gem 'celluloid-io', :path => "../minerva/celluloid-io"
-#gem 'celluloid-io', :git => 'git@github.com:AnimaGUS-minerva/celluloid-io.git'
+gem 'celluloid-io', :git => 'git@github.com:AnimaGUS-minerva/celluloid-io.git', :submodules => true
+#gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
 gem 'david', :path => "../minerva/david"
 #gem 'david', :git => 'git@github.com:AnimaGUS-minerva/david.git'
