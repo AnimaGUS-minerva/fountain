@@ -21,6 +21,7 @@ gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :br
 gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 gem 'jwt'
 
+#gem "fixture_save", :path => "../fixture_save"
 gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
 gem 'active_scaffold',  :git => "https://github.com/mcr/active_scaffold.git"
