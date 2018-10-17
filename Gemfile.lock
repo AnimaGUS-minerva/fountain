@@ -49,8 +49,9 @@ GIT
       ice_nine (~> 0.11)
       rails (>= 4.0.5)
 
-PATH
-  remote: ../fixture_save
+GIT
+  remote: https://github.com/mcr/fixture_save.git
+  revision: 307851690b31face4b83c464b4260eae44fb3f4c
   specs:
     fixture_save (0.0.1)
 
