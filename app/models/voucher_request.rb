@@ -254,7 +254,7 @@ class VoucherRequest < ApplicationRecord
   def get_voucher(target_url = nil)
     target_uri = masa_uri(target_url)
 
-    puts "Contacting server at: #{target_uri} about #{self.device_identifier}"
+    puts "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
 
     request = Net::HTTP::Post.new(target_uri)
     request.body         = registrar_voucher_request
