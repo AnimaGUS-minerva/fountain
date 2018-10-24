@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_15_200745) do
+ActiveRecord::Schema.define(version: 2018_10_24_210517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,8 +55,8 @@ ActiveRecord::Schema.define(version: 2018_05_15_200745) do
     t.integer "node_id"
     t.integer "manufacturer_id"
     t.text "device_identifier"
-    t.text "requesting_ip"
-    t.text "proxy_ip"
+    t.inet "requesting_ip"
+    t.inet "proxy_ip"
     t.text "nonce"
     t.binary "idevid"
     t.json "details"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 2018_05_15_200745) do
     t.text "tls_clientcert"
     t.binary "pledge_request"
     t.string "type", default: "CmsVoucherRequest"
+    t.json "status"
   end
 
   create_table "vouchers", id: :serial, force: :cascade do |t|
