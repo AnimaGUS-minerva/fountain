@@ -184,11 +184,19 @@ class VoucherRequest < ApplicationRecord
     url ||= masa_url
     @masauri ||= URI::join(url, "/.well-known/est/requestvoucher")
   end
+
+  def security_options
+    { :verify_mode => OpenSSL::SSL::VERIFY_NONE,
+      :use_ssl => masa_uri.scheme == 'https',
+      :cert    => FountainKeys.ca.jrc_pub_key,
+      :key     => FountainKeys.ca.jrc_priv_key,
+    }
+  end
+
   def http_handler
     @http_handler ||=
       Net::HTTP.start(masa_uri.host, masa_uri.port,
-                      { :verify_mode => OpenSSL::SSL::VERIFY_NONE,
-                        :use_ssl => masa_uri.scheme == 'https'})
+                      security_options)
   end
 
   def process_content_type(type, bodystr)
