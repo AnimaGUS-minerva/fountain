@@ -262,7 +262,15 @@ class VoucherRequest < ApplicationRecord
     request.add_field("Accept", registrar_voucher_desired_type)
     response = http_handler.request request     # Net::HTTPResponse object
 
+    logger.info "MASA at #{target_uri} says #{response.message}"
+
     case response
+    when Net::HTTPServerError
+      raise VoucherRequest::BadMASA.new("MASA server error")
+
+    when Net::HTTPNotAcceptable
+      raise VoucherRequest::BadMASA.new("MASA rejects voucher request")
+
     when Net::HTTPBadRequest
       raise VoucherRequest::BadMASA.new("bad request")
 
@@ -270,7 +278,6 @@ class VoucherRequest < ApplicationRecord
       raise VoucherRequest::BadMASA.new(response.body)
 
     when Net::HTTPNotFound
-      logger.info "MASA at #{target_uri} says #{response.message}"
       raise VoucherRequest::BadMASA.new(response.message)
 
     when Net::HTTPSuccess
