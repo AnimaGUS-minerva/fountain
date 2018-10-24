@@ -79,7 +79,7 @@ RSpec.describe "Est", type: :request do
       allow(Time).to receive(:now).and_return(@time_now)
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers:
-               {'Accept'=>'*/*',
+               {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
                 'Host'=>'highway.sandelman.ca',
@@ -129,7 +129,7 @@ RSpec.describe "Est", type: :request do
 
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers: {
-               'Accept'=>'*/*',
+               'Accept'=>['*/*', 'application/voucher-cose+cbor'],
                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                'Content-Type'=>'application/voucher-cose+cbor',
                'Host'=>'highway.sandelman.ca',
