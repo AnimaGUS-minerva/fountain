@@ -206,39 +206,50 @@ class VoucherRequest < ApplicationRecord
 
     parameters = ct.parameters.first
 
-    case [ct.main_type,ct.sub_type]
-    when ['application','pkcs7-mime'], ['application','cms']
-      @voucher_response_type = :pkcs7
+    begin
+      case [ct.main_type,ct.sub_type]
+      when ['application','pkcs7-mime'], ['application','cms']
+        @voucher_response_type = :pkcs7
 
 
-      @smimetype = parameters['smime-type']
-      if @smimetype == 'voucher'
-        @responsetype = :pkcs7_voucher
-        @pkcs7voucher = true
+        @smimetype = parameters['smime-type']
+        if @smimetype == 'voucher'
+          @responsetype = :pkcs7_voucher
+          @pkcs7voucher = true
+        end
+
+        der = decode_pem(bodystr)
+        voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der)
+
+      when ['application','voucher-cms+cbor']
+        @voucher_response_type = :pkcs7
+        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
+
+      when ['application','voucher-cose+cbor']
+        @voucher_response_type = :cbor
+        @cose = true
+        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
+
+      when ['multipart','mixed']
+        @voucher_response_type = :cbor
+        @cose = true
+        @boundary = parameters["boundary"]
+        mailbody = Mail::Body.new(bodystr)
+        mailbody.split!(@boundary)
+        voucher = Voucher.from_parts(mailbody.parts)
+      else
+        byebug
       end
 
-      der = decode_pem(bodystr)
-      voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der)
-
-    when ['application','voucher-cms+cbor']
-      @voucher_response_type = :pkcs7
-      voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
-
-    when ['application','voucher-cose+cbor']
-      @voucher_response_type = :cbor
-      @cose = true
-      voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
-
-    when ['multipart','mixed']
-      @voucher_response_type = :cbor
-      @cose = true
-      @boundary = parameters["boundary"]
-      mailbody = Mail::Body.new(bodystr)
-      mailbody.split!(@boundary)
-      voucher = Voucher.from_parts(mailbody.parts)
-    else
-      byebug
+    rescue Chariwt::Voucher::MissingPublicKey => e
+      self.status = { :failed       => e.message,
+                      :voucher_type => ct.to_s,
+                      :parameters   => parameters,
+                      :encoded_voucher => Base64::urlsafe_encode64(bodystr),
+                      :masa_url     => masa_uri.to_s }
+      return nil
     end
+
     return voucher
   end
 
