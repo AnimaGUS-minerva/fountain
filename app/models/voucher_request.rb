@@ -17,7 +17,8 @@ class VoucherRequest < ApplicationRecord
   end
 
   def self.from_cbor(hash, signed = false)
-    vr = CoseVoucherRequest.create(vdetails: hash, signed: signed)
+    vr = CoseVoucherRequest.create(signed: signed)
+    vr.details = hash
     vr.populate_explicit_fields
     vr
   end
