@@ -74,6 +74,10 @@ RSpec.describe VoucherRequest, type: :model do
       expect(voucher.assertion).to eq("logged")
     end
 
+    it "should store the broken voucher responses into the vr.status field when missing public key" do
+      pending "more to write"
+    end
+
     it "should have a dozen voucher responses which are broken/mis-formatted" do
       pending "something to write"
       vr1= nil
