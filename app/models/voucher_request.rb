@@ -245,7 +245,7 @@ class VoucherRequest < ApplicationRecord
       self.status = { :failed       => e.message,
                       :voucher_type => ct.to_s,
                       :parameters   => parameters,
-                      :encoded_voucher => Base64::safeurl_encode64(bodystr),
+                      :encoded_voucher => Base64::urlsafe_encode64(bodystr),
                       :masa_url     => masa_uri.to_s }
       return nil
     end
