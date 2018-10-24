@@ -301,7 +301,9 @@ class VoucherRequest < ApplicationRecord
       raise VoucherRequest::BadMASA.new(response.message)
 
     when Net::HTTPSuccess
-      voucher = process_content_type(response['Content-Type'], response.body)
+      ct = response['Content-Type']
+      logger.info "MASA provided voucher of type #{ct}"
+      voucher = process_content_type(ct, response.body)
       unless voucher
         raise VoucherRequest::BadMASA.new("invalid returned content-type: #{@content_type}")
       end
