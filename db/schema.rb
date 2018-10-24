@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_01_014814) do
+ActiveRecord::Schema.define(version: 2018_10_24_210517) do
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -87,8 +87,8 @@ ActiveRecord::Schema.define(version: 2018_10_01_014814) do
     t.integer "device_id"
     t.integer "manufacturer_id"
     t.text "device_identifier"
-    t.text "requesting_ip"
-    t.text "proxy_ip"
+    t.inet "requesting_ip"
+    t.inet "proxy_ip"
     t.text "nonce"
     t.binary "idevid"
     t.json "details"
@@ -98,6 +98,7 @@ ActiveRecord::Schema.define(version: 2018_10_01_014814) do
     t.text "tls_clientcert"
     t.binary "pledge_request"
     t.string "type", default: "CmsVoucherRequest"
+    t.json "status"
   end
 
   create_table "vouchers", force: :cascade do |t|
