@@ -105,6 +105,7 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).signed).to be_truthy
       expect(assigns(:voucherreq).node).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
+      expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
       expect(Chariwt.cmp_pkcs_file(voucher_request,
                                    "voucher_request_081196FFFE0181E0",
@@ -157,6 +158,7 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).signed).to be_truthy
       expect(assigns(:voucherreq).node).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
+      expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
       # validate that the voucher_request can be validated with the key used.
       vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request, FountainKeys.ca.jrc_pub_key)
