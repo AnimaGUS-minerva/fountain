@@ -17,6 +17,7 @@ class EstController < ApplicationController
     begin
       # assumes *DTLS* version.
       clientcert_pem = request.env["SSL_CLIENT_CERT"]
+      clientcert_pem ||= request.env["rack.peer_cert"]
       clientcert =  OpenSSL::X509::Certificate.new(clientcert_pem)
       @voucherreq = VoucherRequest.from_cose_cbor(request.body.read, clientcert)
       @voucherreq.tls_clientcert = clientcert
@@ -59,6 +60,7 @@ class EstController < ApplicationController
     end
 
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
+    clientcert_pem ||= request.env["rack.peer_cert"]
     if clientcert_pem
       @voucherreq.tls_clientcert = clientcert_pem
     end
