@@ -274,7 +274,8 @@ class VoucherRequest < ApplicationRecord
   def get_voucher(target_url = nil)
     target_uri = masa_uri(target_url)
 
-    puts "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
+    logger.info "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
+    logger.info "Asking for voucher of type: #{registrar_voucher_desired_type}"
 
     request = Net::HTTP::Post.new(target_uri)
     request.body         = registrar_voucher_request
@@ -305,7 +306,7 @@ class VoucherRequest < ApplicationRecord
       logger.info "MASA provided voucher of type #{ct}"
       voucher = process_content_type(ct, response.body)
       unless voucher
-        raise VoucherRequest::BadMASA.new("invalid returned content-type: #{@content_type}")
+        raise VoucherRequest::BadMASA.new("invalid returned content-type: #{ct}")
       end
       voucher.voucher_request = self
       voucher.node = self.node
