@@ -36,6 +36,7 @@ class EstController < ApplicationController
     rescue VoucherRequest::BadMASA => e
       logger.info "invalid MASA response: #{e.message}"
       head 404, text: e.message
+      return
     end
 
     if @voucher
@@ -71,6 +72,7 @@ class EstController < ApplicationController
     rescue VoucherRequest::BadMASA => e
       logger.info "invalid MASA response: #{e.message}"
       head 404, text: e.message
+      return
     end
 
     if @voucher
