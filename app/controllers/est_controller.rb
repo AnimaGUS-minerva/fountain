@@ -42,7 +42,9 @@ class EstController < ApplicationController
 
     if @voucher
       render :body => @voucher.signed_voucher,
-             :content_type => 'application/voucher-cose+cbor'
+             :content_type => 'application/voucher-cose+cbor',
+             :charset => nil
+      logger.info "returned voucher successfully"
     else
       head 500
     end
