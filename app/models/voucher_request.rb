@@ -1,3 +1,5 @@
+require 'net/http'
+
 class VoucherRequest < ApplicationRecord
 
   belongs_to :node
