@@ -70,14 +70,13 @@ gem 'pg', '0.20'
 
 # used in production on SecureHomeGateway
 gem 'thin'
+gem 'byebug'
 
 # use for background processing of mud files, and interaction with
 # mud-controller.
 gem 'sucker_punch'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
   gem 'pry'
   gem 'pry-doc'
 
