@@ -1,5 +1,3 @@
-require 'lib/fountain_keys'
-
 class CoseVoucherRequest < VoucherRequest
   # create a voucher request (CBOR+COSE) appropriate for sending to the MASA.
   # it shall always be signed.
