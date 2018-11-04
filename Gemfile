@@ -47,14 +47,14 @@ gem 'capistrano-bundler',group: :development
 gem 'openssl', :path => "../minerva/ruby-openssl"
 
 # CoAP server for Rails.
-gem 'coap',    :path => "../minerva/coap"
-#gem 'coap',    :git => 'git@github.com:AnimaGUS-minerva/coap.git'
+gem 'coap',    :git => 'git@github.com:AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
+#gem 'coap',    :path => "../minerva/coap"
 
 gem 'celluloid-io', :git => 'git@github.com:AnimaGUS-minerva/celluloid-io.git', :submodules => true
 #gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
-gem 'david', :path => "../minerva/david"
 #gem 'david', :git => 'git@github.com:AnimaGUS-minerva/david.git'
+gem 'david', :path => "../minerva/david"
 
 # encode/decode cbor messages
 gem 'cbor'

@@ -9,6 +9,15 @@ GIT
       timers (>= 4.1.1)
 
 GIT
+  remote: git@github.com:AnimaGUS-minerva/coap.git
+  revision: 215bb8038b1683771975a1d749e28d05c6dadcfc
+  branch: dtls-client
+  specs:
+    coap (0.1.5.pre)
+      celluloid-io (~> 0.17.3)
+      resolv-ipv6favor (~> 0)
+
+GIT
   remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
   revision: e3840d25a60b8cb6eff9247062663542d332130a
   branch: ecdsa_interface_openssl
@@ -36,13 +45,6 @@ GIT
   revision: 307851690b31face4b83c464b4260eae44fb3f4c
   specs:
     fixture_save (0.0.1)
-
-PATH
-  remote: ../minerva/coap
-  specs:
-    coap (0.1.5.pre)
-      celluloid-io (~> 0.17.3)
-      resolv-ipv6favor (~> 0)
 
 PATH
   remote: ../minerva/david
