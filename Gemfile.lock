@@ -10,21 +10,12 @@ GIT
 
 GIT
   remote: git@github.com:AnimaGUS-minerva/coap.git
-  revision: 02542b173f2ce176fe429646220ba64a13c417a1
+  revision: 215bb8038b1683771975a1d749e28d05c6dadcfc
+  branch: dtls-client
   specs:
     coap (0.1.5.pre)
       celluloid-io (~> 0.17.3)
       resolv-ipv6favor (~> 0)
-
-GIT
-  remote: git@github.com:AnimaGUS-minerva/david.git
-  revision: 21d8a50a2bf2cacfd8e2ef431f0fee211ccabb5d
-  specs:
-    david (0.5.1.pre)
-      celluloid (~> 0.17.3)
-      celluloid-io (~> 0.17.3)
-      coap (~> 0.1)
-      rack (~> 2.0)
 
 GIT
   remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
@@ -56,9 +47,19 @@ GIT
     fixture_save (0.0.1)
 
 PATH
+  remote: ../minerva/david
+  specs:
+    david (0.5.1.pre)
+      celluloid (~> 0.17.3)
+      celluloid-io (~> 0.17.3)
+      coap (~> 0.1)
+      rack (~> 2.0)
+
+PATH
   remote: ../minerva/ruby-openssl
   specs:
     openssl (2.2.0.pre.mcr1)
+      ipaddr
 
 GEM
   remote: https://rubygems.org/
@@ -165,6 +166,7 @@ GEM
     i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    ipaddr (1.2.0)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
