@@ -105,5 +105,33 @@ class SystemVariable < ActiveRecord::Base
     end
   end
 
+    # this generates a new pseudo-random number from the things stored into
+  # the given item.  Both the number and value are used.   The value is used
+  # to store the cryptographic state, and the number gives which iteration
+  # this is.  This object needs to initialize itself from a nextval().
+  def self.randomseq(thing)
+
+    # first find the thing.
+    v = self.findormake(thing)
+
+    # next, see if the thing has never been initialized and initialize it with
+    # a random value.
+    if v.value.nil?
+      prng = Random.new
+      v.number = 1 unless v.number
+      [1..(v.number)].each {|n|
+        prng.rand(2147483648)
+      }
+      v.value = Base64.encode64(Marshal.dump(prng))
+      v.save!
+    end
+
+    prng = Marshal.load(Base64.decode64(v.value))
+    v.number = prng.rand(2147483648)
+    v.value = Base64.encode64(Marshal.dump(prng))
+    v.save!
+    v.number
+  end
+
 
 end
