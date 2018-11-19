@@ -30,5 +30,7 @@ Rails.application.routes.draw do
     get '/e/crts', to: 'est#cbor_crts', coap: true, rt: 'ace.est', short: '/e'
   end
 
-  #
+  resources :status,  :only => [:index ]
+  resources :version, :only => [:index ]
+
 end
