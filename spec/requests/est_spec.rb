@@ -220,6 +220,7 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
       # validate that the voucher_request can be validated with the key used.
+      expect(voucher_request).to_not be_nil
       vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request, FountainKeys.ca.jrc_pub_key)
       expect(vr0).to_not be_nil
 
