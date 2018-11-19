@@ -1,9 +1,17 @@
 #!/bin/sh
 
-thin start --ssl \
+export SERVCERT=db/cert/jrc_prime256v1.crt
+export SERVKEY=db/cert/jrc_prime256v1.key
+
+RAILS_ENV=${RAILS_ENV-production}
+export RAILS_ENV
+
+tail -f log/${RAILS_ENV}.log
+
+LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1 bundle exec thin start --ssl \
   --address ::2  \
   --port    443  \
   --ssl-cert-file db/cert/jrc_prime256v1.crt \
-  --ssl-key-file db/cert/jrc_prime256v1.key
+  --ssl-key-file db/cert/jrc_prime256v1.key $@
 
 
