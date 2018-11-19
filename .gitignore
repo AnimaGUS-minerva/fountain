@@ -21,3 +21,5 @@ spec/files/vr_081196FFFE0181E0.der
 .byebug_history
 db/cert
 config/database.yml
+.byebug_history
+run
