@@ -163,6 +163,7 @@ GEM
       activesupport (>= 4.2.0)
     hashdiff (0.3.7)
     hitimes (1.3.0)
+    http-accept (1.7.0)
     i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -337,6 +338,7 @@ DEPENDENCIES
   ecdsa!
   ffi (~> 1.9.24)
   fixture_save!
+  http-accept
   jbuilder (~> 2.0)
   jquery-rails
   json

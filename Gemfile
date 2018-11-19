@@ -55,6 +55,10 @@ gem 'celluloid-io', :git => 'git@github.com:AnimaGUS-minerva/celluloid-io.git', 
 gem 'david', :git => 'git@github.com:AnimaGUS-minerva/david.git'
 #gem 'david', :path => "../minerva/david"
 
+# use this to get full decoding of HTTP Accept: headers, to be able to
+# split off smime-type=voucher in pkcs7-mime, and other parameters
+gem 'http-accept'
+
 # encode/decode cbor messages
 gem 'cbor'
 gem 'json'
