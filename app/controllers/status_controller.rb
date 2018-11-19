@@ -1,4 +1,5 @@
-class StatusController < ApiController
+class StatusController < ApplicationController
+  include Response
 
   def index
     @stats = [['Devices', Certificate.count],
