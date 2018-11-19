@@ -53,6 +53,29 @@ class EstController < ApplicationController
 
   # POST /.well-known/est/requestvoucher
   def requestvoucher
+    media_types = HTTP::Accept::MediaTypes.parse(request.env['CONTENT_TYPE'])
+
+    if media_types == nil or media_types.length < 1
+      head 406,
+           text: "unknown voucher-request content-type: #{request.content_type}"
+      return
+    end
+
+    media_type = media_types.first
+    case
+    when (media_type.mime_type  == 'application/pkcs7-mime' and
+           media_type.parameters == { 'smime-type' => 'voucher-request'} )
+
+      requestvoucher_pkcs_signed
+    else
+      head 406
+      return
+    end
+  end
+
+  private
+
+  def requestvoucher_pkcs_signed
     token = Base64.decode64(request.body.read)
     begin
       @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
@@ -86,10 +109,5 @@ class EstController < ApplicationController
       head 500
     end
   end
-
-  # GET /.well-known/core
-
-
-  private
 
 end
