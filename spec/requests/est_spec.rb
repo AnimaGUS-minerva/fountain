@@ -119,32 +119,13 @@ RSpec.describe "Est", type: :request do
     end
 
 
-    it "should get CoAPS POSTed to cbor_rv" do
-      resultio = File.open("spec/files/voucher_00-D0-E5-F2-10-03.mvch","rb")
-      ct = resultio.gets
-      ctvalue = ct[14..-3]
-      ct2= resultio.gets
-      result=resultio.read
-
+    def start_coaps_posted
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
+    end
 
-      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
-        with(headers: {
-               'Accept'=>['*/*', 'application/voucher-cose+cbor'],
-               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-               'Content-Type'=>'application/voucher-cose+cbor',
-               'Host'=>'highway.sandelman.ca',
-             }).
-        to_return(status: 200, body: lambda { |request|
-
-                    voucher_request = request.body
-                    result},
-                  headers: {
-                    'Content-Type'=>ctvalue
-                  })
-
+    def do_coaps_posted
       # get the Base64 of the incoming signed request
       body = IO.read("spec/files/vr_00-D0-E5-F2-10-03.vch")
 
@@ -155,7 +136,9 @@ RSpec.describe "Est", type: :request do
 
       $FAKED_TEMPORARY_KEY = temporary_key
       post '/e/rv', :params => body, :headers => env
+    end
 
+    def validate_coaps_posted(voucher_request)
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).pledge_request).to_not be_nil
@@ -176,7 +159,36 @@ RSpec.describe "Est", type: :request do
 
       expect(Chariwt.cmp_vch_file(response.body,
                                   "voucher_00-D0-E5-F2-10-03")).to be true
+    end
 
+    it "should get CoAPS POSTed to cbor_rv" do
+      resultio = File.open("spec/files/voucher_00-D0-E5-F2-10-03.mvch","rb")
+      ct = resultio.gets
+      ctvalue = ct[14..-3]
+      ct2= resultio.gets
+      result=resultio.read
+      voucher_request = nil
+
+      start_coaps_posted
+
+      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
+        with(headers: {
+               'Accept'=>['*/*', 'multipart/mixed'],
+               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'Content-Type'=>'application/voucher-cose+cbor',
+               'Host'=>'highway.sandelman.ca',
+             }).
+        to_return(status: 200, body: lambda { |request|
+
+                    voucher_request = request.body
+                    result},
+                  headers: {
+                    'Content-Type'=>ctvalue
+                  })
+
+      do_coaps_posted
+
+      validate_coaps_posted(voucher_request)
     end
 
     it "should get CoAPS POSTed to cbor_rv, onwards to highway-test" do
