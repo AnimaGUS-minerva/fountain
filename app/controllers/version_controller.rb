@@ -1,5 +1,5 @@
-class VersionController < ActionController::Base
-  include Response
+class VersionController < ApiController
+  include ActionController::MimeResponds
 
   def index
     respond_to do |format|
