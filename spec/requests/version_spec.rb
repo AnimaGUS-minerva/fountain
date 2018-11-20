@@ -7,7 +7,7 @@ RSpec.describe 'Highway version API', type: :request do
     it "should return version when asked at /version" do
       get "/version"
       expect(response).to have_http_status(200)
-      expect(response['Content-Type']).to include("text/html")
+      expect(response['Content-Type']).to include("text/plain")
     end
 
     it "should return JSON version when asked at /version.json" do
