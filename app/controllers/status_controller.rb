@@ -1,6 +1,4 @@
 class StatusController < ApiController
-  include ActionController::MimeResponds
-
   def index
     @stats = [['Devices', Certificate.count],
               ['Vouchers',Voucher.count],
