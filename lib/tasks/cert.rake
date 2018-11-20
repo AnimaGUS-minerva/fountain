@@ -73,7 +73,9 @@ namespace :fountain do
     # cf. RFC 5280 - to make it a "v3" certificate
     jrc_crt.version = 2
     jrc_crt.serial = 1
-    jrc_crt.subject = OpenSSL::X509::Name.parse "/DC=ca/DC=sandelman/CN=Unstrung JRC"
+    dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
+    dn = sprintf("%s/CN=%s", dnprefix, SystemVariable.string(:hostname).chomp)
+    jrc_crt.subject = OpenSSL::X509::Name.parse dn
 
     root_ca = FountainKeys.ca.rootkey
     # jrc is signed by root_ca
