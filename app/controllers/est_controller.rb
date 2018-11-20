@@ -66,6 +66,10 @@ class EstController < ApiController
            media_type.parameters == { 'smime-type' => 'voucher-request'} )
 
       requestvoucher_pkcs_signed
+
+    when (media_type.mime_type == 'application/json')
+      requestvoucher_unsigned
+
     else
       head 406
       return
@@ -74,15 +78,7 @@ class EstController < ApiController
 
   private
 
-  def requestvoucher_pkcs_signed
-    token = Base64.decode64(request.body.read)
-    begin
-      @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
-    rescue VoucherRequest::InvalidVoucherRequest
-      head 406
-      return
-    end
-
+  def capture_client_info
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     clientcert_pem ||= request.env["rack.peer_cert"]
     if clientcert_pem
@@ -91,8 +87,12 @@ class EstController < ApiController
     @voucherreq.discover_manufacturer
     @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
     @voucherreq.save!
-    logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
 
+    logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
+    @voucherreq.populate_implicit_fields
+  end
+
+  def return_voucher
     begin
       @voucher = @voucherreq.get_voucher
     rescue VoucherRequest::BadMASA => e
@@ -107,6 +107,31 @@ class EstController < ApiController
     else
       head 500
     end
+  end
+
+  def requestvoucher_unsigned
+    # would prefer to have ::Metal version, which does not parse application/json
+    # until params is called.  Poorly formatted JSON may blow up, which is
+    # why from_unsigned_json() does some tweaks first.
+    # But, at this point something needs ApplicationController.
+    @voucherreq = UnsignedVoucherRequest.from_unsigned_json(request.body.read)
+
+    capture_client_info
+    return_voucher
+  end
+
+
+  def requestvoucher_pkcs_signed
+    token = Base64.decode64(request.body.read)
+    begin
+      @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
+    rescue VoucherRequest::InvalidVoucherRequest
+      head 406
+      return
+    end
+
+    capture_client_info
+    return_voucher
   end
 
 end
