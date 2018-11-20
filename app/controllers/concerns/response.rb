@@ -1,5 +1,6 @@
 # app/controllers/concerns/response.rb
 module Response
+  extend ActiveSupport::Concern
   def api_response(object, status = :ok, content = nil)
     render json: object, status: status, content_type: content
   end

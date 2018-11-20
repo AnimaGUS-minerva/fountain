@@ -1,5 +1,4 @@
-class EstController < ApplicationController
-  skip_before_action :verify_authenticity_token
+class EstController < ApiController
 
   # CACERTS return
   def cacerts
