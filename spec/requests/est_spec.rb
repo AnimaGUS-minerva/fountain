@@ -236,6 +236,55 @@ RSpec.describe "Est", type: :request do
 
     end
 
+    it "should post an unsigned voucher" do
+
+      result = IO.read("spec/files/voucher_081196FFFE0181E0.pkcs")
+      voucher_request = nil
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+
+      allow(Time).to receive(:now).and_return(@time_now)
+      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
+        with(headers:
+               {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
+                'Host'=>'highway.sandelman.ca',
+                'User-Agent'=>'Ruby'
+               }).
+        to_return(status: 200, body: lambda { |request|
+                    voucher_request = request.body
+                    result},
+                  headers: {
+                    'Content-Type'=>'application/pkcs7-mime; smime-type=voucher'
+                  })
+
+      # get the JSON of the unsigned request
+      body = IO.read("spec/files/raw_unsigned_vr-00-12-34-56-78-9A.json")
+
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = clientcert
+      env["HTTP_ACCEPT"]  = "application/pkcs7-mime; smime-type=voucher"
+      env["CONTENT_TYPE"] = "application/json"
+      post '/.well-known/est/requestvoucher', :params => body, :headers => env
+
+      expect(response).to have_http_status(200)
+
+      expect(assigns(:voucherreq)).to_not be_nil
+      expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
+      expect(assigns(:voucherreq).pledge_request).to_not be_nil
+      expect(assigns(:voucherreq).signed).to be_falsey
+      expect(assigns(:voucherreq).node).to_not be_nil
+      expect(assigns(:voucherreq).manufacturer).to be_present
+      expect(assigns(:voucherreq).device_identifier).to_not be_nil
+
+      expect(Chariwt.cmp_pkcs_file(voucher_request,
+                                   "parboiled_vr_081196FFFE0181E0")).to be true
+
+    end
+
+
+
+
   end
 
 

@@ -108,6 +108,16 @@ class VoucherRequest < ApplicationRecord
     self.nonce             = vdetails["nonce"]
   end
 
+  # this routine will populate additional fields that might be missing
+  # by looking into the client certificate for the (D)TLS and/or key
+  # that signed the voucher request
+  def populate_implicit_fields
+    unless device_identifier
+      self.device_identifier = subject_cn
+      save!
+    end
+  end
+
   # create a voucher request (JOSE signed JSON) appropriate for sending to the MASA.
   # it shall always be signed.
   def registrar_voucher_request_json
@@ -133,6 +143,25 @@ class VoucherRequest < ApplicationRecord
 
   def registrar_voucher_request_type
     raise InvalidVoucherRequest
+  end
+
+  def subject
+    @subject ||= certificate.subject
+  end
+  def calc_subject_hash
+    @subject_dn = Hash.new
+    subject.to_a.each { |dn|
+      @subject_dn[dn[0]] = dn[1]
+    }
+    @subject_dn
+  end
+
+  def subject_hash
+    @subject_hash ||= calc_subject_hash
+  end
+
+  def subject_cn
+    subject_hash["CN"]
   end
 
   def certificate
