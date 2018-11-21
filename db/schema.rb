@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_24_210517) do
+ActiveRecord::Schema.define(version: 2018_11_21_234642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_210517) do
     t.binary "pledge_request"
     t.string "type", default: "CmsVoucherRequest"
     t.json "status"
+    t.binary "registrar_request"
   end
 
   create_table "vouchers", id: :serial, force: :cascade do |t|
