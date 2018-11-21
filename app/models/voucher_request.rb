@@ -309,7 +309,7 @@ class VoucherRequest < ApplicationRecord
     logger.info "Asking for voucher of type: #{registrar_voucher_desired_type}"
 
     request = Net::HTTP::Post.new(target_uri)
-    request.body         = registrar_voucher_request
+    request.body         = self.registrar_request = registrar_voucher_request
     request.content_type = registrar_voucher_request_type
     request.add_field("Accept", registrar_voucher_desired_type)
     response = http_handler.request request     # Net::HTTPResponse object

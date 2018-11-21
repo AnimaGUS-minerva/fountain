@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_24_210517) do
+ActiveRecord::Schema.define(version: 2018_11_21_234642) do
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_210517) do
     t.binary "pledge_request"
     t.string "type", default: "CmsVoucherRequest"
     t.json "status"
+    t.binary "registrar_request"
   end
 
   create_table "vouchers", force: :cascade do |t|
