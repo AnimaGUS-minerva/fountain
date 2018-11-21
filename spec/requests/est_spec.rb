@@ -238,7 +238,7 @@ RSpec.describe "Est", type: :request do
 
     it "should post an unsigned voucher" do
 
-      result = IO.read("spec/files/voucher_081196FFFE0181E0.pkcs")
+      result = IO.read("spec/files/voucher_00123456789A.pkcs")
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
@@ -278,7 +278,7 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
       expect(Chariwt.cmp_pkcs_file(voucher_request,
-                                   "parboiled_vr_081196FFFE0181E0")).to be true
+                                   "parboiled_vr_00123456789A")).to be true
 
     end
 
