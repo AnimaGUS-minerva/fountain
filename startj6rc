@@ -7,8 +7,15 @@ export SERVCERT=db/cert/jrc_prime256v1.crt
 export SERVKEY=db/cert/jrc_prime256v1.key
 #strace -o /tmp/nn1 -E LD_PRELOAD=/sandel/3rd/openssl/lib/libcrypto.so.1.1:/sandel/3rd/openssl/lib/libssl.so.1.1 ./ruby bin/rails server david -b ::2 -p 5684
 
+RAILS_ENV=${RAILS_ENV-production}
+export RAILS_ENV
+
+tail -f log/${RAILS_ENV}.log &
+TAIL_PID=$!
+trap "kill $TAIL_PID; exit 0" 1 2 3 15
+
 #LD_PRELOAD=/sandel/3rd/openssl/lib/libcrypto.so.1.1:/sandel/3rd/openssl/lib/libssl.so.1.1  ./ruby bin/rails server david -b ::2 -p 5684
-LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1  ruby bin/rails server david -b :: -p 5684
+LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1  bundle exec ruby bin/rails server david -b :: -p 5684
 
 
 
