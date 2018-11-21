@@ -18,13 +18,10 @@ serialNumber=00-D0-E5-F2-00-01
 mkdir -p spec/files/product_${serialNumber}
 cp -Lr ../highway/spec/files/product_${serialNumber}/. spec/files/product_${serialNumber}
 
-rm -f ../reach/tmp/vr_${serialNumber}.pkcs
+#rm -f ../reach/tmp/vr_${serialNumber}.pkcs
 
-(cd ../reach && rake reach:send_voucher_request PRODUCTID=${here}/spec/files/product_${serialNumber}  JRC=https://fountain-test.example.com/ )
+(cd ../reach && rake reach:send_constrained_request PRODUCTID=${here}/spec/files/product_${serialNumber}  JRC=coaps://fountain-test.example.com/ )
 
-cp ../reach/tmp/vr_${serialNumber}.pkcs spec/files/voucher_request-${serialNumber}.pkcs
-
-(cd ../reach && rake reach:send_constrained_request PRODUCTID=${here}/spec/files/product_${serialNumber}  JRC=https://fountain-test.example.com/ )
-
+ls -lt ../reach/tmp
 cp ../reach/tmp/vr_${serialNumber}.pkcs spec/files/voucher_request-${serialNumber}.pkcs
 
