@@ -24,7 +24,4 @@ rm -f ../reach/tmp/vr_${serialNumber}.pkcs
 
 cp ../reach/tmp/vr_${serialNumber}.pkcs spec/files/voucher_request-${serialNumber}.pkcs
 
-(cd ../reach && rake reach:send_constrained_request PRODUCTID=${here}/spec/files/product_${serialNumber}  JRC=https://fountain-test.example.com/ )
-
-cp ../reach/tmp/vr_${serialNumber}.pkcs spec/files/voucher_request-${serialNumber}.pkcs
 

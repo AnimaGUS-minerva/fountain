@@ -282,6 +282,10 @@ RSpec.describe "Est", type: :request do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
+
+      WebMock.allow_net_connect!
+
+      if false
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
@@ -296,12 +300,13 @@ RSpec.describe "Est", type: :request do
                   headers: {
                     'Content-Type'=>'application/pkcs7-mime; smime-type=voucher'
                   })
+      end
 
       # get the JSON of the unsigned request
       body = IO.read("spec/files/raw_unsigned_vr-00-12-34-56-78-9A.json")
 
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = clientcert
+      env["SSL_CLIENT_CERT"] = cbor_highwaytest_clientcert
       env["HTTP_ACCEPT"]  = "application/pkcs7-mime; smime-type=voucher"
       env["CONTENT_TYPE"] = "application/json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => env
@@ -320,10 +325,6 @@ RSpec.describe "Est", type: :request do
                                    "parboiled_vr_00123456789A")).to be true
 
     end
-
-
-
-
   end
 
 
