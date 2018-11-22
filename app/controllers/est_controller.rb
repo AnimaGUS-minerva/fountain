@@ -24,6 +24,10 @@ class EstController < ApiController
       @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
       @voucherreq.save!
 
+    rescue Chariwt::Voucher::RequestFailedValidation
+      render :status => 403, :plain => "voucher request could not be validated with client certificate"
+      return
+
     rescue VoucherRequest::InvalidVoucherRequest
       head 406
       return
