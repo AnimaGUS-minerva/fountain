@@ -32,14 +32,22 @@ RSpec.describe "Est", type: :request do
     end
   end
 
+  # points to https://highway.sandelman.ca
   def clientcert
     @clientcert ||= IO.binread("spec/certs/081196FFFE0181E0.crt")
   end
 
+  # points to https://highway.sandelman.ca
   def cbor_clientcert
     @cbor_clientcert ||= IO.binread("spec/certs/F21003-idevid.pem")
   end
 
+  # points to https://highway-test.sandelman.ca
+  def highwaytest_clientcert_almec_f20001
+    @highwaytest_clientcert_almec ||= IO.binread("spec/files/product_00-D0-E5-F2-00-01/device.crt")
+  end
+
+  # points to https://highway-test.sandelman.ca
   def cbor_highwaytest_clientcert
     @cbor_highwaytest_clientcert ||= IO.binread("spec/certs/E0000F-idevid.pem")
   end
@@ -122,7 +130,6 @@ RSpec.describe "Est", type: :request do
 
 
     def start_coaps_posted
-      voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
     end
@@ -171,8 +178,6 @@ RSpec.describe "Est", type: :request do
       result=resultio.read
       voucher_request = nil
 
-      start_coaps_posted
-
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers: {
                'Accept'=>['*/*', 'multipart/mixed'],
@@ -188,9 +193,28 @@ RSpec.describe "Est", type: :request do
                     'Content-Type'=>ctvalue
                   })
 
+      start_coaps_posted
       do_coaps_posted
-
       validate_coaps_posted(voucher_request)
+    end
+
+    it "should get CoAPS POSTed to cbor_rv, but with mis-matched validation" do
+      voucher_request = nil
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+      allow(Time).to receive(:now).and_return(@time_now)
+
+      # get the Base64 of the incoming signed request
+      body = IO.read("spec/files/vr_00-D0-E5-E0-00-0F.vch")
+
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
+      env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
+
+      $FAKED_TEMPORARY_KEY = temporary_key
+      post '/e/rv', :params => body, :headers => env
+
+      expect(response).to have_http_status(403)
     end
 
     it "should get CoAPS POSTed to cbor_rv, onwards to highway-test" do
@@ -201,15 +225,17 @@ RSpec.describe "Est", type: :request do
       WebMock.allow_net_connect!
 
       # get the Base64 of the incoming signed request
-      body = IO.read("spec/files/vr_00-D0-E5-E0-00-0F.vch")
+      body = IO.read("spec/files/vr_00-D0-E5-F2-00-01.vrq")
 
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = cbor_highwaytest_clientcert
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
 
       $FAKED_TEMPORARY_KEY = temporary_key
       post '/e/rv', :params => body, :headers => env
+
+      expect(response).to have_http_status(200)
 
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
@@ -219,20 +245,35 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).manufacturer).to be_present
       expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
+      # on non-live tests, the voucherreq is captured by the mock
+      voucher_request = assigns(:voucherreq)
+
       # validate that the voucher_request can be validated with the key used.
       expect(voucher_request).to_not be_nil
-      vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request, FountainKeys.ca.jrc_pub_key)
+
+      # capture for posterity
+      File.open("tmp/parboiled_vr_00-D0-E5-F2-00-01.vrq", "wb") do |f|
+        f.syswrite voucher_request.registrar_request
+      end
+
+      vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request.registrar_request,
+                                            FountainKeys.ca.jrc_pub_key)
       expect(vr0).to_not be_nil
 
-      pending "do not yet have results from highway"
-      expect(Chariwt.cmp_vch_file(voucher_request,
-                                  "parboiled_vr_00-D0-E5-F2-10-03")).to be true
+      expect(Chariwt.cmp_vch_file(voucher_request.registrar_request,
+                                  "parboiled_vr_00-D0-E5-F2-00-01")).to be true
 
+      # capture for posterity
+      File.open("tmp/voucher_00-D0-E5-F2-00-01.vch", "wb") do |f|
+        f.syswrite response.body
+      end
+
+      pending "smarter cmp_vch, which can ignore signatures"
       expect(Chariwt.cmp_vch_file(assigns(:voucher).signed_voucher,
-                                  "voucher_00-D0-E5-F2-10-03")).to be true
+                                  "voucher_00-D0-E5-F2-00-01")).to be true
 
       expect(Chariwt.cmp_vch_file(response.body,
-                                  "voucher_00-D0-E5-F2-10-03")).to be true
+                                  "voucher_00-D0-E5-F2-00-01")).to be true
 
     end
 
