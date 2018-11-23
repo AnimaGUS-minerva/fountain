@@ -126,7 +126,7 @@ class VoucherRequest < ApplicationRecord
   # that signed the voucher request
   def populate_implicit_fields
     unless device_identifier
-      self.device_identifier = subject_cn
+      self.device_identifier = (subject_serialNumber || subject_cn || "").force_encoding("UTF-8")
       save!
     end
   end
@@ -175,6 +175,9 @@ class VoucherRequest < ApplicationRecord
 
   def subject_cn
     subject_hash["CN"]
+  end
+  def subject_serialNumber
+    subject_hash["serialNumber"]
   end
 
   def certificate

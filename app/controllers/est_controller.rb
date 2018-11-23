@@ -21,6 +21,7 @@ class EstController < ApiController
       @voucherreq = VoucherRequest.from_cose_cbor(request.body.read, clientcert)
       @voucherreq.tls_clientcert = clientcert
       @voucherreq.discover_manufacturer
+      @voucherreq.populate_implicit_fields
       @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
       @voucherreq.save!
 
