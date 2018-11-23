@@ -22,7 +22,7 @@ RSpec.describe VoucherRequest, type: :model do
   describe "building" do
     it "should sign the voucher request" do
       vr1=voucher_requests(:vr1)
-      expect(vr2).to be_cms_voucher_request
+      expect(vr1).to be_cms_voucher_request
 
       vr1.created_at = '2017-09-15'.to_datetime
       # result is a BASE64 encoded PKCS7 object
@@ -42,19 +42,11 @@ RSpec.describe VoucherRequest, type: :model do
       vr2=voucher_requests(:vr2)
       expect(vr2).to be_unsigned_voucher_request
 
-
-      vr1.created_at = '2017-09-15'.to_datetime
-      # result is a BASE64 encoded PKCS7 object
-      expect(vr1.nonce).to eq("abcd1234")
-      expect(vr1.registrar_voucher_request).to_not be_nil
-
-      smime = vr1.registrar_voucher_request
-
-      expect(Chariwt.cmp_pkcs_file(smime,
-                                   "voucher_request-00-D0-E5-F2-00-02")).to be_truthy
-
-      expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
-      expect(vr1.masa_url).to eq("https://highway.sandelman.ca/")
+      parboiled_voucher_request = vr2.registrar_voucher_request
+      expect(parboiled_voucher_request).to_not be_nil
+      File.open("tmp/parboiled_unsigned_00-D0-E5-F2-00-01.vrq", "wb") do |f|
+        f.syswrite parboiled_voucher_request
+      end
     end
   end
 
