@@ -1,4 +1,8 @@
 class CoseVoucherRequest < VoucherRequest
+  def cose_voucher_request?
+    true
+  end
+
   # create a voucher request (CBOR+COSE) appropriate for sending to the MASA.
   # it shall always be signed.
   def calc_registrar_voucher_request_cose

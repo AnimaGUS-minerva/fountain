@@ -1,4 +1,8 @@
 class CmsVoucherRequest < VoucherRequest
+  def cms_voucher_request?
+    true
+  end
+
   # create a voucher request (PKCS7 signed JSON) appropriate for sending to the MASA.
   # it shall always be signed.
   def calc_registrar_voucher_request_pkcs7

@@ -1,4 +1,7 @@
 class UnsignedVoucherRequest < VoucherRequest
+  def unsigned_voucher_request?
+    true
+  end
 
   # create a voucher request (PKCS7 signed JSON) appropriate for sending
   # to the MASA.

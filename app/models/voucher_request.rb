@@ -80,6 +80,19 @@ class VoucherRequest < ApplicationRecord
     return voucher
   end
 
+  # tests for what kind of voucher request, return false for all here
+  # override in subclass
+  def cms_voucher_request?
+    false
+  end
+  def cose_voucher_request?
+    false
+  end
+  def unsigned_voucher_request?
+    false
+  end
+
+
   def vdetails=(x)
     @vdetails = x
   end
