@@ -13,6 +13,7 @@ class CoseVoucherRequest < VoucherRequest
     vreq.serialNumber = device_identifier
     vreq.createdOn  = created_at
     vreq.assertion  = :proximity
+    vreq.coseSignedPriorVoucherRequest!
     vreq.priorSignedVoucherRequest = pledge_request
     self.request = vreq
     #puts "TMPKEY: #{$FAKED_TEMPORARY_KEY}"

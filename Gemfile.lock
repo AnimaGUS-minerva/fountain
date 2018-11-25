@@ -35,14 +35,6 @@ GIT
     ecdsa (1.3.0)
 
 GIT
-  remote: https://github.com/mcr/ChariWTs.git
-  revision: be74378d4006655ac5ef3b77d8bf682dd0f6a8bb
-  specs:
-    chariwt (0.6.0)
-      cbor (~> 0.5.0)
-      ecdsa (~> 1.3.0)
-
-GIT
   remote: https://github.com/mcr/active_scaffold.git
   revision: 170378b04b7374c4e214fdb4df2cb8a41b791272
   specs:
@@ -55,6 +47,13 @@ GIT
   revision: 307851690b31face4b83c464b4260eae44fb3f4c
   specs:
     fixture_save (0.0.1)
+
+PATH
+  remote: ../chariwt
+  specs:
+    chariwt (0.6.0)
+      cbor (~> 0.5.0)
+      ecdsa (~> 1.3.0)
 
 PATH
   remote: ../minerva/ruby-openssl

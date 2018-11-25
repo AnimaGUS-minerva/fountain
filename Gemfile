@@ -17,8 +17,8 @@ gem "turbolinks"
 #gem 'ecdsa',   :path => '../minerva/ruby_ecdsa'
 gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
-#gem 'chariwt', :path => '../chariwt'
-gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
+gem 'chariwt', :path => '../chariwt'
+#gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
@@ -65,9 +65,6 @@ gem 'cbor'
 gem 'json'
 gem 'rabl'
 gem 'oj'
-
-# chariwt = { :path => '../chariwt' }
-gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git'
 
 gem 'sqlite3'
 gem 'pg', '0.20'

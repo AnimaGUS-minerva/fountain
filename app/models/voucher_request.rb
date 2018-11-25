@@ -1,5 +1,26 @@
 require 'net/http'
 
+# There are a multiciplicity of subclasses, each to deal with different cases
+#
+# 1) CMS signed JSON, containing (prior=CMS signed JSON)
+#    This is CmsVoucherRequest subclass.
+#
+# 2) CMS signed CBOR, containing (prior=CMS signed CBOR)
+#    This is not implemented as yet.
+#
+# 3) COSE signed CBOR, containing (prior=COSE signed CBOR)
+#    This is CoseVoucherRequest
+#
+# 4) CMS signed JSON, containing unsigned JSON.
+#    This is UnsignedVoucherRequest
+#
+# 5) CMS signed JSON, containing unsigned CBOR.
+#    This is not implemented as yet.
+#
+# 6) CMS signed CBOR, containing unsigned CBOR.
+#    This is not implemented as yet.
+#
+
 class VoucherRequest < ApplicationRecord
 
   belongs_to :device
