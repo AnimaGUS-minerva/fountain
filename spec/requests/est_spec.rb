@@ -285,15 +285,16 @@ RSpec.describe "Est", type: :request do
 
       allow(Time).to receive(:now).and_return(@time_now)
 
-      WebMock.allow_net_connect!
-
       if false
-      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
-        with(headers:
+        WebMock.allow_net_connect!
+
+      else
+        stub_request(:post, "https://highway-test.sandelman.ca/.well-known/est/requestvoucher").
+          with(headers:
                {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
-                'Host'=>'highway.sandelman.ca',
+                'Host'=>'highway-test.sandelman.ca',
                 'User-Agent'=>'Ruby'
                }).
         to_return(status: 200, body: lambda { |request|
@@ -312,6 +313,13 @@ RSpec.describe "Est", type: :request do
       env["HTTP_ACCEPT"]  = "application/pkcs7-mime; smime-type=voucher"
       env["CONTENT_TYPE"] = "application/json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => env
+
+      # capture outgoing request for posterity
+      if voucher_request
+        File.open("tmp/parboiled_vr_00-12-34-56-78-9A.vrq", "wb") do |f|
+          f.syswrite voucher_request
+        end
+      end
 
       expect(response).to have_http_status(200)
 
