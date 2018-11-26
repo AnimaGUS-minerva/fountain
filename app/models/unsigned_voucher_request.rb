@@ -15,6 +15,7 @@ class UnsignedVoucherRequest < VoucherRequest
     vreq.createdOn  = created_at
     vreq.assertion  = :proximity
     vreq.unsignedPriorVoucherRequest!
+    #byebug
     vreq.priorSignedVoucherRequest = self.details
     self.request = vreq
     token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
@@ -29,6 +30,11 @@ class UnsignedVoucherRequest < VoucherRequest
   end
   def registrar_voucher_desired_type
     'application/pkcs7-mime; smime-type=voucher'
+  end
+
+  def prior_voucher_request
+    byebug
+    @prior_voucher_request ||= Chariwt::VoucherRequest.from_json(pledge_request)
   end
 
   def self.from_unsigned_json(json_txt)
