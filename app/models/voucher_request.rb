@@ -113,6 +113,9 @@ class VoucherRequest < ApplicationRecord
     false
   end
 
+  def prior_voucher_request
+    nil
+  end
 
   def vdetails=(x)
     @vdetails = x
