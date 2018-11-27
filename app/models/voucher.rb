@@ -33,6 +33,9 @@ class Voucher < ActiveRecord::Base
         type = :cose
         contents = part.body.decoded
 
+      when 'application/voucher-cms+json'
+        pubkey = part.body.decoded
+
       when 'application/pkcs7-mime'
         case part.content_type_parameters['smime-type']
         when 'certs-only'
