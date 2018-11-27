@@ -278,13 +278,18 @@ class VoucherRequest < ApplicationRecord
 
     begin
       case [ct.main_type,ct.sub_type]
-      when ['application','pkcs7-mime'], ['application','cms']
+      when ['application','pkcs7-mime'], ['application','cms'], ['application', 'voucher-cms+json']
         @voucher_response_type = :pkcs7
 
-
-        @smimetype = parameters['smime-type']
-        if @smimetype == 'voucher'
+        if ct.sub_type == 'pkcs7-mime'
+          @smimetype = parameters['smime-type']
+          if @smimetype == 'voucher'
+            @responsetype = :pkcs7_voucher
+            @pkcs7voucher = true
+          end
+        else
           @responsetype = :pkcs7_voucher
+          #@responsetype = :cms_voucher
           @pkcs7voucher = true
         end
 

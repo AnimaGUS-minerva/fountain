@@ -59,16 +59,16 @@ RSpec.describe VoucherRequest, type: :model do
       allow(Time).to receive(:now).and_return(@time_now)
 
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
-        with(headers: {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
+        with(headers: {'Accept'=>['*/*', 'application/voucher-cms+json'],
                        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                       'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
+                       'Content-Type'=>'application/voucher-cms+json',
                        'Host'=>'highway.sandelman.ca',
                        'User-Agent'=>'Ruby'}).
          to_return(status: 200, body: lambda { |request|
                     voucher_request = request.body
                     voucher1_base64},
                    headers: {
-                   'Content-Type' => 'application/pkcs7-mime; smime-type=voucher'})
+                   'Content-Type' => 'application/voucher-cms+json'})
 
       vr1= voucher_requests(:vr1)
       v1 = vr1.get_voucher
@@ -81,7 +81,7 @@ RSpec.describe VoucherRequest, type: :model do
     it "should process content-type to extract voucher/response" do
       vr1 = voucher_requests(:vr1)
       bodystr = IO::read(File.join('spec', 'files', 'voucher_081196FFFE0181E0.pkcs'))
-      voucher = vr1.process_content_type('application/pkcs7-mime; smime-type=voucher', bodystr)
+      voucher = vr1.process_content_type('application/voucher-cms+json', bodystr)
       expect(voucher).to_not be_nil
       expect(voucher.type).to eq("CmsVoucher")
       expect(voucher.assertion).to eq("logged")

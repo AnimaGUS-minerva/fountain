@@ -89,9 +89,9 @@ RSpec.describe "Est", type: :request do
       allow(Time).to receive(:now).and_return(@time_now)
       stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
         with(headers:
-               {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
+               {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
+                'Content-Type'=>'application/voucher-cms+json',
                 'Host'=>'highway.sandelman.ca',
                 'User-Agent'=>'Ruby'
                }).
@@ -99,7 +99,7 @@ RSpec.describe "Est", type: :request do
                     voucher_request = request.body
                     result},
                   headers: {
-                    'Content-Type'=>'application/pkcs7-mime; smime-type=voucher'
+                    'Content-Type'=>'application/voucher-cms+json'
                   })
 
       # get the Base64 of the signed request
@@ -107,8 +107,8 @@ RSpec.describe "Est", type: :request do
 
       env = Hash.new
       env["SSL_CLIENT_CERT"] = clientcert
-      env["HTTP_ACCEPT"]  = "application/pkcs7-mime; smime-type=voucher"
-      env["CONTENT_TYPE"] = "application/pkcs7-mime; smime-type=voucher-request"
+      env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
+      env["CONTENT_TYPE"] = "application/voucher-cms+json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => env
 
       expect(assigns(:voucherreq)).to_not be_nil
@@ -289,9 +289,9 @@ RSpec.describe "Est", type: :request do
       else
         stub_request(:post, "https://highway-test.sandelman.ca/.well-known/est/requestvoucher").
           with(headers:
-               {'Accept'=>['*/*', 'application/pkcs7-mime; smime-type=voucher'],
+               {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'Content-Type'=>'application/pkcs7-mime; smime-type=voucher-request',
+                'Content-Type'=>'application/voucher-cms+json',
                 'Host'=>'highway-test.sandelman.ca',
                 'User-Agent'=>'Ruby'
                }).
@@ -299,7 +299,7 @@ RSpec.describe "Est", type: :request do
                     voucher_request = request.body
                     result},
                   headers: {
-                    'Content-Type'=>'application/pkcs7-mime; smime-type=voucher'
+                    'Content-Type'=>'application/voucher-cms+json'
                   })
       end
 
@@ -308,7 +308,7 @@ RSpec.describe "Est", type: :request do
 
       env = Hash.new
       env["SSL_CLIENT_CERT"] = cbor_highwaytest_clientcert
-      env["HTTP_ACCEPT"]  = "application/pkcs7-mime; smime-type=voucher"
+      env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       env["CONTENT_TYPE"] = "application/json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => env
 
