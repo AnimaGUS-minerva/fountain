@@ -58,10 +58,11 @@ class EstController < ApiController
   # POST /.well-known/est/requestvoucher
   def requestvoucher
     media_types = HTTP::Accept::MediaTypes.parse(request.env['CONTENT_TYPE'])
+    content_type=request.env['CONTENT_TYPE']
 
     if media_types == nil or media_types.length < 1
       head 406,
-           text: "unknown voucher-request content-type: #{request.content_type}"
+           text: "unknown voucher-request content-type: #{content_type}"
       return
     end
 
@@ -69,14 +70,16 @@ class EstController < ApiController
     case
     when (media_type.mime_type  == 'application/pkcs7-mime' and
            media_type.parameters == { 'smime-type' => 'voucher-request'} )
+      requestvoucher_pkcs_signed
 
+    when (media_type.mime_type  == 'application/voucher-cms+json')
       requestvoucher_pkcs_signed
 
     when (media_type.mime_type == 'application/json')
       requestvoucher_unsigned
 
     else
-      head 406
+      head 406, text: "unknown media-type: #{content_type}"
       return
     end
   end
