@@ -19,4 +19,12 @@ RSpec.describe Manufacturer, type: :model do
       expect(b1.device_types.count).to be >= 1
     end
   end
+
+  describe "trust settings" do
+    it "should have a trusted for attribute" do
+      um1 = manufacturers(:unknownManu)
+      expect(um1).to be_trust_unknown
+    end
+  end
+
 end
