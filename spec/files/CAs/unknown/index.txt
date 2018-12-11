@@ -1,0 +1,2 @@
+V	281208230428Z		A8A263B24054986D	unknown	/C=CA/ST=Ontario/O=Fire Department/CN=Root CA
+V	191221233621Z		6FE09DEFF92D9CEF	unknown	/C=CA/ST=Ontario/L=Almonte/O=Fire Department/UID=newdevice

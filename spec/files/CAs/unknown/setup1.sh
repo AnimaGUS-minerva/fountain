@@ -20,3 +20,4 @@ DN=$countryName$stateOrProvinceName$localityName
 DN=$DN$organizationName$organizationalUnitName$commonName
 echo $DN
 export subjectAltName=email:postmaster@unknownca.example.com
+export default_crl_days=2048
