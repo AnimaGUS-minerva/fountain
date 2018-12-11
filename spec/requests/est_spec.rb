@@ -79,6 +79,30 @@ RSpec.describe "Est", type: :request do
     expect(response.content_type).to eq('application/pkcs7-mime; smime-type=certs-only')
   end
 
+  describe "CSR attributes" do
+    it "should get a 401 if no client certificate" do
+      get "/.well-known/est/csrattributes"
+      expect(response).to have_http_status(401)
+    end
+
+    it "should get a 401 if client certificate not trusted" do
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = clientcert
+      get "/.well-known/est/csrattributes", :headers => env
+      expect(response).to have_http_status(401)
+    end
+
+    it "should be returned in non-constrained request" do
+      get "/.well-known/est/csrattributes"
+      expect(response).to have_http_status(200)
+    end
+
+    it "should be returned in constrained request" do
+      get "/e/att"
+      expect(response).to have_http_status(200)
+    end
+  end
+
   describe "signed pledge voucher request" do
     it "should get HTTPS POSTed to requestvoucher" do
 
