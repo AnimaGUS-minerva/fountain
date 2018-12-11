@@ -1,3 +1,6 @@
 [submodule "etc"]
 	path = etc
 	url = https://github.com/mcr/can-o-pg.git
+[submodule "spec/files/CAs/ecdsa-pki-1"]
+	path = spec/files/CAs/ecdsa-pki-1
+	url = git@github.com:mcr/draft-moskowitz-ecdsa-pki-1.git
