@@ -29,4 +29,15 @@ unknownManu:
     cHdPMmRqOTd4YktjczVOdHhzbngxeG9iMmJVTDV0UlZ6aFNnPT0KLS0tLS1FTkQgUFVCTElDIEtF
     WS0tLS0tCg==
 
-
+brskiManu:
+  id: 4
+  name: "BRSKI-trusted Manufacturer"
+  created_at: 2017-08-27 02:11:06.468034653 Z
+  updated_at: 2017-08-27 02:11:06.468034653 Z
+  masa_url: https://unknown.example.com/
+  trust: "brski"
+  issuer_public_key: !binary |-
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFR
+    Y0RRZ0FFcWdRVm8wUzU0a1Q0eWZrYkJ4dW1kSE9jSHJwcwpxYk9wTUttaU1sbjNvQjFIQVcyNU1K
+    VitncWk0dE1GZlNKMGlFd3Q4a3N6ZldYSzRyTGdKUzJtbnBRPT0KLS0tLS1FTkQgUFVCTElDIEtF
+    WS0tLS0tCg==

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_21_234642) do
+ActiveRecord::Schema.define(version: 2018_12_11_213633) do
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -41,6 +41,10 @@ ActiveRecord::Schema.define(version: 2018_11_21_234642) do
     t.integer "manufacturer_id"
     t.text "failure_details"
     t.boolean "mud_valid"
+    t.text "masa_url"
+    t.binary "issuer_public_key"
+    t.string "trust", default: "unknown"
+    t.index ["trust"], name: "index_manufacturers_on_trust"
   end
 
   create_table "devices", force: :cascade do |t|

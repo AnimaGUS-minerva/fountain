@@ -21,9 +21,14 @@ RSpec.describe Manufacturer, type: :model do
   end
 
   describe "trust settings" do
-    it "should have a trusted for attribute" do
+    it "should have an unknown trust attribute" do
       um1 = manufacturers(:unknownManu)
       expect(um1).to be_trust_unknown
+    end
+
+    it "should have a trusted for attribute" do
+      um4 = manufacturers(:brskiManu)
+      expect(um4).to be_trust_brski
     end
   end
 
