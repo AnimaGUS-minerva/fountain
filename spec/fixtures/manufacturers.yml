@@ -23,6 +23,7 @@ unknownManu:
   updated_at: 2017-08-27 02:11:06.468034653 Z
   masa_url: https://unknown.example.com/
   trust: "unknown"
+  issuer_dn: "/C=CA/ST=Ontario/O=Fire Department/CN=Root CA"
   issuer_public_key: !binary |-
     LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFR
     Y0RRZ0FFNW9RVWs1ajhVTUlzcmlBVmRUMDJTWXV5WGVROAozSGhvYzMyWXdQdER1RHhacjMyNER6
@@ -36,8 +37,24 @@ brskiManu:
   updated_at: 2017-08-27 02:11:06.468034653 Z
   masa_url: https://unknown.example.com/
   trust: "brski"
+  issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
+  issuer_public_key: !binary |-
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUhZd0VBWUhLb1pJemowQ0FRWUZLNEVFQUNJRFln
+    QUVMdWY4cExTV3hTNHpBdk80ZTIvc2s2M2hiaGZCc0hzQwpoeStKa3RLOUhWUUVMbTZnMUVIRTY0
+    NzZWNjF3cVU2STRpd3M0S2ZIODVIRkE1R2ZTdy96UGRDdzRxWWl6U0RwCkQ0N2hmRUpLQUcwL0tU
+    SzJQTnpFdk11K3NHZXdHcFRVCi0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=
+
+brskiManu:
+  id: 5
+  name: "BRSKI-trusted Manufacturer BROKEN"
+  created_at: 2017-08-27 02:11:06.468034653 Z
+  updated_at: 2017-08-27 02:11:06.468034653 Z
+  masa_url: https://unknown.example.com/
+  trust: "brski"
+  issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
     LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFR
-    Y0RRZ0FFcWdRVm8wUzU0a1Q0eWZrYkJ4dW1kSE9jSHJwcwpxYk9wTUttaU1sbjNvQjFIQVcyNU1K
-    VitncWk0dE1GZlNKMGlFd3Q4a3N6ZldYSzRyTGdKUzJtbnBRPT0KLS0tLS1FTkQgUFVCTElDIEtF
+    Y0RRZ0FFNW9RVWs1ajhVTUlzcmlBVmRUMDJTWXV5WGVROAozSGhvYzMyWXdQdER1RHhacjMyNER6
+    cHdPMmRqOTd4YktjczVOdHhzbngxeG9iMmJVTDV0UlZ6aFNnPT0KLS0tLS1FTkQgUFVCTElDIEtF
     WS0tLS0tCg==
+

@@ -43,11 +43,6 @@ RSpec.describe "Est", type: :request do
   end
 
   # points to https://highway-test.sandelman.ca
-  def highwaytest_clientcert_almec_f20001
-    @highwaytest_clientcert_almec ||= IO.binread("spec/files/product_00-D0-E5-F2-00-01/device.crt")
-  end
-
-  # points to https://highway-test.sandelman.ca
   def cbor_highwaytest_clientcert
     @cbor_highwaytest_clientcert ||= IO.binread("spec/certs/E0000F-idevid.pem")
   end

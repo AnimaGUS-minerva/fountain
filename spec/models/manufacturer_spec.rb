@@ -30,6 +30,21 @@ RSpec.describe Manufacturer, type: :model do
       um4 = manufacturers(:brskiManu)
       expect(um4).to be_trust_brski
     end
+
   end
+
+  describe "trusted signatures" do
+    it "should not find a mis-matched" do
+      pending "Needs a broken CA cert"
+      m1 = Manufacturer.trusted_client_by_pem("") #broken_highwaytest_clientcert_almec_f20001)
+      expect(m1).to be_nil
+    end
+
+    it "should find a manufacturer" do
+      m1 = Manufacturer.trusted_client_by_pem(highwaytest_clientcert_almec_f20001)
+      expect(m1).to be_trust_brski
+    end
+  end
+
 
 end
