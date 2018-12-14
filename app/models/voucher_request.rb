@@ -212,8 +212,8 @@ class VoucherRequest < ApplicationRecord
     @certificate
   end
 
-  def issuer_pki
-    @issuer_pki  ||= certificate.issuer.to_der
+  def issuer_dn
+    @issuer_dn   ||= certificate.issuer.to_s
   end
 
   def discover_manufacturer
@@ -234,13 +234,13 @@ class VoucherRequest < ApplicationRecord
     else
       logger.warn "Did not find a MASA URL extension"
       unless manu
-        logger.warn "Tried to find manufacturer by issuer #{certificate.issuer.to_s}"
-        manu = Manufacturer.where(issuer_public_key: issuer_pki).take
+        logger.warn "Tried to find manufacturer by issuer #{issuer_dn}"
+        manu = Manufacturer.where(issuer_dn: issuer_dn).take
       end
     end
     unless manu
       manu = Manufacturer.create(masa_url: @masa_url,
-                                 issuer_public_key: issuer_pki)
+                                 issuer_dn: issuer_dn)
       manu.name = "Manu#{manu.id}"
       manu.save!
     end
