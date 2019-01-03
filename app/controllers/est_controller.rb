@@ -84,7 +84,40 @@ class EstController < ApiController
     end
   end
 
+  # GET /e/att (CBOR, COSE)
+  def cbor_rv
+    unless trusted_client
+      head 401
+    end
+    head 406
+  end
+
+  # GET /.well-known/est/csrattributes
+  def csrattributes
+    byebug
+    unless trusted_client
+      head 401
+    end
+
+    head 406
+  end
+
   private
+
+  # examines the SSL_CLIENT_CERT (or rack.peer_cert) for a certificate
+  # when found, it looks for the manufacturer by looking at the issuer.
+  # if manufacturer is marked trusted, or Registrar has been marked as
+  # promiscuous, then return true.
+  # note that manufacturer can be marked as blacklisted instead!
+  def trusted_client
+    clientcert_pem = request.env["SSL_CLIENT_CERT"]
+    clientcert_pem ||= request.env["rack.peer_cert"]
+    unless clientcert_pem
+      return false
+    end
+
+    return Manufacturer.trusted_client_by_pem(clientcert_pem)
+  end
 
   def capture_client_info
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
