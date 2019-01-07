@@ -22,6 +22,12 @@ RSpec.describe SystemVariable, type: :model do
     expect(l.value).to    be nil
   end
 
+  it "should use a block to make a variable if it does not already exist" do
+    l = SystemVariable.findormake(:niceone) { |v| v.number = 10 }
+    expect(l).to_not be_nil
+    expect(l.number).to  eq(10)
+  end
+
   it "should generate a sequence of random numbers" do
     l = SystemVariable.nextval(:counter)
     expect(l).to eq(1)
