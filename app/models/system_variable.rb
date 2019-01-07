@@ -133,5 +133,15 @@ class SystemVariable < ActiveRecord::Base
     v.number
   end
 
+  # this section is about ACP address generation, as per
+  # draft-ietf-anima-autonomic-control-plane, section XX
+  def self.acp_generate(string)
+    hexbytes = Digest::SHA2.hexdigest(string)
+
+    thing="fd" + hexbytes[0..9] + ("00" * 10)
+    ip = IPAddress::IPv6::parse_hex thing
+    ip.prefix = 48
+    return ip
+  end
 
 end

@@ -37,3 +37,14 @@ hostname:
   id: 9
   variable: 'hostname'
   value: 'fountain-test.example.com'
+
+acpdomain:
+  id: 10
+  variable: 'acp_domain'
+  value: 'acp.example.com'
+
+acppool:
+  id: 11
+  variable: 'acp_pool'
+  value: ''
+  
