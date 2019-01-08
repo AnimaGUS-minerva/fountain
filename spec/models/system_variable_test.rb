@@ -44,12 +44,6 @@ RSpec.describe SystemVariable, type: :model do
   end
 
   describe "CSR attributes generation" do
-    it "should allocate a prefix for a new device" do
-      prefix = SystemVariable.newdevice_prefix
-
-      expect(prefix).to_not be_nil
-      expect(prefix.prefix).to eq(96)
-    end
 
     it "should have an acp-domain" do
       expect(SystemVariable.acp_domain).to eq("acp.example.com")

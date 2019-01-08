@@ -140,13 +140,79 @@ class SystemVariable < ActiveRecord::Base
 
   # this section is about ACP address generation, as per
   # draft-ietf-anima-autonomic-control-plane, section XX
-  def self.acp_generate(string)
-    hexbytes = Digest::SHA2.hexdigest(string)
-
-    thing="fd" + hexbytes[0..9] + ("00" * 10)
-    ip = IPAddress::IPv6::parse_hex thing
-    ip.prefix = 48
-    return ip
+  def self.acp_rsub
+    string(:acp_rsub) || ""
   end
+  def self.acp_domain
+    string(:acp_domain)
+  end
+
+  def self.acp_routing_domain
+    string(:acp_routing_domain) ||
+      if acp_rsub
+        acp_rsub + "." + acp_domain
+      else
+        acp_domain
+      end
+  end
+
+  def self.registrar_id
+    findormake(:registrar_id) { |v|
+      # need 44-bits of data here.
+      # the upper two bits are always 0 in this implementation.
+      v.string = SecureRandom.hex(11)
+    }.string
+  end
+
+  # this is a read-only version
+  def self.acp_pool
+    _acp_pool.freeze!
+  end
+
+  # allocate a new ACP address from pool.
+  # if format = false, then allocate a VLONG-ASA address,
+  # if format = true,  then allocate a VLONG-ACP-edge format.
+  # see draft-ietf-autonomic-control-plane, section 6.10.2
+  def self.acp_pool_allocate(format = false)
+    newaddress = nil
+    transaction do
+      if format
+        newaddress = _acp_pool.asa_address
+        _acp_pool = _acp_pool.next_asa_node
+      else
+        newaddress = _acp_pool.edge_address
+        _acp_pool = _acp_pool.next_edge_node
+      end
+    end
+  end
+
+  private
+  def self._acp_pool=(x)
+    n = findormake(:acp_pool)
+    n.value = Base64.encode64(Marshal.dump(vlongtype))
+    n.save!
+    x
+  end
+
+  def self._acp_pool
+    n = findormake(:acp_pool) { |v|
+      ula_r = acp_generate(acp_routing_domain)
+
+      # generate 4 subzones, use the second one.
+      vlongtype = ula_r.split(4)[1]
+
+      # now add the registrar_id to it.
+      vlongtype = vlongtype.registrar(registrar_id)
+
+      # now serialize vlongtype into string, and store it.
+      n.value = Base64.encode64(Marshal.dump(vlongtype))
+    }
+    acp_pool = Marshal.load(Base64.decode64(v.value))
+    unless acp_pool.is_kind_of? AcpAddress
+      raise AcpAddress::WrongACPPoolType.new("Why is it at #{acp_pool.class}")
+    end
+  end
+
+
 
 end
