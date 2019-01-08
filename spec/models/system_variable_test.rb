@@ -50,24 +50,9 @@ RSpec.describe SystemVariable, type: :model do
       expect(prefix).to_not be_nil
       expect(prefix.prefix).to eq(96)
     end
-    it "should have a 50-bit base scheme" do
-      schemeinfo = SystemVariable.acp_vlong
-      expect(schemeinfo.ula_r).to         eq("")
-      expect(schemeinfo.acp_addr_type).to eq("123456")
-    end
 
     it "should have an acp-domain" do
-      expect(SystemVariable.lookup(:acp_domain)).to eq("acp.example.com")
-    end
-
-    it "should generate a URL from ACP-domain" do
-      ipbase = SystemVariable.acp_generate("area51.research.acp.example.com")
-      expect(ipbase.prefix).to eq(48)
-
-      # SHA256("area51.research.acp.example.com") = 89b714f3db
-      expect(ipbase.hexs[0]).to eq("fd89")
-      expect(ipbase.hexs[1]).to eq("b714")
-      expect(ipbase.hexs[2]).to eq("f3db")
+      expect(SystemVariable.acp_domain).to eq("acp.example.com")
     end
 
   end
