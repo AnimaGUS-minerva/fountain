@@ -33,5 +33,55 @@ RSpec.describe ACPAddress do
     expect(scheme2.edge_address.to_s).to eq("fd2c:f24d:ba5f:abc:d123:4abc:8000:0")
   end
 
+  describe "v6 splitting" do
+    it "should split into 4-pieces" do
+      v6 = ACPAddress.new("fd2c:f24d:ba5f:ab0::/60")
+      (a,b,c,d) = v6.split(4)
+      expect(a.to_s).to eq("fd2c:f24d:ba5f:ab0::")
+      expect(a.prefix).to eq(62)
+
+      expect(b.to_s).to eq("fd2c:f24d:ba5f:ab4::")
+      expect(b.prefix).to eq(62)
+
+      expect(c.to_s).to eq("fd2c:f24d:ba5f:ab8::")
+      expect(c.prefix).to eq(62)
+
+      expect(d.to_s).to eq("fd2c:f24d:ba5f:abc::")
+      expect(d.prefix).to eq(62)
+    end
+    it "should split into 3-pieces" do
+      v6 = ACPAddress.new("fd2c:f24d:ba5f:ab0::/60")
+      (a,b,c) = v6.split(3)
+      expect(a.to_s).to eq("fd2c:f24d:ba5f:ab0::")
+      expect(a.prefix).to eq(62)
+
+      expect(b.to_s).to eq("fd2c:f24d:ba5f:ab4::")
+      expect(b.prefix).to eq(62)
+
+      expect(c.to_s).to eq("fd2c:f24d:ba5f:ab8::")
+      expect(c.prefix).to eq(62)
+    end
+
+    it "should split into 32-pieces" do
+      v6 = ACPAddress.new("fd2c:f24d:ba5f:ab0::/60")
+      pieces = v6.split(32)
+
+      a = pieces[0]
+      expect(a.to_s).to eq("fd2c:f24d:ba5f:ab0::")
+      expect(a.prefix).to eq(65)
+
+      b = pieces[1]
+      expect(b.to_s).to eq("fd2c:f24d:ba5f:ab0:8000::")
+      expect(b.prefix).to eq(65)
+
+      c = pieces[16]
+      expect(c.to_s).to eq("fd2c:f24d:ba5f:ab8::")
+      expect(c.prefix).to eq(65)
+
+      d = pieces[31]
+      expect(d.to_s).to eq("fd2c:f24d:ba5f:abf:8000::")
+      expect(d.prefix).to eq(65)
+    end
+  end
 
 end

@@ -3,6 +3,21 @@ class ACPAddress < IPAddress::IPv6
   end
 
   #
+  # split a prefix into n subnets
+  #
+  def split(n)
+    bits = Math.log2(n).ceil
+    nprefix = self.prefix + bits
+    bsn128 = network.to_u128
+    (0..(n-1)).collect { |netnum|
+      sn128 = bsn128 + (netnum << (128-nprefix))
+      sn = self.class.parse_u128(sn128)
+      sn.prefix = nprefix
+      sn
+    }
+  end
+
+  #
   # returns the initial 48-bit ULA-random generated.
   #
   def ula_r
