@@ -181,19 +181,24 @@ class SystemVariable < ActiveRecord::Base
     newaddress = nil
     transaction do
       if format
-        newaddress = _acp_pool.asa_address
-        _acp_pool = _acp_pool.next_asa_node
+        newaddress      = self._acp_pool.edge_address
+        self._acp_pool  = self._acp_pool.next_edge_node
       else
-        newaddress = _acp_pool.edge_address
-        _acp_pool = _acp_pool.next_edge_node
+        newaddress      = self._acp_pool.asa_address
+        self._acp_pool  = self._acp_pool.next_asa_node
       end
     end
+    newaddress
+  end
+
+  def self.newdevice_prefix
+    new
   end
 
   private
   def self._acp_pool=(x)
     n = findormake(:acp_pool)
-    n.value = Base64.encode64(Marshal.dump(vlongtype))
+    n.value = Base64.encode64(Marshal.dump(x))
     n.save!
     x
   end
@@ -210,12 +215,13 @@ class SystemVariable < ActiveRecord::Base
 
       # now serialize vlongtype into string, and store it.
       v.value = Base64.encode64(Marshal.dump(vlongtype))
+      v.save!
     }
-    acp_pool = Marshal.load(Base64.decode64(n.value))
-    unless acp_pool.kind_of? ACPAddress
-      raise ACPAddress::WrongACPPoolType.new("Why is it at #{acp_pool.class}")
+    a_p = Marshal.load(Base64.decode64(n.value))
+    unless a_p.kind_of? ACPAddress
+      raise ACPAddress::WrongACPPoolType.new("Why is it at #{a_p.class}")
     end
-    acp_pool
+    a_p
   end
 
 

@@ -43,8 +43,16 @@ acpdomain:
   variable: 'acp_domain'
   value: 'acp.example.com'
 
+# this is an ACPAddress which has been through Marshall dump.
 acppool:
   id: 11
   variable: 'acp_pool'
+  value: "BAhvOg9BQ1BBZGRyZXNzCToMQGdyb3Vwc1sNaQJz/WkCwp9pAjQ8aQIRQGkCMyJpAlVEaQBpADoNQGFkZHJlc3NJIixmZDczOjlmYzI6M2MzNDo0MDExOjIyMzM6NDQ1NTowMDAwOjAwMDAGOgZFVDoQQGNvbXByZXNzZWRJIiRmZDczOjlmYzI6M2MzNDo0MDExOjIyMzM6NDQ1NTo6BjsIRjoMQHByZWZpeG86GUlQQWRkcmVzczo6UHJlZml4MTI4BjsKaWU="
+
+
+register:
+  id: 12
+  variable: 'registrar_id'
+  value: "01122334455"
 
   

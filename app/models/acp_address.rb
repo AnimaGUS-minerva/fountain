@@ -55,7 +55,7 @@ class ACPAddress < IPAddress::IPv6
   #
   def node_address
     ur = clone
-    ur.prefix = (50+46)
+    ur.prefix = (50+46+24)
     ur
   end
   #
@@ -66,18 +66,43 @@ class ACPAddress < IPAddress::IPv6
   end
 
   def asa_address
-    u128 = node_address.network.to_u128
-    u128 &= ~(f_bit)
-    self.class.parse_u128(u128)
+    a = self.class.parse_u128(asa_address_u128)
+    a.prefix=120
+    a
+  end
+
+  # increment the address given by 1 in the node_address (24-bits node, 8-bit V)
+  def next_asa_node
+    self.class.parse_u128(asa_address_u128 + 256)
   end
 
   #
   # returns an address with the F-bit set.
   #
   def edge_address
+    a = self.class.parse_u128(edge_address_u128)
+    a.prefix = 102
+    a
+  end
+
+  # increment the address given by 1 in the node_address (16-bits node, 16-bit V)
+  def next_edge_node
+    a = self.class.parse_u128(edge_address_u128 + 65536)
+    a.prefix=102
+    a
+  end
+
+    private
+  def asa_address_u128
+    u128 = node_address.network.to_u128
+    u128 &= ~(f_bit)
+    u128
+  end
+
+  def edge_address_u128
     u128 = node_address.network.to_u128
     u128 |= f_bit
-    self.class.parse_u128(u128)
+    u128
   end
 
 end

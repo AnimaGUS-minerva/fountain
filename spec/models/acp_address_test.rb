@@ -84,4 +84,31 @@ RSpec.describe ACPAddress do
     end
   end
 
+  describe "v6 ACP allocation" do
+    it "should increment acp_pool" do
+      schemeinfo = ACPAddress.acp_generate("hello")
+      pool = schemeinfo.registrar("abcd1234abc")
+
+      expect(pool.to_s).to eq("fd2c:f24d:ba5f:abc:d123:4abc::")
+
+      newaddr = pool.asa_address
+      pool    = pool.next_asa_node
+      expect(newaddr.to_s).to   eq("fd2c:f24d:ba5f:abc:d123:4abc::")
+      expect(newaddr.prefix).to eq(120)
+
+      expect(pool.to_s).to      eq("fd2c:f24d:ba5f:abc:d123:4abc:0:100")
+      expect(pool.prefix).to    eq(128)
+
+      newaddr = pool.asa_address
+      pool    = pool.next_asa_node
+      expect(newaddr.to_s).to   eq("fd2c:f24d:ba5f:abc:d123:4abc:0:100")
+      expect(newaddr.prefix).to eq(120)
+
+      expect(pool.to_s).to      eq("fd2c:f24d:ba5f:abc:d123:4abc:0:200")
+      expect(pool.prefix).to    eq(128)
+
+    end
+  end
+
+
 end
