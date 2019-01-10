@@ -44,7 +44,9 @@ class ACPAddress < IPAddress::IPv6
     # Shift it 32 bits left, and then add it to the u128 representation
     # of this address.
     regv6 = self.class.parse_hex(x)
-    self.class.parse_u128(to_u128 + (regv6.to_u128 << 32))
+    n = self.class.parse_u128(to_u128 + (regv6.to_u128 << 32))
+    n.prefix = (128-32)
+    n
   end
 
   #

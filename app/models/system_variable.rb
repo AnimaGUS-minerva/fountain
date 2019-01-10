@@ -24,6 +24,10 @@ class SystemVariable < ActiveRecord::Base
         yield(v)
       end
     end
+    if v.value.blank? and v.number.nil? and block_given?
+      # initialize it.
+      yield(v)
+    end
     v
   end
 
@@ -149,7 +153,7 @@ class SystemVariable < ActiveRecord::Base
 
   def self.acp_routing_domain
     string(:acp_routing_domain) ||
-      if acp_rsub
+      if !acp_rsub.blank?
         acp_rsub + "." + acp_domain
       else
         acp_domain
@@ -160,13 +164,13 @@ class SystemVariable < ActiveRecord::Base
     findormake(:registrar_id) { |v|
       # need 44-bits of data here.
       # the upper two bits are always 0 in this implementation.
-      v.string = SecureRandom.hex(11)
-    }.string
+      v.value = SecureRandom.hex(11)
+    }.value
   end
 
   # this is a read-only version
   def self.acp_pool
-    _acp_pool.freeze!
+    _acp_pool.freeze
   end
 
   # allocate a new ACP address from pool.
@@ -196,7 +200,7 @@ class SystemVariable < ActiveRecord::Base
 
   def self._acp_pool
     n = findormake(:acp_pool) { |v|
-      ula_r = acp_generate(acp_routing_domain)
+      ula_r = ACPAddress.acp_generate(acp_routing_domain)
 
       # generate 4 subzones, use the second one.
       vlongtype = ula_r.split(4)[1]
@@ -205,12 +209,13 @@ class SystemVariable < ActiveRecord::Base
       vlongtype = vlongtype.registrar(registrar_id)
 
       # now serialize vlongtype into string, and store it.
-      n.value = Base64.encode64(Marshal.dump(vlongtype))
+      v.value = Base64.encode64(Marshal.dump(vlongtype))
     }
-    acp_pool = Marshal.load(Base64.decode64(v.value))
-    unless acp_pool.is_kind_of? AcpAddress
-      raise AcpAddress::WrongACPPoolType.new("Why is it at #{acp_pool.class}")
+    acp_pool = Marshal.load(Base64.decode64(n.value))
+    unless acp_pool.kind_of? ACPAddress
+      raise ACPAddress::WrongACPPoolType.new("Why is it at #{acp_pool.class}")
     end
+    acp_pool
   end
 
 
