@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: git@github.com:AnimaGUS-minerva/david.git
-  revision: 21d8a50a2bf2cacfd8e2ef431f0fee211ccabb5d
+  revision: 78d10672f866b6b9dd3d7af63017f8a2f1a0c3a6
   specs:
     david (0.5.1.pre)
       celluloid (~> 0.17.3)
