@@ -27,6 +27,36 @@ GIT
   specs:
     fixture_save (0.0.1)
 
+PATH
+  remote: ../minerva/celluloid-io
+  specs:
+    celluloid-io (0.17.3)
+      celluloid (>= 0.17.2)
+      nio4r (>= 1.1)
+      timers (>= 4.1.1)
+
+PATH
+  remote: ../minerva/coap
+  specs:
+    coap (0.1.5.pre)
+      celluloid-io (~> 0.17.3)
+      resolv-ipv6favor (~> 0)
+
+PATH
+  remote: ../minerva/david
+  specs:
+    david (0.5.1.pre)
+      celluloid (~> 0.17.3)
+      celluloid-io (~> 0.17.3)
+      coap (~> 0.1)
+      rack (~> 2.0)
+
+PATH
+  remote: ../minerva/ruby-openssl
+  specs:
+    openssl (2.2.0.pre.mcr1)
+      ipaddr
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -96,6 +126,23 @@ GEM
     cbor-diag (0.5.3)
       json
       treetop (~> 1)
+    celluloid (0.17.4)
+      celluloid-essentials
+      celluloid-extras
+      celluloid-fsm
+      celluloid-pool
+      celluloid-supervision
+      timers (>= 4.1.1)
+    celluloid-essentials (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-extras (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-fsm (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-pool (0.20.5)
+      timers (>= 4.1.1)
+    celluloid-supervision (0.20.6)
+      timers (>= 4.1.1)
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     crack (0.4.3)
@@ -113,6 +160,7 @@ GEM
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    ipaddr (1.2.2)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -143,7 +191,6 @@ GEM
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
     oj (3.6.5)
-    openssl (2.1.1)
     pg (0.20.0)
     polyglot (0.3.5)
     pry (0.11.3)
@@ -192,6 +239,7 @@ GEM
       ffi (>= 0.5.0, < 2)
     rdoc (4.3.0)
     ref (2.0.0)
+    resolv-ipv6favor (0.0.0)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -249,6 +297,7 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
+    timers (4.2.0)
     treetop (1.6.10)
       polyglot (~> 0.3)
     turbolinks (5.1.1)
@@ -278,15 +327,19 @@ DEPENDENCIES
   capistrano-rvm
   cbor
   cbor-diag
+  celluloid-io!
   chariwt!
+  coap!
+  david!
   ecdsa!
   fixture_save!
   jbuilder (~> 2.0)
   jquery-rails
   json
   jwt
+  mail
   oj
-  openssl (~> 2.1.0)
+  openssl!
   pg (= 0.20)
   pry
   pry-doc
@@ -308,4 +361,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.4
+   1.17.3
