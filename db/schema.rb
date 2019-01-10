@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_14_005139) do
+ActiveRecord::Schema.define(version: 2019_01_10_223519) do
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_005139) do
     t.json "failure_details"
     t.text "ipv4"
     t.text "ipv6"
+    t.text "acp_prefix"
   end
 
   create_table "manufacturers", id: :serial, force: :cascade do |t|
