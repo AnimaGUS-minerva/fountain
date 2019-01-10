@@ -166,6 +166,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     ipaddr (1.2.2)
+    ipaddress (0.8.3)
     jbuilder (2.8.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -342,6 +343,7 @@ DEPENDENCIES
   ffi (~> 1.9.24)
   fixture_save!
   http-accept
+  ipaddress
   jbuilder (~> 2.0)
   jquery-rails
   json

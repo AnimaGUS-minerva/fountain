@@ -60,6 +60,9 @@ gem 'david', :git => 'git@github.com:AnimaGUS-minerva/david.git'
 # split off smime-type=voucher in pkcs7-mime, and other parameters
 gem 'http-accept'
 
+# IP address management for use in ANIMA ACP
+gem 'ipaddress'
+
 # encode/decode cbor messages
 gem 'cbor'
 gem 'json'
