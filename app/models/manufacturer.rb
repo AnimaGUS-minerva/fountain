@@ -19,10 +19,18 @@ class Manufacturer < ApplicationRecord
       return nil
     end
 
-    return nil unless cert
+    # look for a device with the same public key.
 
+    return nil unless cert
+  end
+
+  def self.find_manufacturer_by(cert)
     issuer = cert.issuer
+    manu1  = nil
     where(:issuer_dn => issuer.to_s).each { |manu|
+
+      manu1 = manu
+
       # now verify that the public key validates the certificate given.
       manukey = OpenSSL::PKey.read(manu.issuer_public_key)
       if cert.verify(manukey)
@@ -30,7 +38,15 @@ class Manufacturer < ApplicationRecord
       end
     }
 
-    # if we get here, no key validated the certificate, return nil
-    return nil
+    # if we get here, no key validated the certificate,
+    # so look for the
+    unless manu1
+      manu1 = create(:issuer_dn => issuer.to_s)
+      manu1.trust_firstused!
+      manu1.name = sprintf("unknown manufacturer #%u", manu1.id)
+      manu1.save!
+    end
+
+    return manu1
   end
 end

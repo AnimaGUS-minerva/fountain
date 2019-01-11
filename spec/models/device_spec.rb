@@ -117,6 +117,13 @@ RSpec.describe Device, type: :model do
       expect(d).to_not be_nil
       expect(d).to eq(devices(:bulb1))
     end
+
+    it "should find a new device from honeydukes" do
+      d = Device.find_or_make_by_certificate(cert2)
+      expect(d).to_not be_nil
+      expect(d.manufacturer).to_not be_nil
+      expect(d.manufacturer.issuer_dn).to eq(cert2.issuer.to_s)
+    end
   end
 
 

@@ -12,6 +12,7 @@ class Device < ActiveRecord::Base
 
   def self.hash_of_key(key)
     pubkey = key.public_key
+    return '' unless pubkey
     hash = Digest::SHA2.hexdigest(pubkey.to_der)
   end
 
@@ -32,7 +33,30 @@ class Device < ActiveRecord::Base
     # and look that up in the index.  The certificate might not match
     # exactly, as long as the public key matches.
     hash = hash_of_key(cert)
+    return nil if hash.blank?
     where(idevid_hash: hash).take || where(ldevid_hash: hash).take
+  end
+
+  def self.find_or_make_by_certificate(cert)
+    dev = find_by_certificate(cert)
+    unless dev
+      dev = create(idevid: cert.to_pem)
+      dev.save
+    end
+    dev
+  end
+
+  def idevid_cert
+    @idevid_cert ||= OpenSSL::X509::Certificate.new(idevid)
+  end
+
+  alias_method :get_manufacturer, :manufacturer
+  def manufacturer
+    unless get_manufacturer
+      self.manufacturer = Manufacturer.find_manufacturer_by(idevid_cert)
+      save!
+    end
+    return get_manufacturer
   end
 
   def increment_bytes(kind, amount)
@@ -224,12 +248,12 @@ class Device < ActiveRecord::Base
   end
 
   def idevid=(x)
-    self[:idevid] = idevid
+    self[:idevid] = x
     calculate_idevid_hash
   end
 
   def ldevid=(x)
-    self[:ldevid] = ldevid
+    self[:ldevid] = x
     calculate_ldevid_hash
   end
 
@@ -244,8 +268,12 @@ class Device < ActiveRecord::Base
   end
 
   def calculate_idevid_hash
-    idev_cert = OpenSSL::X509::Certificate.new(idevid)
-    self.idevid_hash = self.class.hash_of_key(idev_cert)
+    if idevid
+      idev_cert = OpenSSL::X509::Certificate.new(idevid)
+      self.idevid_hash = self.class.hash_of_key(idev_cert)
+    else
+      self.idevid_hash = nil
+    end
   end
   def validate_idevid_hash
     if idevid and idevid_hash.blank?
@@ -254,8 +282,12 @@ class Device < ActiveRecord::Base
   end
 
   def calculate_ldevid_hash
-    ldev_cert = OpenSSL::X509::Certificate.new(ldevid)
-    self.ldevid_hash = self.class.hash_of_key(ldev_cert)
+    if ldevid
+      ldev_cert = OpenSSL::X509::Certificate.new(ldevid)
+      self.ldevid_hash = self.class.hash_of_key(ldev_cert)
+    else
+      self.ldevid_hash = nil
+    end
   end
   def validate_ldevid_hash
     if ldevid and ldevid_hash.blank?
