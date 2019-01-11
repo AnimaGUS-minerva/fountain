@@ -68,6 +68,9 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.text "ipv4"
     t.text "ipv6"
     t.text "acp_prefix"
+    t.text "idevid_hash"
+    t.text "ldevid"
+    t.text "ldevid_hash"
   end
 
   create_table "manufacturers", id: :serial, force: :cascade do |t|

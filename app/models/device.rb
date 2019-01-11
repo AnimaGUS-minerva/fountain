@@ -5,8 +5,14 @@ class Device < ActiveRecord::Base
   belongs_to :device_type
 
   before_save :validate_counts
+  before_save :validate_hash_of_keys
 
   class DeviceDeleted < Exception
+  end
+
+  def self.hash_of_key(key)
+    pubkey = key.public_key
+    hash = Digest::SHA2.hexdigest(pubkey.to_der)
   end
 
   def self.find_or_make_by_number(idevid)
@@ -19,6 +25,14 @@ class Device < ActiveRecord::Base
 
   def self.find_by_mac(mac)
     where(eui64: mac).take
+  end
+
+  def self.find_by_certificate(cert)
+    # extract the public key from the certificate, create a hash of it,
+    # and look that up in the index.  The certificate might not match
+    # exactly, as long as the public key matches.
+    hash = hash_of_key(cert)
+    where(idevid_hash: hash).take || where(ldevid_hash: hash).take
   end
 
   def increment_bytes(kind, amount)
@@ -209,6 +223,16 @@ class Device < ActiveRecord::Base
     end
   end
 
+  def idevid=(x)
+    self[:idevid] = idevid
+    calculate_idevid_hash
+  end
+
+  def ldevid=(x)
+    self[:ldevid] = ldevid
+    calculate_ldevid_hash
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts
@@ -217,6 +241,36 @@ class Device < ActiveRecord::Base
       self.traffic_counts["bytes"] = [0,0]
     end
     true
+  end
+
+  def calculate_idevid_hash
+    idev_cert = OpenSSL::X509::Certificate.new(idevid)
+    self.idevid_hash = self.class.hash_of_key(idev_cert)
+  end
+  def validate_idevid_hash
+    if idevid and idevid_hash.blank?
+      calculate_idevid_hash
+    end
+  end
+
+  def calculate_ldevid_hash
+    ldev_cert = OpenSSL::X509::Certificate.new(ldevid)
+    self.ldevid_hash = self.class.hash_of_key(ldev_cert)
+  end
+  def validate_ldevid_hash
+    if ldevid and ldevid_hash.blank?
+      calculate_ldevid_hash
+    end
+  end
+
+
+  def validate_hash_of_keys
+    unless idevid_hash
+      calculate_idevid_hash
+    end
+    unless ldevid_hash
+      calculate_ldevid_hash
+    end
   end
 
 

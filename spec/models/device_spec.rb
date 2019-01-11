@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 require 'support/mud_toaster'
+require 'support/pem_data'
 
 RSpec.describe Device, type: :model do
   fixtures :all
@@ -109,6 +110,15 @@ RSpec.describe Device, type: :model do
       toaster.mud_url = toaster_mud
     end
   end
+
+  describe "finding" do
+    it "should lookup by hash of public key" do
+      d = Device.find_by_certificate(cert1)
+      expect(d).to_not be_nil
+      expect(d).to eq(devices(:bulb1))
+    end
+  end
+
 
   describe "creating" do
     it "should create a new device with a unique mac address" do

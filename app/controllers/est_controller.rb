@@ -94,10 +94,16 @@ class EstController < ApiController
 
   # GET /.well-known/est/csrattributes
   def csrattributes
-    byebug
-    unless trusted_client
+    device = trusted_client
+    unless device
       head 401
     end
+
+    #
+    # allocate a prefix for this client, store it in the client structure.
+    #
+    prefix = SystemVariable.acp_pool_allocate
+    device.acp_prefix = prefix.to_s
 
     head 406
   end
