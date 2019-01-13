@@ -122,7 +122,10 @@ class EstController < ApiController
       return false
     end
 
-    return Manufacturer.trusted_client_by_pem(clientcert_pem)
+    cert = OpenSSL::X509::Certificate.new(clientcert_pem)
+    @device = Device.find_or_make_by_certificate(cert)
+
+    return @device.try(:trusted?)
   end
 
   def capture_client_info

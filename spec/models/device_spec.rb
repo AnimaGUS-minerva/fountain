@@ -124,6 +124,14 @@ RSpec.describe Device, type: :model do
       expect(d.manufacturer).to_not be_nil
       expect(d.manufacturer.issuer_dn).to eq(cert2.issuer.to_s)
     end
+
+    it "should find a new device from wheezes, creating a new manufacturer" do
+      d = Device.find_or_make_by_certificate(cert3)
+      expect(d).to_not be_nil
+      expect(d.manufacturer).to_not be_nil
+      expect(d.manufacturer.issuer_dn).to eq(cert3.issuer.to_s)
+      expect(d.manufacturer).to           be_trust_firstused
+    end
   end
 
 
