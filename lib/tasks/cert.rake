@@ -72,7 +72,7 @@ namespace :fountain do
     jrc_crt  = OpenSSL::X509::Certificate.new
     # cf. RFC 5280 - to make it a "v3" certificate
     jrc_crt.version = 2
-    jrc_crt.serial = 1
+    jrc_crt.serial = FountainKeys.ca.serial
     dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
     dn = sprintf("%s/CN=%s", dnprefix, SystemVariable.string(:hostname).chomp)
     jrc_crt.subject = OpenSSL::X509::Name.parse dn
