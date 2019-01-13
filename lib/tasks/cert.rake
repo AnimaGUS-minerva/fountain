@@ -107,4 +107,54 @@ namespace :fountain do
     end
   end
 
+  desc "Create a keypair for the domain owner to own devices with"
+  task :s4_domain_authority => :environment do
+
+    curve = FountainKeys.ca.client_curve
+
+    certdir = Rails.root.join('db').join('cert')
+    FileUtils.mkpath(certdir)
+
+    domainprivkey=certdir.join("domain_#{curve}.key")
+    if File.exists?(domainprivkey)
+      domain_key = OpenSSL::PKey.read(File.open(domainprivkey))
+    else
+      # the JRC's public/private key - 3*1024 + 8
+      domain_key = OpenSSL::PKey::EC.new(curve)
+      domain_key.generate_key
+      File.open(domainprivkey, "w") do |f| f.write domain_key.to_pem end
+    end
+
+    domain_crt  = OpenSSL::X509::Certificate.new
+    # cf. RFC 5280 - to make it a "v3" certificate
+    domain_crt.version = 2
+    domain_crt.serial = FountainKeys.ca.serial
+    dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
+    dn = sprintf("%s/CN=%s domain authority", dnprefix, SystemVariable.string(:hostname).chomp)
+    domain_crt.subject = OpenSSL::X509::Name.parse dn
+
+    root_ca = FountainKeys.ca.rootkey
+    # jrc is signed by root_ca
+    domain_crt.issuer = root_ca.subject
+    #root_ca.public_key = root_key.public_key
+    domain_crt.public_key = domain_key
+    domain_crt.not_before = Time.now
+
+    # 1 year validity
+    domain_crt.not_after = domain_crt.not_before + 1 * 365 * 24 * 60 * 60
+
+    # Extension Factory
+    ef = OpenSSL::X509::ExtensionFactory.new
+    ef.subject_certificate = domain_crt
+    ef.issuer_certificate  = root_ca
+    #ef.config = OpenSSL::Config.load("registrar-ssl.cnf")
+    domain_crt.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
+
+    domain_crt.sign(FountainKeys.ca.rootprivkey, OpenSSL::Digest::SHA256.new)
+
+    File.open(certdir.join("domain_#{curve}.crt"),'w') do |f|
+      f.write domain_crt.to_pem
+    end
+  end
+
 end
