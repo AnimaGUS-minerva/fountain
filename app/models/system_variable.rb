@@ -59,6 +59,12 @@ class SystemVariable < ActiveRecord::Base
     v.save
   end
 
+  def self.setbool(thing, value)
+    v = self.findormake(thing)
+    v.number = (value ? 1 : 0)
+    v.save
+  end
+
   def self.setvalue(thing, value)
     v = self.findormake(thing)
     v.value = value

@@ -115,6 +115,8 @@ class EstController < ApiController
   # if manufacturer is marked trusted, or Registrar has been marked as
   # promiscuous, then return true.
   # note that manufacturer can be marked as blacklisted instead!
+  #
+  # As a side effect, @device is setup.
   def trusted_client
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     clientcert_pem ||= request.env["rack.peer_cert"]

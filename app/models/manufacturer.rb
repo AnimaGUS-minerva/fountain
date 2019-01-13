@@ -39,12 +39,19 @@ class Manufacturer < ApplicationRecord
     }
 
     # if we get here, no key validated the certificate,
-    # so look for the
-    unless manu1
-      manu1 = create(:issuer_dn => issuer.to_s)
-      manu1.trust_firstused!
-      manu1.name = sprintf("unknown manufacturer #%u", manu1.id)
-      manu1.save!
+    # but maybe we found something with the same issuer, if
+    # so, go with it.
+    #
+    # if not, then create the something with the same issuer if
+    # open registrar variable is enabled.
+    #
+    if SystemVariable.boolvalue?(:open_registrar)
+      unless manu1
+        manu1 = create(:issuer_dn => issuer.to_s)
+        manu1.trust_firstused!
+        manu1.name = sprintf("unknown manufacturer #%u", manu1.id)
+        manu1.save!
+      end
     end
 
     return manu1
