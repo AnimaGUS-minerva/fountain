@@ -92,7 +92,7 @@ class ACPAddress < IPAddress::IPv6
     a
   end
 
-    private
+  private
   def asa_address_u128
     u128 = node_address.network.to_u128
     u128 &= ~(f_bit)

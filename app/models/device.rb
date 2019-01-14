@@ -9,6 +9,8 @@ class Device < ActiveRecord::Base
 
   class DeviceDeleted < Exception
   end
+  class CSRNotverified < Exception; end
+  class CSRSerialNumberDuplicated < Exception; end
 
   def self.hash_of_key(key)
     pubkey = key.public_key
@@ -49,6 +51,35 @@ class Device < ActiveRecord::Base
   def idevid_cert
     @idevid_cert ||= OpenSSL::X509::Certificate.new(idevid)
   end
+
+  # return a cooked (model ACP_Address) version of acp_prefix
+  def acp_address
+    return nil unless acp_prefix
+    @acp_address ||= ACPAddress.new(acp_prefix)
+  end
+  def acp_address=(x)
+    @acp_address = nil
+    self.acp_prefix = x.to_string_uncompressed
+  end
+
+  def acp_address_allocate!(format = false)
+    if acp_prefix.blank?
+      self.acp_address=SystemVariable.acp_pool_allocate(format)
+    end
+  end
+
+  # conversion to/from rfc822NAME as per draft-ietf-anima-autonomic-control-plane,
+  # section 6.10.5.  Only the ACP Vlong Addressing Sub-Scheme is supported,
+  # and the asa_address format is preferred for now.
+  def rfc822Name
+    @rfc822Name ||= sprintf("rfc%s+%s+%s@%s",
+                            SystemVariable.string(:rfc_ACP) || "SELF",
+                            acp_address.to_hex,
+                            SystemVariable.acp_rsub,
+                            SystemVariable.acp_domain)
+  end
+
+
 
   alias_method :get_manufacturer, :manufacturer
   def manufacturer

@@ -199,4 +199,23 @@ RSpec.describe Device, type: :model do
 
   end
 
+  describe "enrollment" do
+    it "should allocate an ACP address" do
+      b = devices(:bulb1)
+      expect(b.acp_prefix).to be_blank
+      b.acp_address_allocate!
+      expect(b.acp_prefix).to eq("fd73:9fc2:3c34:4011:2233:4455:0000:0000/120")
+      expect(b.rfc822Name).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+    end
+
+    it "should generate an LDevID signed by domain authority" do
+      b = devices(:bulb1)
+      expect(b.ldevid).to be_blank
+
+      # create_from_csr(OpenSSL::X509::Request.new(csrio))
+      b.sign_ldevid!
+      expect(b.ldevid).to_not be_blank
+    end
+  end
+
 end
