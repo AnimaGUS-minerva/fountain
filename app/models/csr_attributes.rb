@@ -11,11 +11,12 @@ class CSRAttributes
     ca
   end
 
+  def initialize
+    self.attributes = []
+  end
+
   def to_der
-    n = OpenSSL::ASN1::Sequence.new
-    @attributes.each { |attr|
-      n.value << attr
-    }
+    n = OpenSSL::ASN1::Sequence.new(@attributes)
     n.to_der
   end
 
@@ -24,11 +25,8 @@ class CSRAttributes
   end
 
   def make_attr_pair(x,y)
-    s = OpenSSL::ASN1::Sequence.new
-    s.value << OpenSSL::ASN1::ObjectId.new(x)
-    st = OpenSSL::ASN1::Set.new
-    st << OpenSSL::ASN1::ObjectId.new(y)
-    s.value << st
+    st = OpenSSL::ASN1::Set.new([y])
+    s = OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(x), st])
     return s
   end
 
