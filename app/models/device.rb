@@ -18,8 +18,8 @@ class Device < ActiveRecord::Base
     hash = Digest::SHA2.hexdigest(pubkey.to_der)
   end
 
-  def self.find_or_make_by_number(idevid)
-    where(idevid: idevid).take || create(idevid: idevid)
+  def self.find_or_make_by_number(number)
+    find_or_create_by_mac(number)
   end
 
   def self.find_or_create_by_mac(mac)
