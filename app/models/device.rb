@@ -49,7 +49,15 @@ class Device < ActiveRecord::Base
   end
 
   def idevid_cert
-    @idevid_cert ||= OpenSSL::X509::Certificate.new(idevid)
+    unless idevid.blank?
+      @idevid_cert ||= OpenSSL::X509::Certificate.new(idevid)
+    end
+  end
+
+  def ldevid_cert
+    unless ldevid.blank?
+      @ldevid_cert ||= OpenSSL::X509::Certificate.new(ldevid)
+    end
   end
 
   # return a cooked (model ACP_Address) version of acp_prefix

@@ -7,7 +7,6 @@ bulb1:
   eui64: 00:16:3e:ff:fe:12:ea:91
   device_type_id: 1
   manufacturer_id: 2
-  idevid: O=bulb,CN=12ea91
   created_at: 2017-01-01
   updated_at: "2018-05-24 01:13:22"
   idevid_hash: "0c59fb8e27b1963af1f93a3ba61472a4218a57ed6e86d26067a0aadd751ee916"
@@ -33,7 +32,7 @@ jadaf20001:
   name: bulb f2-00-01
   device_type_id: 1
   manufacturer_id: 1
-  idevid: "JADA_f2-00-01"
+  eui64: "JADA_f2-00-01"
   created_at: 2017-01-01
   updated_at: "2018-05-24 01:13:22"
 
@@ -41,10 +40,9 @@ n3:
   id: 3
   name: constrained 1
   fqdn:
-  eui64:
+  eui64: "JADA123456789"
   device_type_id:
   manufacturer_id:
-  idevid: "JADA123456789"
   created_at: "2018-05-24 01:13:22"
   updated_at: "2018-05-24 01:13:22"
 

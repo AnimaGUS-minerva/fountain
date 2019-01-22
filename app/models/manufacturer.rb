@@ -25,6 +25,7 @@ class Manufacturer < ApplicationRecord
   end
 
   def self.find_manufacturer_by(cert)
+    return nil unless cert
     issuer = cert.issuer
     manu1  = nil
     where(:issuer_dn => issuer.to_s).each { |manu|
