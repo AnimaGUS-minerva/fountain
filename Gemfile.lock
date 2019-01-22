@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: git@github.com:AnimaGUS-minerva/david.git
-  revision: 78d10672f866b6b9dd3d7af63017f8a2f1a0c3a6
+  revision: d0dce818ca557430c12eafead37406a0dcd1c551
   specs:
     david (0.5.1.pre)
       celluloid (~> 0.17.3)
@@ -304,7 +304,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
-    timers (4.2.0)
+    timers (4.3.0)
     treetop (1.6.10)
       polyglot (~> 0.3)
     turbolinks (5.2.0)
