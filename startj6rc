@@ -5,6 +5,7 @@
 export DTLS=true
 export SERVCERT=db/cert/jrc_prime256v1.crt
 export SERVKEY=db/cert/jrc_prime256v1.key
+export CIPHER_LIST='ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES128-CCM8'
 #strace -o /tmp/nn1 -E LD_PRELOAD=/sandel/3rd/openssl/lib/libcrypto.so.1.1:/sandel/3rd/openssl/lib/libssl.so.1.1 ./ruby bin/rails server david -b ::2 -p 5684
 
 RAILS_ENV=${RAILS_ENV-production}
