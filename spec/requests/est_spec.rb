@@ -60,7 +60,7 @@ RSpec.describe "Est", type: :request do
     end
   end
 
-  it "should return list of CAs from /crts" do
+  it "should return list of CAs from /cacerts" do
     get '/.well-known/est/cacerts'
     expect(response).to have_http_status(200)
     root = OpenSSL::X509::Certificate.new(response.body)
@@ -98,6 +98,20 @@ RSpec.describe "Est", type: :request do
       get "/e/att"
       expect(response).to have_http_status(200)
     end
+  end
+
+  it "should request a new certificate with a CSR with trusted connection" do
+    env = Hash.new
+    env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+    get "/.well-known/est/csrattributes", :headers => env
+    expect(response).to have_http_status(200)
+  end
+
+  it "should fail to get new certificate with untrusted connection" do
+    env = Hash.new
+    env["SSL_CLIENT_CERT"] = clientcert
+    get "/.well-known/est/csrattributes", :headers => env
+    expect(response).to have_http_status(200)
   end
 
   describe "signed pledge voucher request" do

@@ -142,6 +142,11 @@ RSpec.describe Device, type: :model do
     end
   end
 
+  describe "trusting" do
+    it "occurs when device has an LDevID" do
+      pending "foobar"
+    end
+  end
 
   describe "creating" do
     it "should create a new device with a unique mac address" do
@@ -206,6 +211,12 @@ RSpec.describe Device, type: :model do
       b.acp_address_allocate!
       expect(b.acp_prefix).to eq("fd73:9fc2:3c34:4011:2233:4455:0000:0000/120")
       expect(b.rfc822Name).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+    end
+
+    it "should generate an appropriate CSRattributes object with the rfc822Name" do
+      b = devices(:bulb1)
+      b.acp_address_allocate!
+      expect(b.csr_attributes.to_der).to eq("0B0@\x06\x03U\x1D\x1119rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
     end
 
     it "should generate an LDevID signed by domain authority" do

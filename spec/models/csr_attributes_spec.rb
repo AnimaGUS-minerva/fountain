@@ -40,5 +40,17 @@ RSpec.describe CSRAttributes do
     expect(new_der).to eq(test_der)
   end
 
+  it "should create a CSR attribute with a subjectAltName rfc822Name" do
+    c1 = CSRAttributes.new
+    ef = OpenSSL::X509::ExtensionFactory.new
+    ext = ef.create_extension("subjectAltName",
+                              sprintf("rfc822Name:hello@example.com"),
+                              false)
+
+    c1.add_attr("subjectAltName", ef.to_der)
+    byebug
+    expect(c1.to_der).to eq("")
+  end
+
 end
 

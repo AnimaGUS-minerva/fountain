@@ -94,10 +94,14 @@ class EstController < ApiController
 
   # GET /.well-known/est/csrattributes
   def csrattributes
-    device = trusted_client
-    unless device
+    unless trusted_client
       head 401
     end
+
+    # now make sure that there is a device allocated for this client.
+    # devices are indexed by either IDevID, or LDevID.
+    # @device was set by trusted_client.
+    @device ...
 
     #
     # allocate a prefix for this client, store it in the client structure.

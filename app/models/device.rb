@@ -60,6 +60,49 @@ class Device < ActiveRecord::Base
     end
   end
 
+  # This is for signing of LDevID for this device.
+  # The optional argument is a set of CSR values to go into the certificate.
+  # If none are provided, then no attributes are put into place, and the
+  # public key of the IDevID will be signed.
+  def sign_ldevid!(csr = nil)
+
+    pubkey = idevid_cert.public_key
+    if csr
+      unless csr.verify(csr.public_key)
+        raise CSRNotVerified;
+      end
+      pubkey = csr.public_key
+
+      # look for attributes we are willing to deal with, specifically
+      # the rfc822Name.  Note that the acp_prefix that will be present in
+      # the acp_prefix MUST be echoed back exactly.
+
+      attributes = Hash.new
+      items = csr.subject.to_a
+      items.each { |attr|
+        case attr[2]
+        when 12       # UTF8STRING
+          attributes[attr[0]] = attr[1]
+        when 19       # PRINTABLESTRING
+          attributes[attr[0]] = attr[1]
+        else
+          # not sure what to do with other types now.
+        end
+      }
+
+      if attributes["rfc822Name"]
+      end
+
+    end
+
+    # found a suitable dev, now write a certificate for it, and store it.
+    # will allocate an EUI-64 for it along the way.
+    # The caller can set the model if desired.
+    dev.sign_
+
+    dev
+  end
+
   # return a cooked (model ACP_Address) version of acp_prefix
   def acp_address
     return nil unless acp_prefix
@@ -87,6 +130,12 @@ class Device < ActiveRecord::Base
                             SystemVariable.acp_domain)
   end
 
+  # generate CSR attributes for the ACP address provided.
+  def csr_attributes
+    ca = CSRAttributes.new
+    ca.add_attr("subjectAltName", rfc822Name)
+    return ca
+  end
 
 
   alias_method :get_manufacturer, :manufacturer
@@ -308,6 +357,7 @@ class Device < ActiveRecord::Base
 
   def calculate_idevid_hash
     if idevid
+      byebug
       idev_cert = OpenSSL::X509::Certificate.new(idevid)
       self.idevid_hash = self.class.hash_of_key(idev_cert)
     else
