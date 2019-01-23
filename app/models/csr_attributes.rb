@@ -11,6 +11,11 @@ class CSRAttributes
     ca
   end
 
+  def self.rfc822Name(x)
+    v = OpenSSL::ASN1::ASN1Data.new(x, 2, :CONTEXT_SPECIFIC)
+    return OpenSSL::ASN1::Sequence.new([v])
+  end
+
   def initialize
     self.attributes = []
   end

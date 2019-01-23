@@ -42,9 +42,9 @@ RSpec.describe CSRAttributes do
 
   it "should create a CSR attribute with a subjectAltName rfc822Name" do
     c1 = CSRAttributes.new
-    c1.add_attr("subjectAltName", "rfc822Name:hello@example.com")
-    byebug
-    expect(c1.to_der).to eq("")
+    c1.add_attr("subjectAltName",
+                CSRAttributes.rfc822Name("hello@example.com"))
+    expect(c1.to_der).to eq("0\x1E0\x1C\x06\x03U\x1D\x111\x150\x13\x82\x11hello@example.com".b)
   end
 
   def subjectAltName_ex1
