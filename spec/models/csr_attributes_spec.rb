@@ -42,14 +42,39 @@ RSpec.describe CSRAttributes do
 
   it "should create a CSR attribute with a subjectAltName rfc822Name" do
     c1 = CSRAttributes.new
-    ef = OpenSSL::X509::ExtensionFactory.new
-    ext = ef.create_extension("subjectAltName",
-                              sprintf("rfc822Name:hello@example.com"),
-                              false)
-
-    c1.add_attr("subjectAltName", ef.to_der)
+    c1.add_attr("subjectAltName", "rfc822Name:hello@example.com")
     byebug
     expect(c1.to_der).to eq("")
+  end
+
+  def subjectAltName_ex1
+    hexder="3081EE8213646177736F6E2E73616E6465"+
+           "6C6D616E2E63618214646177736F6E352E"+
+           "73616E64656C6D616E2E63618219677565"+
+           "73742E646177736F6E2E73616E64656C6D"+
+           "616E2E6361821A6775657374352E646177"+
+           "736F6E2E73616E64656C6D616E2E636182"+
+           "106A65642E73616E64656C6D616E2E6361"+
+           "82116A6564342E73616E64656C6D616E2E"+
+           "636182116A6564362E73616E64656C6D61"+
+           "6E2E636182116D6573682E73616E64656C"+
+           "6D616E2E63618215756E737472756E672E"+
+           "73616E64656C6D616E2E63618216756E73"+
+           "7472756E67362E73616E64656C6D616E2E"+
+           "636182107777772E73616E64656C6D616E"+
+           "2E6361"
+    binder=[hexder].pack("H*")
+    binder
+  end
+  it "should decode a sequence of subjectAltName" do
+    decoded=OpenSSL::ASN1.decode(subjectAltName_ex1)
+    expect(decoded.value[0].value).to eq("dawson.sandelman.ca")
+    expect(decoded.value[0].tag).to eq(2)
+    expect(decoded.value[1].value).to eq("dawson5.sandelman.ca")
+    expect(decoded.value[1].tag).to eq(2)
+    expect(decoded.value[2].value).to eq("guest.dawson.sandelman.ca")
+    expect(decoded.value[2].tag).to eq(2)
+    expect(decoded.value.length).to eq(11)
   end
 
 end
