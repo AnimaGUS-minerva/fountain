@@ -33,10 +33,19 @@ class Manufacturer < ApplicationRecord
 
       manu1 = manu
 
+      next if manu.issuer_public_key.blank?
+
       # now verify that the public key validates the certificate given.
-      manukey = OpenSSL::PKey.read(manu.issuer_public_key)
-      if cert.verify(manukey)
-        return [manu,manu]
+      begin
+        manukey = OpenSSL::PKey.read(manu.issuer_public_key)
+      rescue OpenSSL::PKey::PKeyError
+        # parse error or blank
+        nil
+
+      else
+        if cert.verify(manukey)
+          return [manu,manu]
+        end
       end
     }
     return [nil,manu1]
