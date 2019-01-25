@@ -47,6 +47,11 @@ RSpec.describe "Est", type: :request do
     @cbor_highwaytest_clientcert ||= IO.binread("spec/certs/E0000F-idevid.pem")
   end
 
+  # points to https://highway-test.sandelman.ca
+  def highwaytest_clientcert
+    @highwaytest_clientcert ||= IO.binread("spec/files/product_00-D0-E5-F2-00-03/device.crt")
+  end
+
   describe "resource discovery" do
     it "should return a location for the EST service" do
       pending "CoAP ONLY"
@@ -115,7 +120,7 @@ RSpec.describe "Est", type: :request do
   end
 
   describe "signed pledge voucher request" do
-    it "should get HTTPS POSTed to requestvoucher" do
+    it "in PKCS7 format gets HTTPS POSTed to requestvoucher" do
 
       result = IO.read("spec/files/voucher_081196FFFE0181E0.pkcs")
       voucher_request = nil
@@ -156,6 +161,52 @@ RSpec.describe "Est", type: :request do
 
       expect(Chariwt.cmp_pkcs_file(voucher_request,
                                    "voucher_request_081196FFFE0181E0",
+                                   "spec/files/cert/certs.crt"
+                                  )).to be true
+
+    end
+
+    it "in CMS format should get HTTPS POSTed to requestvoucher" do
+
+      result = IO.read("spec/files/voucher-00-D0-E5-F2-00-03.vch")
+      voucher_request = nil
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+
+      allow(Time).to receive(:now).and_return(@time_now)
+      stub_request(:post, "https://highway-test.example.com/.well-known/est/requestvoucher").
+        with(headers:
+               {'Accept'=>['*/*', 'application/voucher-cms+json'],
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Content-Type'=>'application/voucher-cms+json',
+                'Host'=>'highway-test.example.com',
+                'User-Agent'=>'Ruby'
+               }).
+        to_return(status: 200, body: lambda { |request|
+                    voucher_request = request.body
+                    result},
+                  headers: {
+                    'Content-Type'=>'application/voucher-cms+json'
+                  })
+
+      # get the Base64 of the parboiled signed request
+      body = IO.read("spec/files/parboiled_vr-00-D0-E5-F2-00-03.pkcs")
+
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert
+      env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
+      env["CONTENT_TYPE"] = "application/voucher-cms+json"
+      post '/.well-known/est/requestvoucher', :params => body, :headers => env
+
+      expect(assigns(:voucherreq)).to_not be_nil
+      expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
+      expect(assigns(:voucherreq).pledge_request).to_not be_nil
+      expect(assigns(:voucherreq).signed).to be_truthy
+      expect(assigns(:voucherreq).device).to_not be_nil
+      expect(assigns(:voucherreq).manufacturer).to be_present
+      expect(assigns(:voucherreq).device_identifier).to_not be_nil
+
+      expect(Chariwt.cmp_pkcs_file(voucher_request,
+                                   "voucher_request-00-D0-E5-F2-00-03.pkcs",
                                    "spec/files/cert/certs.crt"
                                   )).to be true
 
