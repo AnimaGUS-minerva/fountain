@@ -34,9 +34,12 @@ RSpec.describe Manufacturer, type: :model do
   end
 
   describe "trusted signatures" do
-    it "should not find a mis-matched" do
-      pending "Needs a broken CA cert"
-      m1 = Manufacturer.trusted_client_by_pem("") #broken_highwaytest_clientcert_almec_f20001)
+    it "should not find a mis-matched issuer" do
+      # this file was created with the identical DN as highwaytest, being:
+      #    DC = ca, DC = sandelman, CN = highway-test.example.com CA
+      # not possible to create an end-certificate with DC = xxx though
+      file = "spec/files/CAs/malicious/certs/intermediate.cert.pem"
+      m1 = Manufacturer.trusted_client_by_pem(IO.binread(file))
       expect(m1).to be_nil
     end
 

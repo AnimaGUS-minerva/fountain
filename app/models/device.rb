@@ -141,7 +141,7 @@ class Device < ActiveRecord::Base
   alias_method :get_manufacturer, :manufacturer
   def manufacturer
     unless get_manufacturer
-      self.manufacturer = Manufacturer.find_manufacturer_by(idevid_cert)
+      self.manufacturer = Manufacturer.find_manufacturer_by(idevid_cert).try(:first)
       save!
     end
     return get_manufacturer

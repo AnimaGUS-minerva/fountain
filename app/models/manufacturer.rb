@@ -20,8 +20,9 @@ class Manufacturer < ApplicationRecord
     end
 
     # look for a device with the same public key.
-
     return nil unless cert
+
+    find_manufacturer_by(cert).first
   end
 
   def self.find_manufacturer_by(cert)
@@ -35,9 +36,15 @@ class Manufacturer < ApplicationRecord
       # now verify that the public key validates the certificate given.
       manukey = OpenSSL::PKey.read(manu.issuer_public_key)
       if cert.verify(manukey)
-        return manu
+        return [manu,manu]
       end
     }
+    return [nil,manu1]
+  end
+
+  def self.find_or_create_manufacturer_by(cert)
+    (manu,manu1) = find_manufacturer_by(cert)
+    return manu if manu
 
     # if we get here, no key validated the certificate,
     # but maybe we found something with the same issuer, if
