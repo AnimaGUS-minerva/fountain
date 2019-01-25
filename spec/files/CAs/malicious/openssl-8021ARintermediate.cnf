@@ -1,5 +1,5 @@
-# OpenSSL root CA configuration file.
-# Copy to `$dir/openssl.cnf`.
+# OpenSSL 8021ARintermediate CA configuration file.
+# Copy to `$dir/8021ARintermediate/openssl-8021ARintermediate.cnf`.
 
 [ ca ]
 # `man ca`
@@ -7,7 +7,8 @@ default_ca = CA_default
 
 [ CA_default ]
 # Directory and file locations.
-dir               = $ENV::rootca
+# dir               = /root/ca/8021ARintermediate
+dir               = $ENV::dir
 cadir             = $ENV::cadir
 format            = $ENV::format
 
@@ -19,37 +20,38 @@ serial            = $dir/serial
 RANDFILE          = $dir/private/.rand
 
 # The root key and root certificate.
-private_key       = $dir/private/ca.key.$format
-certificate       = $cadir/certs/ca.cert.$format
+private_key       = $dir/private/8021ARintermediate.key.$format
+certificate       = $dir/certs/8021ARintermediate.cert.$format
 
 # For certificate revocation lists.
 crlnumber         = $dir/crlnumber
 crl               = $dir/crl/ca.crl.pem
 crl_extensions    = crl_ext
-default_crl_days  = 30
+default_crl_days  = $ENV::default_crl_days
 
 # SHA-1 is deprecated, so use SHA-2 instead.
 default_md        = sha256
 
 name_opt          = ca_default
 cert_opt          = ca_default
-default_days      = 375
+default_enddate   = 99991231235959Z # per IEEE 802.1AR
 preserve          = no
-policy            = policy_strict
+policy            = policy_loose
 copy_extensions   = copy
 
 [ policy_strict ]
-# The root CA should only sign intermediate certificates that match.
+# The root CA should only sign 8021ARintermediate
+#   certificates that match.
 # See the POLICY FORMAT section of `man ca`.
-countryName             = optional
-stateOrProvinceName     = optional
-organizationName        = optional
+countryName             = match
+stateOrProvinceName     = match
+organizationName        = match
 organizationalUnitName  = optional
 commonName              = optional
 
 [ policy_loose ]
-# Allow the intermediate CA to sign a more
-#   diverse range of certificates.
+# Allow the 8021ARintermediate CA to sign
+#   a more diverse range of certificates.
 # See the POLICY FORMAT section of the `ca` man page.
 countryName             = optional
 stateOrProvinceName     = optional
@@ -57,6 +59,7 @@ localityName            = optional
 organizationName        = optional
 organizationalUnitName  = optional
 commonName              = optional
+serialNumber            = optional
 
 [ req ]
 # Options for the `req` tool (`man req`).
@@ -79,33 +82,44 @@ localityName                    = Locality Name
 0.organizationName              = Organization Name
 organizationalUnitName          = Organizational Unit Name
 commonName                      = Common Name
+serialNumber                    = Device Serial Number
 
 # Optionally, specify some defaults.
-# countryName_default             = US
-# stateOrProvinceName_default     = MI
-# localityName_default            = Oak Park
-# 0.organizationName_default      = HTT Consulting
-# organizationalUnitName_default  =
+0.organizationName_default      = HTT Consulting
+organizationalUnitName_default  = Devices
 
 [ req_ext ]
 subjectAltName = $ENV::subjectAltName
+
+[ hmodname ]
+hwType = OID:$ENV::hwType
+hwSerialNum = FORMAT:HEX,OCT:$ENV::hwSerialNum
 
 [ v3_ca ]
 # Extensions for a typical CA (`man x509v3_config`).
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid:always,issuer
 basicConstraints = critical, CA:true
-# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-keyUsage = critical, cRLSign, keyCertSign
-subjectAltName = $ENV::subjectAltName
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
 
-[ v3_intermediate_ca ]
-# Extensions for a typical intermediate CA (`man x509v3_config`).
+[ v3_8021ARintermediate_ca ]
+# Extensions for a typical
+#   8021ARintermediate CA (`man x509v3_config`).
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid:always,issuer
 basicConstraints = critical, CA:true, pathlen:0
 # keyUsage = critical, digitalSignature, cRLSign, keyCertSign
 keyUsage = critical, cRLSign, keyCertSign
+
+[ 8021ar_idevid ]
+# Extensions for IEEE 802.1AR iDevID
+#   certificates (`man x509v3_config`).
+basicConstraints = CA:FALSE
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+# uncomment the following if the ENV variables set
+# crlDistributionPoints = $ENV::crlDP
+# authorityInfoAccess = $ENV::ocspIAI
 
 [ crl_ext ]
 # Extension for CRLs (`man x509v3_config`).

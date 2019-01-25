@@ -357,7 +357,6 @@ class Device < ActiveRecord::Base
 
   def calculate_idevid_hash
     if idevid
-      byebug
       idev_cert = OpenSSL::X509::Certificate.new(idevid)
       self.idevid_hash = self.class.hash_of_key(idev_cert)
     else

@@ -1,2 +1,0 @@
-V	290122023217Z		1967E9C71C5E257B	unknown	/CN=highway-test.example.com root CA
-V	200204023225Z		097A60C834809085	unknown	/UID=newdevice

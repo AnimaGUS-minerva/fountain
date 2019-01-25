@@ -1,1 +1,3 @@
 *.old
+root/newcerts
+intermediate/newcerts

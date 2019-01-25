@@ -7,7 +7,7 @@ default_ca = CA_default
 
 [ CA_default ]
 # Directory and file locations.
-dir               = $ENV::dir
+dir               = $ENV::intdir
 cadir             = $ENV::cadir
 format            = $ENV::format
 
@@ -20,7 +20,7 @@ RANDFILE          = $dir/private/.rand
 
 # The Intermediate key and Intermediate certificate.
 private_key       = $dir/private/intermediate.key.$format
-certificate       = $dir/certs/intermediate.cert.$format
+certificate       = $cadir/certs/intermediate.cert.$format
 
 # For certificate revocation lists.
 crlnumber         = $dir/crlnumber
