@@ -113,30 +113,30 @@ RSpec.describe Device, type: :model do
 
   describe "finding" do
     it "should lookup by hash of public key" do
-      d = Device.find_by_certificate(cert1)
+      d = Device.find_by_certificate(cert1_20)
       expect(d).to_not be_nil
       expect(d).to eq(devices(:bulb1))
     end
 
     it "should find a new device from honeydukes" do
-      d = Device.find_or_make_by_certificate(cert2)
+      d = Device.find_or_make_by_certificate(cert2_1B)
       expect(d).to_not be_nil
       expect(d.manufacturer).to_not be_nil
-      expect(d.manufacturer.issuer_dn).to eq(cert2.issuer.to_s)
+      expect(d.manufacturer.issuer_dn).to eq(cert2_1B.issuer.to_s)
     end
 
     it "should find a new device from wheezes, creating a new manufacturer, if promisc registrar" do
       SystemVariable.setbool(:open_registrar, true)
-      d = Device.find_or_make_by_certificate(cert3)
+      d = Device.find_or_make_by_certificate(cert3_0B)
       expect(d).to_not be_nil
       expect(d.manufacturer).to_not be_nil
-      expect(d.manufacturer.issuer_dn).to eq(cert3.issuer.to_s)
+      expect(d.manufacturer.issuer_dn).to eq(cert3_0B.issuer.to_s)
       expect(d.manufacturer).to           be_trust_firstused
     end
 
     it "should reject a new device from wheezes, not create a manufacturer, if restrictive registrar" do
       SystemVariable.setbool(:open_registrar, false)
-      d = Device.find_or_make_by_certificate(cert3)
+      d = Device.find_or_make_by_certificate(cert3_0B)
       expect(d).to_not be_nil
       expect(d.manufacturer).to           be_nil
     end
