@@ -77,10 +77,14 @@ RSpec.describe CSRAttributes do
 
   end
 
+  def realistic_rfc822Name
+    "rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com"
+  end
+
   it "should validate encoding/decoding of CSR rfc822name" do
     # this exists just to make help identify actual encoding problems
     # that are sometimes burried.
-    a3 = OpenSSL::ASN1::UTF8String.new("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com", 2, :EXPLICIT, :CONTEXT_SPECIFIC)
+    a3 = OpenSSL::ASN1::UTF8String.new(realistic_rfc822Name, 2, :EXPLICIT, :CONTEXT_SPECIFIC)
     a2 = OpenSSL::ASN1::Set.new([a3])  # make the rfc822Name
     a2tag=OpenSSL::ASN1::ObjectId.new("subjectAltName")
     a1 = OpenSSL::ASN1::Sequence.new([a2tag, a2])  # the subjectAltName attr
@@ -90,6 +94,19 @@ RSpec.describe CSRAttributes do
     File.open("tmp/hellobulb2.der", "wb") { |f| f.syswrite der }
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
+  end
+
+  it "should create a CSR attribute with a realistic subjectAltName" do
+    c1 = CSRAttributes.new
+    c1.add_attr("subjectAltName",
+                CSRAttributes.rfc822Name(realistic_rfc822Name))
+
+    der=c1.to_der
+    #puts der.unpack("H*")
+    File.open("tmp/hellobulb3.der", "wb") { |f| f.syswrite der }
+    c0 = CSRAttributes.from_der(der)
+    expect(c0).to_not be_nil
+    expect(der).to eq("0H0F\x06\x03U\x1D\x111?0=\xA2;\f9rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com".b)
   end
 
   def subjectAltName_ex1

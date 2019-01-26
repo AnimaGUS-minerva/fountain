@@ -33,6 +33,9 @@ class Manufacturer < ApplicationRecord
 
       manu1 = manu
 
+      #puts "Comparing #{manu.id} #{manu.issuer_dn} to #{issuer.to_s}"
+      #puts "pubkey: "+(manu.issuer_public_key.blank? ? "blank" : "available")
+
       next if manu.issuer_public_key.blank?
 
       # now verify that the public key validates the certificate given.
@@ -47,6 +50,7 @@ class Manufacturer < ApplicationRecord
           return [manu,manu]
         end
       end
+      #puts "did not verify cert"
     }
     return [nil,manu1]
   end
@@ -55,16 +59,24 @@ class Manufacturer < ApplicationRecord
     (manu,manu1) = find_manufacturer_by(cert)
     return manu if manu
 
+    # we may have found something with the same issuer_dn, but
+    # we can use it only if it has no public key, as if it had
+    # a public key, then it should have validated this cert.
+    unless manu1.try(:issuer_public_key).try(:blank?)
+      manu1 = nil
+    end
+
     # if we get here, no key validated the certificate,
     # but maybe we found something with the same issuer, if
     # so, go with it.
+    #
     #
     # if not, then create the something with the same issuer if
     # open registrar variable is enabled.
     #
     if SystemVariable.boolvalue?(:open_registrar)
       unless manu1
-        manu1 = create(:issuer_dn => issuer.to_s)
+        manu1 = create(:issuer_dn => cert.issuer.to_s)
         manu1.trust_firstused!
         manu1.name = sprintf("unknown manufacturer #%u", manu1.id)
         manu1.save!

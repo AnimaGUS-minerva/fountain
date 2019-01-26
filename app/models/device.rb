@@ -133,7 +133,7 @@ class Device < ActiveRecord::Base
   # generate CSR attributes for the ACP address provided.
   def csr_attributes
     ca = CSRAttributes.new
-    ca.add_attr("subjectAltName", rfc822Name)
+    ca.add_attr("subjectAltName", CSRAttributes.rfc822Name(rfc822Name))
     return ca
   end
 
@@ -141,7 +141,7 @@ class Device < ActiveRecord::Base
   alias_method :get_manufacturer, :manufacturer
   def manufacturer
     unless get_manufacturer
-      self.manufacturer = Manufacturer.find_manufacturer_by(idevid_cert).try(:first)
+      self.manufacturer = Manufacturer.find_or_create_manufacturer_by(idevid_cert)
       save!
     end
     return get_manufacturer
