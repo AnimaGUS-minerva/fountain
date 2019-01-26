@@ -38,13 +38,58 @@ RSpec.describe CSRAttributes do
 
     new_der = c1.to_der
     expect(new_der).to eq(test_der)
+
+    c0 = CSRAttributes.from_der(new_der)
+    expect(c0).to_not be_nil
   end
 
   it "should create a CSR attribute with a subjectAltName rfc822Name" do
     c1 = CSRAttributes.new
     c1.add_attr("subjectAltName",
                 CSRAttributes.rfc822Name("hello@example.com"))
-    expect(c1.to_der).to eq("0\x1E0\x1C\x06\x03U\x1D\x111\x150\x13\x82\x11hello@example.com".b)
+
+    der=c1.to_der
+    #puts der.unpack("H*")
+    File.open("tmp/hellobulb0.der", "wb") { |f| f.syswrite der }
+    expect(c1.to_der).to eq("0 0\x1E\x06\x03U\x1D\x111\x170\x15\xA2\x13\f\x11hello@example.com".b)
+  end
+
+  it "should validate encoding/decoding of CSR attributes" do
+    # this exists just to make help identify actual encoding problems
+    # that are sometimes burried.
+    name = "hello@example.com"
+    if false
+      a4 = OpenSSL::ASN1::UTF8String.new(name, 2, :EXPLICIT, :CONTEXT_SPECIFIC)
+      a3 = OpenSSL::ASN1::Sequence.new([a4])  # make the rfc822Name
+      a2 = OpenSSL::ASN1::Set.new([a3])       # make set of SAN
+    else
+      a2 = CSRAttributes.rfc822Name(name)
+    end
+    a2tag=OpenSSL::ASN1::ObjectId.new("subjectAltName")
+    a1 = OpenSSL::ASN1::Sequence.new([a2tag, a2])  # the subjectAltName attr
+    a0 = OpenSSL::ASN1::Sequence.new([a1])  # the sequence of attributes
+    der= a0.to_der
+    #puts der.unpack("H*")
+    File.open("tmp/hellobulb1.der", "wb") { |f| f.syswrite der }
+
+    c0 = CSRAttributes.from_der(der)
+    expect(c0).to_not be_nil
+
+  end
+
+  it "should validate encoding/decoding of CSR rfc822name" do
+    # this exists just to make help identify actual encoding problems
+    # that are sometimes burried.
+    a3 = OpenSSL::ASN1::UTF8String.new("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com", 2, :EXPLICIT, :CONTEXT_SPECIFIC)
+    a2 = OpenSSL::ASN1::Set.new([a3])  # make the rfc822Name
+    a2tag=OpenSSL::ASN1::ObjectId.new("subjectAltName")
+    a1 = OpenSSL::ASN1::Sequence.new([a2tag, a2])  # the subjectAltName attr
+    a0 = OpenSSL::ASN1::Sequence.new([a1])  # the sequence of attributes
+    der= a0.to_der
+    #puts der.unpack("H*")
+    File.open("tmp/hellobulb2.der", "wb") { |f| f.syswrite der }
+    c0 = CSRAttributes.from_der(der)
+    expect(c0).to_not be_nil
   end
 
   def subjectAltName_ex1

@@ -216,14 +216,20 @@ RSpec.describe Device, type: :model do
     it "should generate an appropriate CSRattributes object with the rfc822Name" do
       b = devices(:bulb1)
       b.acp_address_allocate!
-      expect(b.csr_attributes.to_der).to eq("0B0@\x06\x03U\x1D\x1119rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+
+      attr = b.csr_attributes.to_der
+      File.open("tmp/csr_bulb1.der", "w") do |f|
+        f.syswrite attr
+      end
+      expect(attr).to eq("0B0@\x06\x03U\x1D\x1119rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
     end
 
     it "should generate an LDevID signed by domain authority" do
       b = devices(:bulb1)
       expect(b.ldevid).to be_blank
 
-      # create_from_csr(OpenSSL::X509::Request.new(csrio))
+      csrio = IO::read("spec/files/cert_request_bulb1.der")
+      b.create_from_csr(OpenSSL::X509::Request.new(csrio))
       b.sign_ldevid!
       expect(b.ldevid).to_not be_blank
     end

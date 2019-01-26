@@ -12,7 +12,8 @@ class CSRAttributes
   end
 
   def self.rfc822Name(x)
-    v = OpenSSL::ASN1::ASN1Data.new(x, 2, :CONTEXT_SPECIFIC)
+    # 2 is rfc822Name CHOICE from RFC7030.
+    v = OpenSSL::ASN1::UTF8String.new(x, 2, :EXPLICIT, :CONTEXT_SPECIFIC)
     return OpenSSL::ASN1::Sequence.new([v])
   end
 
@@ -30,9 +31,8 @@ class CSRAttributes
   end
 
   def make_attr_pair(x,y)
-    st = OpenSSL::ASN1::Set.new([y])
-    s = OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(x), st])
-    return s
+    OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(x),
+                                 OpenSSL::ASN1::Set.new([y])])
   end
 
   def add_attr(x, y)
