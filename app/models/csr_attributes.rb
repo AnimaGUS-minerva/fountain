@@ -11,11 +11,22 @@ class CSRAttributes
     ca
   end
 
+  # https://tools.ietf.org/html/rfc5280#section-4.2.1.6 defines subjectAltName:
+  # SubjectAltName ::= GeneralNames
+  # GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
+  # GeneralName ::= CHOICE {
+  #        otherName                       [0]     OtherName,
+  #    rfc822Name                      [1]     IA5String,   <-- this one
+  def self.rfc822NameChoice
+    1
+  end
+
   def self.rfc822Name(x)
-    # 2 is rfc822Name CHOICE from RFC7030.
-    v = OpenSSL::ASN1::UTF8String.new(x, 2, :EXPLICIT, :CONTEXT_SPECIFIC)
+    # a is rfc822Name CHOICE from RFC7030, and the result is a sequence of SANs
+    v = OpenSSL::ASN1::UTF8String.new(x, rfc822NameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
     return OpenSSL::ASN1::Sequence.new([v])
   end
+
 
   def initialize
     self.attributes = []

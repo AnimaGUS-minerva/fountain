@@ -51,7 +51,7 @@ RSpec.describe CSRAttributes do
     der=c1.to_der
     #puts der.unpack("H*")
     File.open("tmp/hellobulb0.der", "wb") { |f| f.syswrite der }
-    expect(c1.to_der).to eq("0 0\x1E\x06\x03U\x1D\x111\x170\x15\xA2\x13\f\x11hello@example.com".b)
+    expect(c1.to_der).to eq("0 0\x1E\x06\x03U\x1D\x111\x170\x15\xA1\x13\f\x11hello@example.com".b)
   end
 
   it "should validate encoding/decoding of CSR attributes" do
@@ -106,7 +106,7 @@ RSpec.describe CSRAttributes do
     File.open("tmp/hellobulb3.der", "wb") { |f| f.syswrite der }
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-    expect(der).to eq("0H0F\x06\x03U\x1D\x111?0=\xA2;\f9rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com".b)
+    expect(der).to eq("0H0F\x06\x03U\x1D\x111?0=\xA1;\f9rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com".b)
   end
 
   def subjectAltName_ex1
