@@ -16,7 +16,7 @@ class CSRAttributes
   # GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
   # GeneralName ::= CHOICE {
   #        otherName                       [0]     OtherName,
-  #    rfc822Name                      [1]     IA5String,   <-- this one
+  #        rfc822Name                      [1]     IA5String,   <-- this one
   def self.rfc822NameChoice
     1
   end
@@ -27,7 +27,6 @@ class CSRAttributes
     return OpenSSL::ASN1::Sequence.new([v])
   end
 
-
   def initialize
     self.attributes = []
   end
@@ -35,6 +34,12 @@ class CSRAttributes
   def to_der
     n = OpenSSL::ASN1::Sequence.new(@attributes)
     n.to_der
+  end
+
+  # return the sequence of subjectAltNames that have been requested
+  # (usually just one item, but actually a sequence of CHOICE)
+  def find_subjectAltName
+    find_attr(OpenSSL::ASN1::ObjectId.new("subjectAltName"))
   end
 
   def add_oid(x)
@@ -57,7 +62,7 @@ class CSRAttributes
         attr.value[0].oid == x.oid
     }
     if things.first
-      t=things.first
+      t = things.first
       s = t.value[1]
       return s.value
     end
