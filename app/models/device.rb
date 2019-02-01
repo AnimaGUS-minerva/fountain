@@ -10,6 +10,7 @@ class Device < ActiveRecord::Base
   class DeviceDeleted < Exception
   end
   class CSRNotverified < Exception; end
+  class CSRKeyNotMatched  < Exception; end
   class CSRSerialNumberDuplicated < Exception; end
 
   def self.hash_of_key(key)
@@ -137,6 +138,60 @@ class Device < ActiveRecord::Base
     return ca
   end
 
+  # process a CSR to make a name, and generate an LDevID.
+  def create_from_csr(csrobj)
+    unless csrobj.verify(csrobj.public_key)
+      raise CSRNotVerified;
+    end
+
+    # not sure if this is an appropriate check.
+    unless csrobj.public_key == idevid_cert.public_key
+      byebug
+      raise CSRKeyNotMatched;
+    end
+
+    # walk through the attributes and make a hash of them for below.
+    attributes = Hash.new
+    items = csr.subject.to_a
+    items.each { |attr|
+      case attr[2]
+      when 12       # UTF8STRING
+        attributes[attr[0]] = attr[1]
+      when 19       # PRINTABLESTRING
+        attributes[attr[0]] = attr[1]
+      else
+        # not sure what to do with other types now.
+      end
+    }
+
+    # so, not found, create a device with the same serial number.
+    ldevid  = OpenSSL::X509::Certificate.new
+    ldevid.version = 2
+    ldevid.serial = SystemVariable.randomseq(:serialnumber)
+    ldevid.issuer = FountainKeys.ca.registrarkey.issuer
+    ldevid.public_key = csr.public_key
+    ldevid.subject = OpenSSL::X509::Name.new([["serialNumber", serial_number,12]])
+    ldevid.not_before = Time.now
+    ldevid.not_after  = Time.gm(2999,12,31)
+
+    extension_factory.subject_certificate = ldevid
+    extension_factory.issuer_certificate  = FountainKeys.ca.registrarkey
+    ldevid.add_extension(extension_factory.create_extension("subjectKeyIdentifier","hash",false))
+    ldevid.add_extension(extension_factory.create_extension("basicConstraints","CA:FALSE",false))
+
+    # the OID: 1.3.6.1.4.1.46930.1 is a Private Enterprise Number OID:
+    #    iso.org.dod.internet.private.enterprise . SANDELMAN=46930 . 1
+    # subjectAltName=otherName:1.2.3.4;UTF8:some other identifier
+    ldevid.add_extension(extension_factory.create_extension(
+                           "subjectAltName",
+                           sprintf("rfc822Name:%s",
+                                   rfc822Name),
+                           false))
+
+    ldevid.sign(FountakKeys.ca.registrarprivkey, OpenSSL::Digest::SHA256.new)
+    self.ldevid = ldevid.to_pem
+
+  end
 
   alias_method :get_manufacturer, :manufacturer
   def manufacturer

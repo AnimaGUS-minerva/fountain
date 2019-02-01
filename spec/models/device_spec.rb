@@ -232,7 +232,7 @@ RSpec.describe Device, type: :model do
       b = devices(:bulb1)
       expect(b.ldevid).to be_blank
 
-      csrio = IO::read("spec/files/cert_request_bulb1.der")
+      csrio = IO::read("spec/files/csr_almec_bulb1.der")
       b.create_from_csr(OpenSSL::X509::Request.new(csrio))
       b.sign_ldevid!
       expect(b.ldevid).to_not be_blank
