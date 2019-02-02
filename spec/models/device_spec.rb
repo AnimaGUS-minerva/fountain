@@ -8,6 +8,8 @@ RSpec.describe Device, type: :model do
 
   before(:all) do
     FileUtils.mkdir_p("tmp")
+    FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+    FountainKeys.ca.domain_curve = "prime256v1"
   end
 
   before(:each) do

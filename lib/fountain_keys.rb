@@ -1,5 +1,5 @@
 class FountainKeys
-  attr_accessor :devdir, :certdir
+  attr_accessor :devdir, :certdir, :domain_curve
 
   def rootkey
     @rootkey ||= ca_load_pub_key
@@ -10,15 +10,19 @@ class FountainKeys
   end
 
   def registrarkey
-    @registarkey ||= load_pub_key
+    @registarkey ||= jrc_pub_key
   end
 
   def registrarprivkey
-    @rootprivkey ||= load_priv_key
+    @rootprivkey ||= jrc_priv_key
   end
 
   def curve
     'secp384r1'
+  end
+
+  def domain_curve
+    @domain_curve ||= 'secp384r1'
   end
 
   def digest
@@ -86,6 +90,7 @@ class FountainKeys
     end
   end
 
+  # this seems to be a dud. MCR20190202
   def load_domain_priv_key
     domainprivkey=certdir.join("domain_#{curve}.key")
     File.open(domainprivkey) do |f|
