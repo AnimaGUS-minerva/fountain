@@ -1,5 +1,6 @@
 # certificate is in spec/certs/00-D0-E5-02-00-20.crt
-# this is an IDevID signed by masa.honeydukes.sandelman.ca.
+# this is an IDevID signed by masa.honeydukes.sandelman.ca,
+# and the private key can be found in the reach project
 bulb1:
   id: 1
   name: bulb twenty seven
@@ -52,6 +53,34 @@ jadaf20001:
     +3mXfyIGi9Yzea59XdAOT51lGTfFAsAPKaMDeSkjYoytbB9eLOmgIQU/
     -----END CERTIFICATE-----
 
+# certificate is in spec/certs/00-D0-E5-01-00-20.crt
+# this is an IDevID signed by masa.wheezes.sandelman.ca,
+# but this manufacturer is marked as trusted, rather than BRSKI
+# The private key can be found in the reach project, where the CSR
+# was also produced... XXX FILL IN.
+bulb99:
+  id: 99
+  name: bulb f2-00-99
+  device_type_id: 1
+  manufacturer_id: 2
+  eui64: "JADA_f2-00-01"
+  created_at: 2017-01-01
+  updated_at: "2018-05-24 01:13:22"
+  idevid_hash: "ba82BROKEN"
+  idevid: |
+    -----BEGIN CERTIFICATE-----
+    MIICBjCCAYygAwIBAgIBATAKBggqhkjOPQQDAjBVMRIwEAYKCZImiZPyLGQBGRYC
+    Y2ExGTAXBgoJkiaJk/IsZAEZFglzYW5kZWxtYW4xJDAiBgNVBAMMG2hpZ2h3YXkt
+    dGVzdC5leGFtcGxlLmNvbSBDQTAgFw0xODExMjUwMDI4NTVaGA8yOTk5MTIzMTAw
+    MDAwMFowGDEWMBQGA1UEBQwNSkFEQV9mMi0wMC0wMTBZMBMGByqGSM49AgEGCCqG
+    SM49AwEHA0IABI3UYYX0F8TNCvmKwm+bP0DOnm0DMsX/wnxNTWYzHXlxDGDW4AGO
+    LRUOkXAcWqbh8pEe40vTi98b0UC5Ki0eKISjgYcwgYQwHQYDVR0OBBYEFPmLriBM
+    cQE6B5sUzMeA/RjWV+5aMAkGA1UdEwQCMAAwKwYDVR0RBCQwIqAgBgkrBgEEAYLu
+    UgGgEwwRMDAtRDAtRTUtRjItMDAtMDEwKwYJKwYBBAGC7lICBB4MHGh0dHBzOi8v
+    aGlnaHdheS5zYW5kZWxtYW4uY2EwCgYIKoZIzj0EAwIDaAAwZQIxALJoAXNnz5R6
+    k1z79gZuj1TbLSm/upqR/vm3A/hCCaJ6xugCZmg5E28F0DnQQRmzFAIwdxuhDBct
+    +3mXfyIGi9Yzea59XdAOT51lGTfFAsAPKaMDeSkjYoytbB9eLOmgIQU/
+    -----END CERTIFICATE-----
 
 n3:
   id: 3

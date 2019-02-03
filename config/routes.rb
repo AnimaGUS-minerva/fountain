@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post '/.well-known/est/voucher_status', to: 'est#voucher_status'
   get  '/.well-known/est/cacerts',        to: 'est#cacerts'
   get  '/.well-known/est/csrattributes',  to: 'est#csrattributes'
+  post '/.well-known/est/simpleenroll',   to: 'est#simpleenroll'
 
   if true # was $COAPSERVER, but it does not get set early enough.
     #get '/.well-known/core',   to: 'core#index'
@@ -33,6 +34,10 @@ Rails.application.routes.draw do
     # get /att
     get  '/.well-known/est/att', to: 'est#cbor_crts', coap: true, rt: 'ace.est', short: '/e'
     get '/e/att',  to: 'est#cbor_crts', coap: true, rt: 'ace.est', short: '/e'
+
+    # get /sen -- simpleenroll
+    get  '/.well-known/est/sen', to: 'est#simpleenroll', coap: true, rt: 'ace.est', short: '/e'
+    get '/e/sen',                to: 'est#simpleenroll', coap: true, rt: 'ace.est', short: '/e'
   end
 
   resources :status,  :only => [:index ]

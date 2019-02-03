@@ -113,6 +113,28 @@ class EstController < ApiController
            :charset => nil
   end
 
+  # POST /e/att (CBOR, COSE), and /.well-known/est/simpleenroll
+  def simpleenroll
+    unless trusted_client
+      head 401
+      return
+    end
+
+    body = request.body.read
+    if request.env["CONTENT_TYPE"] == 'application/pkcs10-base64'
+      body = Base64.decode64(body)
+    end
+
+    begin
+      csr   = OpenSSL::X509::Request.new(body)
+      @device.create_ldevid_from_csr(csr)
+
+      render :body => @device.ldevid_cert.to_der,
+             :content_type => 'application/pkcs7-mime',
+             :charset => nil
+    end
+  end
+
   private
 
   # examines the SSL_CLIENT_CERT (or rack.peer_cert) for a certificate

@@ -53,6 +53,12 @@ RSpec.describe "Est", type: :request do
     @highwaytest_clientcert ||= IO.binread("spec/files/product_00-D0-E5-F2-00-03/device.crt")
   end
 
+  # points to https://masa.honeydukes.sandelman.ca,
+  # devices fixture :bulb1, private key can be found in the reach project
+  def honeydukes_bulb1
+    @honeydukes_bulb1_clientcert ||= IO.binread("spec/certs/00-D0-E5-02-00-20.crt")
+  end
+
   describe "resource discovery" do
     it "should return a location for the EST service" do
       pending "CoAP ONLY"
@@ -125,6 +131,38 @@ RSpec.describe "Est", type: :request do
       env["SSL_CLIENT_CERT"] = clientcert
       get "/.well-known/est/csrattributes", :headers => env
       expect(response).to have_http_status(401)
+    end
+  end
+
+  describe "simpleenroll" do
+    it "should accept a CSR attributes file from an IDevID from a trusted manufacturer" do
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = wheezes_bulb9
+      body = IO::read("spec/files/csr_bulb9.der")
+      post "/.well-known/est/simpleenroll", :headers => env, :params => body
+      expect(response).to have_http_status(200)
+    end
+
+    it "should accept a CSR attributes file from an IDevID from a brski manufacturer with voucher" do
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = honeydukes_bulb1
+      body = IO::read("spec/files/csr_bulb1.der")
+      post "/.well-known/est/simpleenroll", :headers => env, :params => Base64.encode64(body)
+      expect(response).to have_http_status(200)
+    end
+
+    it "should accept a CSR attributes file from an LDevID signed by us" do
+    end
+
+    it "should accept a CSR attributes file from a trusted endpoint" do
+    end
+
+    it "should reject CSR attributes file from an unknown IDevID" do
+      pending "unknown IDevID"
+    end
+
+    it "should reject CSR attributes file from a known IDevID that has no voucher" do
+      pending "known IDevID, no voucher"
     end
   end
 
