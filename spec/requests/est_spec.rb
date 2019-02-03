@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Est", type: :request do
+  fixtures :all
 
   def temporary_key
     ECDSA::Format::IntegerOctetString.decode(["20DB1328B01EBB78122CE86D5B1A3A097EC44EAC603FD5F60108EDF98EA81393"].pack("H*"))
@@ -95,28 +96,36 @@ RSpec.describe "Est", type: :request do
     end
 
     it "should be returned in non-constrained request" do
-      get "/.well-known/est/csrattributes"
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      get "/.well-known/est/csrattributes", :headers => env
       expect(response).to have_http_status(200)
     end
 
     it "should be returned in constrained request" do
-      get "/e/att"
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      get "/e/att", :headers => env
       expect(response).to have_http_status(200)
     end
-  end
 
-  it "should request a new certificate with a CSR with trusted connection" do
-    env = Hash.new
-    env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
-    get "/.well-known/est/csrattributes", :headers => env
-    expect(response).to have_http_status(200)
-  end
+    it "should be return with a new certificate with a CSR with trusted connection" do
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      get "/.well-known/est/csrattributes", :headers => env
 
-  it "should fail to get new certificate with untrusted connection" do
-    env = Hash.new
-    env["SSL_CLIENT_CERT"] = clientcert
-    get "/.well-known/est/csrattributes", :headers => env
-    expect(response).to have_http_status(200)
+      # given that almec_f20001 cert is used, it should assign device to
+      # jadaf20001 device
+      expect(assigns(:device)).to eq(devices(:jadaf20001))
+      expect(response).to have_http_status(200)
+    end
+
+    it "should fail to be returned with acertificate with untrusted connection" do
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = clientcert
+      get "/.well-known/est/csrattributes", :headers => env
+      expect(response).to have_http_status(401)
+    end
   end
 
   describe "signed pledge voucher request" do
