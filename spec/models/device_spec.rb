@@ -29,6 +29,16 @@ RSpec.describe Device, type: :model do
       b1 = devices(:bulb1)
       expect(b1.device_type).to be_truthy
     end
+
+    it "should have many vouchers" do
+      b1 = devices(:bulb1)
+      expect(b1.vouchers.length).to be > 0
+    end
+
+    it "should have many voucher requests" do
+      b1 = devices(:bulb1)
+      expect(b1.voucher_requests.length).to be > 0
+    end
   end
 
   describe "GRASP queries" do

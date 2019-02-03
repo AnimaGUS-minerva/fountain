@@ -3,6 +3,8 @@ require 'mud_socket'
 class Device < ActiveRecord::Base
   belongs_to :manufacturer
   belongs_to :device_type
+  has_many :vouchers
+  has_many :voucher_requests
 
   before_save :validate_counts
   before_save :validate_hash_of_keys
