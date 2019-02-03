@@ -155,6 +155,11 @@ RSpec.describe Device, type: :model do
   end
 
   describe "trusting" do
+    it "occurs when a device has a trusted manufacturer" do
+      d2 = devices(:jadaf20001)
+      expect(d2.trusted?).to be true
+    end
+
     it "occurs when device has an LDevID" do
       pending "foobar"
     end

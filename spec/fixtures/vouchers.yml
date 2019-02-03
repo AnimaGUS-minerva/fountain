@@ -9,6 +9,17 @@ voucher1:
   signed_voucher: ""
   type: "CmsVoucher"
 
+voucher2:
+  id: 3
+  manufacturer_id: 2
+  device_id: 2
+  voucher_request_id: 1
+  device_identifier: "JADA123457689"
+  nonce: "abcd1243"
+  details: { "some": "stuff"}
+  signed_voucher: ""
+  type: "CmsVoucher"
+
 cv2:
   id: 2
   nonce: "abcd12345"

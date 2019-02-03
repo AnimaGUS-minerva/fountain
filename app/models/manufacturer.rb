@@ -5,7 +5,7 @@ class Manufacturer < ApplicationRecord
 
   enum trust: {
          unknown: "unknown",     # a new manufacturer, unknown trust.
-         firstused: "firstused",  # a new manufacturer, first time encountered.
+         firstused: "firstused", # a new manufacturer, first time encountered.
          admin: "admin",         # manufacturer that was firstused, now blessed.
          brski: "brksi",         # manufacturer can be trusted if voucher obtained.
          webpki: "webpki"        # manufacturer can be trusted if MASA has valid WebPKI.

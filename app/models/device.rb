@@ -205,6 +205,16 @@ class Device < ActiveRecord::Base
     MudSuperJob.new.perform(id)
   end
 
+  # when a device is trusted, then it can perform an enrollment to get
+  # an LDevID.
+  #  - this is true of the manufacturer has been marked as blessed.
+  #  - this is true if the manufacturer is marked brski, and a voucher
+  #    has been obtained.
+  def trusted?
+    return true if manufacturer.try(:trust_admin?)
+    return true if manufacturer.try(:trust_brski?) and vouchers.try(:first)
+  end
+
   # when the mud_url is set up, look for a device_type with the same mud_url, and
   # if it does not exist, device_type will create it.
   def mud_url=(x)

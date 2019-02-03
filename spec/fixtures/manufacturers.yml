@@ -9,6 +9,7 @@ widget1:
 
 honeydukes:
   id: 2
+  trust: "brski"
   name: "HoneyDukes Store"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
