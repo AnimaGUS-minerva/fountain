@@ -208,7 +208,7 @@ RSpec.describe Device, type: :model do
 
   describe "enrollment" do
     it "should allocate an ACP address" do
-      b = devices(:bulb1)
+      b = devices(:jadaf20001)
       expect(b.acp_prefix).to be_blank
       b.acp_address_allocate!
       expect(b.acp_prefix).to eq("fd73:9fc2:3c34:4011:2233:4455:0000:0000/120")
