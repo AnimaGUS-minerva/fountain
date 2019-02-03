@@ -9,6 +9,7 @@ bulb1:
   manufacturer_id: 2
   created_at: 2017-01-01
   updated_at: "2018-05-24 01:13:22"
+  acp_prefix: "fd73:9fc2:3c34:4011:2233:4455:0000:0000/120"
   idevid_hash: "0c59fb8e27b1963af1f93a3ba61472a4218a57ed6e86d26067a0aadd751ee916"
   idevid: |
     -----BEGIN CERTIFICATE-----

@@ -234,11 +234,24 @@ RSpec.describe Device, type: :model do
       b = devices(:bulb1)
       expect(b.ldevid).to be_blank
 
-      csrio = IO::read("spec/files/csr_almec_bulb1.der")
-      b.create_from_csr(OpenSSL::X509::Request.new(csrio))
-      b.sign_ldevid!
+      csrio = IO::read("spec/files/csr_bulb1.der")
+      csr   = OpenSSL::X509::Request.new(csrio)
+      b.create_ldevid_from_csr(csr)
       expect(b.ldevid).to_not be_blank
     end
+
+    it "should generate an rfc822name extension" do
+      b = devices(:bulb1)
+      b.acp_address_allocate!
+      expect(b.rfc822Name).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+      ef = OpenSSL::X509::ExtensionFactory.new
+      rfcName=ef.create_extension("subjectAltName",
+                                  sprintf("email:%s",
+                                          b.rfc822Name),
+                                  false)
+      expect(rfcName).to_not be_nil
+    end
+
   end
 
 end

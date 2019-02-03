@@ -61,49 +61,6 @@ class Device < ActiveRecord::Base
     end
   end
 
-  # This is for signing of LDevID for this device.
-  # The optional argument is a set of CSR values to go into the certificate.
-  # If none are provided, then no attributes are put into place, and the
-  # public key of the IDevID will be signed.
-  def sign_ldevid!(csr = nil)
-
-    pubkey = idevid_cert.public_key
-    if csr
-      unless csr.verify(csr.public_key)
-        raise CSRNotVerified;
-      end
-      pubkey = csr.public_key
-
-      # look for attributes we are willing to deal with, specifically
-      # the rfc822Name.  Note that the acp_prefix that will be present in
-      # the acp_prefix MUST be echoed back exactly.
-
-      attributes = Hash.new
-      items = csr.subject.to_a
-      items.each { |attr|
-        case attr[2]
-        when 12       # UTF8STRING
-          attributes[attr[0]] = attr[1]
-        when 19       # PRINTABLESTRING
-          attributes[attr[0]] = attr[1]
-        else
-          # not sure what to do with other types now.
-        end
-      }
-
-      if attributes["rfc822Name"]
-      end
-
-    end
-
-    # found a suitable dev, now write a certificate for it, and store it.
-    # will allocate an EUI-64 for it along the way.
-    # The caller can set the model if desired.
-    dev.sign_
-
-    dev
-  end
-
   # return a cooked (model ACP_Address) version of acp_prefix
   def acp_address
     return nil unless acp_prefix
@@ -138,21 +95,29 @@ class Device < ActiveRecord::Base
     return ca
   end
 
-  # process a CSR to make a name, and generate an LDevID.
-  def create_from_csr(csrobj)
+  def extension_factory
+    @ef ||= OpenSSL::X509::ExtensionFactory.new
+  end
+
+  # This is for signing of LDevID for this device.
+  # The optional argument is a set of CSR values to go into the certificate.
+  # If none are provided, then no attributes are put into place, and the
+  # public key of the IDevID will be signed.
+  def create_ldevid_from_csr(csrobj)
     unless csrobj.verify(csrobj.public_key)
       raise CSRNotVerified;
     end
 
     # not sure if this is an appropriate check.
-    unless csrobj.public_key == idevid_cert.public_key
-      byebug
+    # it might be that we need to check the ldevid_cert too?
+    if csrobj.public_key.to_der != idevid_cert.public_key.to_der and
+      (ldevid_cert and csrobj.public_key.to_der != ldevid_cert.public_key.to_der)
       raise CSRKeyNotMatched;
     end
 
     # walk through the attributes and make a hash of them for below.
     attributes = Hash.new
-    items = csr.subject.to_a
+    items = csrobj.subject.to_a
     items.each { |attr|
       case attr[2]
       when 12       # UTF8STRING
@@ -169,8 +134,11 @@ class Device < ActiveRecord::Base
     ldevid.version = 2
     ldevid.serial = SystemVariable.randomseq(:serialnumber)
     ldevid.issuer = FountainKeys.ca.registrarkey.issuer
-    ldevid.public_key = csr.public_key
-    ldevid.subject = OpenSSL::X509::Name.new([["serialNumber", serial_number,12]])
+    ldevid.public_key = csrobj.public_key
+
+    # 12 is about the encoding, representing UTF8String, (I think)
+    #ldevid.subject    = csrobj.subject
+    ldevid.subject    = OpenSSL::X509::Name.new([["emailAddress", rfc822Name, 12]])
     ldevid.not_before = Time.now
     ldevid.not_after  = Time.gm(2999,12,31)
 
@@ -182,13 +150,13 @@ class Device < ActiveRecord::Base
     # the OID: 1.3.6.1.4.1.46930.1 is a Private Enterprise Number OID:
     #    iso.org.dod.internet.private.enterprise . SANDELMAN=46930 . 1
     # subjectAltName=otherName:1.2.3.4;UTF8:some other identifier
-    ldevid.add_extension(extension_factory.create_extension(
-                           "subjectAltName",
-                           sprintf("rfc822Name:%s",
-                                   rfc822Name),
-                           false))
+    rfcName=extension_factory.create_extension("subjectAltName",
+                                               sprintf("email:%s",
+                                                       rfc822Name),
+                                               false)
+    ldevid.add_extension(rfcName)
 
-    ldevid.sign(FountakKeys.ca.registrarprivkey, OpenSSL::Digest::SHA256.new)
+    ldevid.sign(FountainKeys.ca.registrarprivkey, OpenSSL::Digest::SHA256.new)
     self.ldevid = ldevid.to_pem
 
   end
