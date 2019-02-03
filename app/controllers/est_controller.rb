@@ -96,20 +96,21 @@ class EstController < ApiController
   def csrattributes
     unless trusted_client
       head 401
+      return
     end
 
     # now make sure that there is a device allocated for this client.
     # devices are indexed by either IDevID, or LDevID.
     # @device was set by trusted_client.
-    @device ...
 
     #
     # allocate a prefix for this client, store it in the client structure.
     #
-    prefix = SystemVariable.acp_pool_allocate
-    device.acp_prefix = prefix.to_s
+    @device.acp_address_allocate!
 
-    head 406
+    render :body => @device.csr_attributes.to_der,
+           :content_type => 'application/csrattrs',
+           :charset => nil
   end
 
   private
