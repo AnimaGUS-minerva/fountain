@@ -68,4 +68,31 @@ namespace :fountain do
 
   end
 
+  desc "Add BRSKI manufacturer from CERT=file, with NAME=something and MASA_URL=url"
+  task :s5_add_brski_manufacturer => :environment do
+    name = nil
+    file = ENV['CERT']
+    url  = ENV['MASA_URL']
+    if ENV['NAME']
+      name = ENV['NAME']
+    end
+
+    puts "# Reading manufacurer certificate from #{file}"
+    certio = IO::read(file)
+    cert   = OpenSSL::X509::Certificate.new(certio)
+
+    manu = Manufacturer.find_by_manu_cert(cert)
+    unless manu
+      name ||= cert.subject.to_s
+      manu = Manufacturer.create(:issuer_public_key => cert.public_key.to_der,
+                                 :name => name)
+    end
+
+    manu.masa_url  = url
+    manu.issuer_dn = cert.subject.to_s
+    manu.save!
+
+    puts "Created manufacturer(\##{manu.id})"
+  end
+
 end

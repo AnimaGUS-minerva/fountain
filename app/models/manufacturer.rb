@@ -26,6 +26,12 @@ class Manufacturer < ApplicationRecord
     find_manufacturer_by(cert).first
   end
 
+  # this finds a manufacturer object by the manufacturer's signing certificate.
+  def self.find_by_manu_cert(cert)
+    where(:issuer_public_key => cert.public_key.to_der).take
+  end
+
+  # this finds a manufacturer by a client/pledge certificate.
   def self.find_manufacturer_by(cert)
     return nil unless cert
     issuer = cert.issuer
