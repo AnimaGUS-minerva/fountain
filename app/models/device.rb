@@ -167,9 +167,7 @@ class Device < ActiveRecord::Base
 
     ldevid.not_before = Time.now
     ldevid.not_after  = Time.gm(2999,12,31)
-    #ldevid.add_extension(extension_factory.create_extension("subjectKeyIdentifier","hash",false))
     ldevid.add_extension(extension_factory.create_extension("basicConstraints","CA:FALSE",false))
-
 
     ldevid.sign(FountainKeys.ca.registrarprivkey, OpenSSL::Digest::SHA256.new)
     self.ldevid = ldevid.to_pem
