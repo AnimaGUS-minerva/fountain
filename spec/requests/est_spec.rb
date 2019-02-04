@@ -220,7 +220,8 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).pledge_request).to_not be_nil
       expect(assigns(:voucherreq).signed).to be_truthy
-      expect(assigns(:voucherreq).device).to_not be_nil
+      dev = assigns(:voucherreq).device
+      expect(dev).to_not be_nil
       expect(assigns(:voucherreq).manufacturer).to be_present
       expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
@@ -228,6 +229,9 @@ RSpec.describe "Est", type: :request do
                                    "voucher_request_081196FFFE0181E0",
                                    "spec/files/cert/certs.crt"
                                   )).to be true
+
+      expect(dev.vouchers.count).to be >= 1
+      expect(dev.voucher_requests.count).to be >= 1
 
     end
 

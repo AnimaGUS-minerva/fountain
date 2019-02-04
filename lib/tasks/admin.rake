@@ -90,6 +90,7 @@ namespace :fountain do
 
     manu.masa_url  = url
     manu.issuer_dn = cert.subject.to_s
+    manu.trust_brski!
     manu.save!
 
     puts "Created manufacturer(\##{manu.id})"

@@ -165,10 +165,10 @@ class EstController < ApiController
     end
     @voucherreq.discover_manufacturer
     @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
-    @voucherreq.save!
 
     logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
     @voucherreq.populate_implicit_fields
+    @voucherreq.save!
   end
 
   def return_voucher
@@ -183,6 +183,7 @@ class EstController < ApiController
     if @voucher
       render :body => @voucher.base64_signed_voucher,
              :content_type => 'application/pkcs7-mime; smime-type=voucher'
+      @voucher.save!
     else
       head 500
     end
