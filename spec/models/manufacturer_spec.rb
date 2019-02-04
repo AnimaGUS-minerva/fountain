@@ -5,7 +5,7 @@ RSpec.describe Manufacturer, type: :model do
 
   describe "relations" do
     it "should have one or more devices" do
-      b1 = manufacturers(:widget1)
+      b1 = manufacturers(:honeydukes)
       expect(b1.devices.count).to be >= 1
     end
 
