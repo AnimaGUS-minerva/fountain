@@ -8,31 +8,6 @@ two:
   variable: baz
   value:    0
 
-user1:
-  id:       4
-  variable: 'email_confirmation'
-  number:   1
-
-user2:
-  id:       5
-  variable: 'email_sender'
-  value:    "support@simtonecdu.com"
-
-defloc:
-  id:       6
-  variable: 'DefaultLocation'
-  number:   14
-
-stagingloc:
-  id:       7
-  variable: 'StagingLocation'
-  number:   17
-
-closedbeta:
-  id:       8
-  variable: 'ClosedBeta'
-  number:   1
-
 hostname:
   id: 9
   variable: 'hostname'
@@ -54,5 +29,12 @@ register:
   id: 12
   variable: 'registrar_id'
   value: "01122334455"
+
+
+animaacp:
+  id: 13
+  variable: 'anima_acp'
+  value: 1
+
 
   

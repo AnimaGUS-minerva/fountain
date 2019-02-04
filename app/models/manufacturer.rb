@@ -6,9 +6,10 @@ class Manufacturer < ApplicationRecord
   enum trust: {
          unknown: "unknown",     # a new manufacturer, unknown trust.
          firstused: "firstused", # a new manufacturer, first time encountered.
-         admin: "admin",         # manufacturer that was firstused, now blessed.
+         admin: "admin",         # manufacturer that was firstused, now blessed for EST-COAPS
          brski: "brksi",         # manufacturer can be trusted if voucher obtained.
          webpki: "webpki"        # manufacturer can be trusted if MASA has valid WebPKI.
+
        },  _prefix: :trust
 
   def self.trusted_client_by_pem(clientpem)
@@ -85,4 +86,5 @@ class Manufacturer < ApplicationRecord
 
     return manu1
   end
+
 end

@@ -59,6 +59,12 @@ RSpec.describe "Est", type: :request do
     @honeydukes_bulb1_clientcert ||= IO.binread("spec/certs/00-D0-E5-02-00-20.crt")
   end
 
+  # points to https://wheezes.honeydukes.sandelman.ca,
+  # devices fixture :bulb1, private key can be found in the reach project
+  def florean_bulb03
+    @florean_bulb03_clientcert ||= IO.binread("spec/certs/00-D0-E5-03-00-03.crt")
+  end
+
   describe "resource discovery" do
     it "should return a location for the EST service" do
       pending "CoAP ONLY"
@@ -136,19 +142,31 @@ RSpec.describe "Est", type: :request do
 
   describe "simpleenroll" do
     it "should accept a CSR attributes file from an IDevID from a trusted manufacturer" do
+      SystemVariable.setbool(:anima_acp, false)
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = wheezes_bulb9
-      body = IO::read("spec/files/csr_bulb9.der")
-      post "/.well-known/est/simpleenroll", :headers => env, :params => body
+      env["SSL_CLIENT_CERT"] = florean_bulb03
+      env["CONTENT_TYPE"]    = "application/pkcs10-base64"
+      body = IO::read("spec/files/csr_bulb03.der")
+      post "/.well-known/est/simpleenroll", :headers => env, :params => Base64.encode64(body)
       expect(response).to have_http_status(200)
+
+      File.open("tmp/bulb03_cert.der", "wb") {|f| f.syswrite response.body }
+      cert = OpenSSL::X509::Certificate.new(response.body)
+      expect(cert).to_not be_nil
     end
 
     it "should accept a CSR attributes file from an IDevID from a brski manufacturer with voucher" do
+      SystemVariable.setbool(:anima_acp, true)
       env = Hash.new
       env["SSL_CLIENT_CERT"] = honeydukes_bulb1
+      env["CONTENT_TYPE"]    = "application/pkcs10-base64"
       body = IO::read("spec/files/csr_bulb1.der")
       post "/.well-known/est/simpleenroll", :headers => env, :params => Base64.encode64(body)
       expect(response).to have_http_status(200)
+
+      File.open("tmp/bulb1_cert.der", "wb") {|f| f.syswrite response.body }
+      cert = OpenSSL::X509::Certificate.new(response.body)
+      expect(cert).to_not be_nil
     end
 
     it "should accept a CSR attributes file from an LDevID signed by us" do

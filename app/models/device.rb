@@ -79,15 +79,23 @@ class Device < ActiveRecord::Base
     end
   end
 
+  def rfc822Name_calc
+    if acp_address
+      sprintf("rfc%s+%s+%s@%s",
+              SystemVariable.string(:rfc_ACP) || "SELF",
+              acp_address.to_hex,
+              SystemVariable.acp_rsub,
+              SystemVariable.acp_domain)
+    else
+      "unknownACP"
+    end
+  end
+
   # conversion to/from rfc822NAME as per draft-ietf-anima-autonomic-control-plane,
   # section 6.10.5.  Only the ACP Vlong Addressing Sub-Scheme is supported,
   # and the asa_address format is preferred for now.
   def rfc822Name
-    @rfc822Name ||= sprintf("rfc%s+%s+%s@%s",
-                            SystemVariable.string(:rfc_ACP) || "SELF",
-                            acp_address.to_hex,
-                            SystemVariable.acp_rsub,
-                            SystemVariable.acp_domain)
+    @rfc822Name ||= rfc822Name_calc
   end
 
   # generate CSR attributes for the ACP address provided.
@@ -139,24 +147,29 @@ class Device < ActiveRecord::Base
     ldevid.public_key = csrobj.public_key
 
     # 12 is about the encoding, representing UTF8String, (I think)
-    #ldevid.subject    = csrobj.subject
-    ldevid.subject    = OpenSSL::X509::Name.new([["emailAddress", rfc822Name, 12]])
+    unless SystemVariable.boolvalue?(:anima_acp)
+      ldevid.subject    = csrobj.subject
+    else
+      ldevid.subject    = OpenSSL::X509::Name.new([["emailAddress", rfc822Name, 12]])
+
+      extension_factory.subject_certificate = ldevid
+      extension_factory.issuer_certificate  = FountainKeys.ca.registrarkey
+
+      # the OID: 1.3.6.1.4.1.46930.1 is a Private Enterprise Number OID:
+      #    iso.org.dod.internet.private.enterprise . SANDELMAN=46930 . 1
+      # subjectAltName=otherName:1.2.3.4;UTF8:some other identifier
+      rfcName=extension_factory.create_extension("subjectAltName",
+                                                 sprintf("email:%s",
+                                                         rfc822Name),
+                                                 false)
+      ldevid.add_extension(rfcName)
+    end
+
     ldevid.not_before = Time.now
     ldevid.not_after  = Time.gm(2999,12,31)
-
-    extension_factory.subject_certificate = ldevid
-    extension_factory.issuer_certificate  = FountainKeys.ca.registrarkey
-    ldevid.add_extension(extension_factory.create_extension("subjectKeyIdentifier","hash",false))
+    #ldevid.add_extension(extension_factory.create_extension("subjectKeyIdentifier","hash",false))
     ldevid.add_extension(extension_factory.create_extension("basicConstraints","CA:FALSE",false))
 
-    # the OID: 1.3.6.1.4.1.46930.1 is a Private Enterprise Number OID:
-    #    iso.org.dod.internet.private.enterprise . SANDELMAN=46930 . 1
-    # subjectAltName=otherName:1.2.3.4;UTF8:some other identifier
-    rfcName=extension_factory.create_extension("subjectAltName",
-                                               sprintf("email:%s",
-                                                       rfc822Name),
-                                               false)
-    ldevid.add_extension(rfcName)
 
     ldevid.sign(FountainKeys.ca.registrarprivkey, OpenSSL::Digest::SHA256.new)
     self.ldevid = ldevid.to_pem
