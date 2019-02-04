@@ -67,8 +67,6 @@ RSpec.describe "Est", type: :request do
 
   describe "resource discovery" do
     it "should return a location for the EST service" do
-      pending "CoAP ONLY"
-
       env = Hash.new
       env["SSL_CLIENT_CERT"] = clientcert
       get '/.well-known/core?rt=ace.est', :headers => env
