@@ -157,4 +157,20 @@ namespace :fountain do
     end
   end
 
+  # utility used with testing to fill in issuer_* in manufacturers.yml
+  desc "Read a certificate from CERT= and extract the base64 of the public_key to yaml"
+  task :cert2pubkey => :environment do
+    file = ENV['CERT']
+
+    puts "# Reading certificate from #{file}"
+    certio = IO::read(file)
+    cert   = OpenSSL::X509::Certificate.new(certio)
+    pubkey = cert.public_key.to_der
+    manu = Hash.new
+    manu["issuer_dn"] = cert.issuer.to_s
+    manu["issuer_public_key"] = pubkey
+    puts manu.to_yaml(:root => "manu")
+  end
+
+
 end
