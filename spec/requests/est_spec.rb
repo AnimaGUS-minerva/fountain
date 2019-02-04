@@ -139,7 +139,7 @@ RSpec.describe "Est", type: :request do
   end
 
   describe "simpleenroll" do
-    it "should accept a CSR attributes file from an IDevID from a trusted manufacturer" do
+    it "should accept a CSR attributes file from an IDevID from a EST trusted manufacturer" do
       SystemVariable.setbool(:anima_acp, false)
       env = Hash.new
       env["SSL_CLIENT_CERT"] = florean_bulb03
@@ -153,7 +153,7 @@ RSpec.describe "Est", type: :request do
       expect(cert).to_not be_nil
     end
 
-    it "should accept a CSR attributes file from an IDevID from a brski manufacturer with voucher" do
+    it "should accept a CSR attributes file from an IDevID from a BRSKI manufacturer with voucher" do
       SystemVariable.setbool(:anima_acp, true)
       env = Hash.new
       env["SSL_CLIENT_CERT"] = honeydukes_bulb1
@@ -167,10 +167,12 @@ RSpec.describe "Est", type: :request do
       expect(cert).to_not be_nil
     end
 
-    it "should accept a CSR attributes file from an LDevID signed by us" do
+    it "should accept a CSR attributes file to renew from an LDevID signed by us" do
+      pending "LDevID renewing"
     end
 
     it "should accept a CSR attributes file from a trusted endpoint" do
+      pending "LDevID from pinned IDevID"
     end
 
     it "should reject CSR attributes file from an unknown IDevID" do
