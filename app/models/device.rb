@@ -51,10 +51,19 @@ class Device < ActiveRecord::Base
     dev
   end
 
+  def idevid_cert=(x)
+    @idevid_cert = x
+    self.idevid = x.to_pem
+  end
   def idevid_cert
     unless idevid.blank?
       @idevid_cert ||= OpenSSL::X509::Certificate.new(idevid)
     end
+  end
+
+  def ldevid_cert=(x)
+    @ldevid_cert = x
+    self.ldevid = x.to_pem
   end
 
   def ldevid_cert
