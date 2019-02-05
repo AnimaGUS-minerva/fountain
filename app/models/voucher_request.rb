@@ -142,8 +142,9 @@ class VoucherRequest < ApplicationRecord
   def populate_explicit_fields
     self.device_identifier = vdetails["serial-number"]
     self.device            = Device.find_or_make_by_number(device_identifier)
-    if self.device.try(:idevid).try(:blank?)
+    if self.device.try(:idevid).blank? and certificate
       self.device.idevid = certificate
+      self.device.save!
     end
     self.nonce             = vdetails["nonce"]
   end
@@ -220,6 +221,7 @@ class VoucherRequest < ApplicationRecord
   end
 
   def discover_manufacturer
+    populate_explicit_fields
     @masa_url = nil
     manu = nil
     return nil unless certificate
@@ -249,6 +251,10 @@ class VoucherRequest < ApplicationRecord
     end
 
     self.manufacturer = manu
+    unless self.device.manufacturer
+      self.device.manufacturer = manu
+      self.device.save!
+    end
   end
 
   def masa_url
