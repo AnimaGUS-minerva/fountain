@@ -154,6 +154,9 @@ class SystemVariable < ActiveRecord::Base
     string(:acp_rsub) || ""
   end
   def self.acp_domain
+    unless string(:acp_domain)
+      raise Exception.new("acp_domain is not set")
+    end
     string(:acp_domain)
   end
 

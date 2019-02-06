@@ -40,6 +40,9 @@ namespace :fountain do
     prompt_variable_value("Hostname for this instance",
                           :hostname)
 
+    prompt_variable_value("ACP domain for this registrar",
+                          :acp_domain)
+
     SystemVariable.dump_vars
   end
 
