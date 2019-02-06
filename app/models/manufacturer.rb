@@ -93,4 +93,12 @@ class Manufacturer < ApplicationRecord
     return manu1
   end
 
+  def masa_url
+    unless !self[:masa_url].blank? and self[:masa_url][0..7]=="https://"
+      self[:masa_url] = "https://" + self[:masa_url]
+      save!
+    end
+    self[:masa_url]
+  end
+
 end
