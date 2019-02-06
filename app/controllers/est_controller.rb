@@ -157,14 +157,18 @@ class EstController < ApiController
     return @device.try(:trusted?)
   end
 
-  def capture_client_info
+  def capture_client_certificate
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     clientcert_pem ||= request.env["rack.peer_cert"]
     if clientcert_pem
       @voucherreq.tls_clientcert = clientcert_pem
     end
-    @voucherreq.discover_manufacturer
     @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
+  end
+
+  def capture_client_info
+    capture_client_certificate
+    @voucherreq.discover_manufacturer
 
     logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
     @voucherreq.populate_implicit_fields
@@ -206,6 +210,11 @@ class EstController < ApiController
     begin
       @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
     rescue VoucherRequest::InvalidVoucherRequest
+      @voucherreq = VoucherRequest.create(:pledge_request => token,
+                                 :proxy_ip => request.env["REMOTE_ADDR"])
+      capture_client_certificate
+      @voucherreq.save!
+      logger.info "Voucher request was not parsed, details in #{@voucherreq.id}, #{$!}"
       head 406
       return
     end
