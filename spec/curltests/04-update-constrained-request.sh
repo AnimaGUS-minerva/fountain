@@ -8,19 +8,19 @@
 # fail anyway, and the goal is to get a fresh signed voucher-request, which does
 # not depend upon the voucher being returned correctly.
 
-# What it does is use the product IDevID located in spec/files/product_*
+# What it does is use the product IDevID located in spec/files/product/*
 # to regenegate voucher requests used in tests.
 
 here=$(pwd)
 serialNumber=00-D0-E5-F2-00-01
 
 # first copy over any new IDevID from highway test environment.
-mkdir -p spec/files/product_${serialNumber}
-cp -Lr ../highway/spec/files/product_${serialNumber}/. spec/files/product_${serialNumber}
+mkdir -p spec/files/product/${serialNumber}
+cp -Lr ../highway/spec/files/product/${serialNumber}/. spec/files/product/${serialNumber}
 
 #rm -f ../reach/tmp/vr_${serialNumber}.pkcs
 
-(cd ../reach && rake reach:send_constrained_request PRODUCTID=${here}/spec/files/product_${serialNumber}  JRC=coaps://fountain-test.example.com/ )
+(cd ../reach && rake reach:send_constrained_request PRODUCTID=${here}/spec/files/product/${serialNumber}  JRC=coaps://fountain-test.example.com/ )
 
 ls -lt ../reach/tmp
 cp ../reach/tmp/vr_${serialNumber}.pkcs spec/files/voucher_request-${serialNumber}.pkcs

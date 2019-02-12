@@ -98,6 +98,6 @@ end
 # points to https://highway-test.sandelman.ca
 # issuer has been added to manufacturers with "trust_brski"
 def highwaytest_clientcert_almec_f20001
-  @highwaytest_clientcert_almec ||= IO.binread("spec/files/product_00-D0-E5-F2-00-01/device.crt")
+  @highwaytest_clientcert_almec ||= IO.binread("spec/files/product/00-D0-E5-F2-00-01/device.crt")
 end
 

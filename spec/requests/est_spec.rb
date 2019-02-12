@@ -50,7 +50,7 @@ RSpec.describe "Est", type: :request do
 
   # points to https://highway-test.sandelman.ca
   def highwaytest_clientcert
-    @highwaytest_clientcert ||= IO.binread("spec/files/product_00-D0-E5-F2-00-03/device.crt")
+    @highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
   end
 
   # points to https://masa.honeydukes.sandelman.ca,
