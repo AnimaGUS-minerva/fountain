@@ -1,0 +1,10 @@
+production:
+  adapter: amalgalite
+  database: /app/highway/production.sqlite3
+  pool: 5
+  timeout: 5000
+development:
+  adapter: amalgalite
+  database: /app/highway/development.sqlite3
+  pool: 5
+  timeout: 5000
