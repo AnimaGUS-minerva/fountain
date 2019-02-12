@@ -185,8 +185,9 @@ class EstController < ApiController
     end
 
     if @voucher
-      render :body => @voucher.base64_signed_voucher,
-             :content_type => 'application/pkcs7-mime; smime-type=voucher'
+      ct='application/voucher-cms+json'
+      render :body => @voucher.signed_voucher, :content_type => ct
+      logger.info "returning voucher of size #{@voucher.signed_voucher.length} with ct=#{ct}"
       @voucher.save!
     else
       head 500
