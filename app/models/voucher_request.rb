@@ -260,14 +260,15 @@ class VoucherRequest < ApplicationRecord
   def masa_url
     manufacturer.try(:masa_url)
   end
-  def masa_uri(url = nil)
-    url ||= masa_url
-    @masauri ||= URI::join(url, "/.well-known/est/requestvoucher")
+
+  def request_voucher_uri(url = nil)
+    url      ||= masa_url
+    @masauri ||= URI::join(url, "requestvoucher")
   end
 
   def security_options
     { :verify_mode => OpenSSL::SSL::VERIFY_NONE,
-      :use_ssl => masa_uri.scheme == 'https',
+      :use_ssl => request_voucher_uri.scheme == 'https',
       :cert    => FountainKeys.ca.jrc_pub_key,
       :key     => FountainKeys.ca.jrc_priv_key,
     }
@@ -275,7 +276,7 @@ class VoucherRequest < ApplicationRecord
 
   def http_handler
     @http_handler ||=
-      Net::HTTP.start(masa_uri.host, masa_uri.port,
+      Net::HTTP.start(request_voucher_uri.host, request_voucher_uri.port,
                       security_options)
   end
 
@@ -331,7 +332,7 @@ class VoucherRequest < ApplicationRecord
                       :voucher_type => ct.to_s,
                       :parameters   => parameters,
                       :encoded_voucher => Base64::urlsafe_encode64(bodystr),
-                      :masa_url     => masa_uri.to_s }
+                      :masa_url     => request_voucher_uri.to_s }
       return nil
     end
 
@@ -357,7 +358,7 @@ class VoucherRequest < ApplicationRecord
   end
 
   def get_voucher(target_url = nil)
-    target_uri = masa_uri(target_url)
+    target_uri = request_voucher_uri(target_url)
 
     logger.info "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
     logger.info "Asking for voucher of type: #{registrar_voucher_desired_type}"
