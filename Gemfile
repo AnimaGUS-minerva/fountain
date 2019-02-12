@@ -38,7 +38,7 @@ gem 'mail'
 gem 'ffi', '~> 1.9.24'
 
 # Use Capistrano for deployment
-gem 'capistrano', '~> 3.10.2', group: :development
+gem 'capistrano', '~> 3.11.0', group: :development
 gem 'capistrano-rails',  group: :development
 gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
