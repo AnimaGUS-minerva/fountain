@@ -19,6 +19,3 @@ bundle exec thin start --ssl \
        --ssl-key-file  ${SERVKEY} $@
 
 echo DONE
-
-
-
