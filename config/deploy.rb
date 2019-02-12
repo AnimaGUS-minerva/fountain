@@ -1,5 +1,5 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.10.2"
+lock "~> 3.11.0"
 
 set :application, "fountain"
 set :repo_url, "http://github.com/AnimaGUS-minerva/fountain.git"
