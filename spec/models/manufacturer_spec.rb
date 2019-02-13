@@ -44,7 +44,7 @@ RSpec.describe Manufacturer, type: :model do
     end
 
     it "should find a manufacturer" do
-      m1 = Manufacturer.trusted_client_by_pem(highwaytest_clientcert_almec_f20001)
+      m1 = Manufacturer.trusted_client_by_pem(highwaytest_clientcert_f20001)
       expect(m1).to be_trust_brski
     end
   end
