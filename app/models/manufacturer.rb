@@ -1,3 +1,5 @@
+require 'byebug'
+
 class Manufacturer < ApplicationRecord
   has_many :devices
   has_many :voucher_requests
@@ -94,7 +96,7 @@ class Manufacturer < ApplicationRecord
   end
 
   def masa_url
-    unless !self[:masa_url].blank? and !self[:masa_url].include?("/")
+    if !self[:masa_url].blank? and !self[:masa_url].include?("/")
       self[:masa_url] = "https://" + self[:masa_url] + "/.well-known/est"
       save!
     end
