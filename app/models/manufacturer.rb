@@ -95,11 +95,16 @@ class Manufacturer < ApplicationRecord
     return manu1
   end
 
-  def masa_url
-    if !self[:masa_url].blank? and !self[:masa_url].include?("/")
-      self[:masa_url] = "https://" + self[:masa_url] + "/.well-known/est"
-      save!
+  def self.canonicalize_masa_url(url)
+    if !url.blank? and !url.include?("/")
+      url = "https://" + url + "/.well-known/est"
     end
+    url
+  end
+
+  def masa_url
+    self[:masa_url] = self.class.canonicalize_masa_url(self[:masa_url])
+    save
     self[:masa_url]
   end
 
