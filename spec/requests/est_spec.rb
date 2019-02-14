@@ -35,7 +35,7 @@ RSpec.describe "Est", type: :request do
 
   # points to https://highway.sandelman.ca
   def clientcert
-    @clientcert ||= IO.binread("spec/certs/081196FFFE0181E0.crt")
+    @clientcert ||= IO.binread("spec/files/product/081196FFFE0181E0/device.crt")
   end
 
   # points to https://highway.sandelman.ca
@@ -192,7 +192,7 @@ RSpec.describe "Est", type: :request do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
-      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway-test.sandelman.ca:9443/.well-known/est/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
