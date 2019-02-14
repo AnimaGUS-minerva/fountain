@@ -97,7 +97,7 @@ class Manufacturer < ApplicationRecord
 
   def self.canonicalize_masa_url(url)
     if !url.blank? and !url.include?("/")
-      url = "https://" + url + "/.well-known/est"
+      url = "https://" + url + "/.well-known/est/"
     end
     url
   end

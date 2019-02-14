@@ -230,6 +230,7 @@ class VoucherRequest < ApplicationRecord
         @masa_url = ext.value[2..-1]
       end
     }
+    @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
     if @masa_url
       manu = Manufacturer.where(masa_url: @masa_url).take
       unless manu

@@ -3,7 +3,7 @@ widget1:
   name: sandelman
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://highway.sandelman.ca/.well-known/est
+  masa_url: https://highway-test.example.com:9443/.well-known/est/
   issuer_public_key: !binary |-
     ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
 
@@ -13,7 +13,7 @@ honeydukes:
   name: "HoneyDukes Store"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/est
+  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/est/
   issuer_dn: "/DC=ca/DC=sandelman/CN=Unstrung Highway CA"
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAESvRvRvzi3fxFKmc79Ubg2LvjS/s6FUplnQ3XDiTjNiUlB1nhDsrNYSmcjeo9QxA+Lnglu4c5+SMJhYxdCmKz4iaAXQI1oIOuxmpyPUlxWaeaYr51AaaqLfFSTHD4wzP7
@@ -23,7 +23,7 @@ honeybrokendukes:
   name: "HoneyDukes Store with broken public key"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/est
+  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/est/
   issuer_dn: "/DC=ca/DC=sandelman/CN=Unstrung Highway CA"
   issuer_public_key: !binary |-
     ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
@@ -33,7 +33,7 @@ unknownManu:
   name: "Unknown Manufacturer"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/est
+  masa_url: https://unknown.example.com/.well-known/est/
   trust: "unknown"
   issuer_dn: "/C=CA/ST=Ontario/O=Fire Department/CN=Root CA"
   issuer_public_key: !binary |-
@@ -47,7 +47,7 @@ brskiManu:
   name: "BRSKI-trusted Manufacturer"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/est
+  masa_url: https://unknown.example.com/.well-known/est/
   trust: "brski"
   issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
@@ -61,7 +61,7 @@ brskiManuBroken:
   name: "BRSKI-trusted Manufacturer BROKEN"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/est
+  masa_url: https://unknown.example.com/.well-known/est/
   trust: "brski"
   issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
@@ -76,7 +76,7 @@ florean:
   name: "Florean Store -- pure-EST enrollment"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://florean.sandelman.ca/.well-known/est
+  masa_url: https://florean.sandelman.ca/.well-known/est/
   issuer_dn: "/DC=ca/DC=sandelman/CN=florean.sandelman.ca"
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE376eeaCbtvNVOtuA6HnClXgS1HolPfK/f79NQYO6LhzgOjw2xwjr86Qx4hxtZodrkpCXWS3q5igFLA55F+4GyeWBpb1M/U6u5elW42shzl+c7Gb9oG9bQ/Sr+O7nCyuk
