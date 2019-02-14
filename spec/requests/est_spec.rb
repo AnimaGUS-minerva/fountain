@@ -107,24 +107,24 @@ RSpec.describe "Est", type: :request do
 
     it "should be returned in non-constrained request" do
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_f20001
       get "/.well-known/est/csrattributes", :headers => env
       expect(response).to have_http_status(200)
     end
 
     it "should be returned in constrained request" do
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_f20001
       get "/e/att", :headers => env
       expect(response).to have_http_status(200)
     end
 
     it "should be return with a new certificate with a CSR with trusted connection" do
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_f20001
       get "/.well-known/est/csrattributes", :headers => env
 
-      # given that almec_f20001 cert is used, it should assign device to
+      # given that f20001 cert is used, it should assign device to
       # jadaf20001 device
       expect(assigns(:device)).to eq(devices(:jadaf20001))
       expect(response).to have_http_status(200)
@@ -360,7 +360,7 @@ RSpec.describe "Est", type: :request do
       body = IO.read("spec/files/vr_00-D0-E5-E0-00-0F.vch")
 
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_f20001
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
 
@@ -381,7 +381,7 @@ RSpec.describe "Est", type: :request do
       body = IO.read("spec/files/vr_00-D0-E5-F2-00-01.vrq")
 
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_almec_f20001
+      env["SSL_CLIENT_CERT"] = highwaytest_clientcert_f20001
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
 
