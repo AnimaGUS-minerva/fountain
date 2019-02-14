@@ -242,12 +242,12 @@ RSpec.describe "Est", type: :request do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
-      stub_request(:post, "https://highway-test.example.com/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Content-Type'=>'application/voucher-cms+json',
-                'Host'=>'highway-test.example.com',
+                'Host'=>'highway-test.example.com:9443',
                 'User-Agent'=>'Ruby'
                }).
         to_return(status: 200, body: lambda { |request|
