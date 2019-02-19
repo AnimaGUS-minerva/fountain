@@ -19,7 +19,7 @@ class CmsVoucherRequest < VoucherRequest
     vreq.cmsSignedPriorVoucherRequest!
     vreq.priorSignedVoucherRequest = pledge_request
     self.request = vreq
-    token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
+    token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key, true, [FountainKeys.ca.rootkey])
   end
 
   def registrar_voucher_request
