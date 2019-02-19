@@ -140,12 +140,16 @@ class VoucherRequest < ApplicationRecord
   end
 
   def populate_explicit_fields
-    self.device_identifier = vdetails["serial-number"]
+    if vdetails["serial-number"]
+      self.device_identifier = vdetails["serial-number"]
+    else
+      self.device_identifier = "1234"
+    end
     self.device            = Device.find_or_make_by_number(device_identifier)
     if self.device.try(:idevid).blank? and certificate
       self.device.idevid = certificate
-      self.device.save!
     end
+    self.device.save!
     self.nonce             = vdetails["nonce"]
   end
 
