@@ -36,7 +36,8 @@ GIT
 
 GIT
   remote: https://github.com/mcr/ChariWTs.git
-  revision: d019cdae37b82e7ede2a3ee3b63f65992a908cbe
+  revision: 2c544ba184d16d9bd783cdad0ae421f5a5ba734f
+  branch: master
   specs:
     chariwt (0.6.0)
       cbor (~> 0.5.0)
