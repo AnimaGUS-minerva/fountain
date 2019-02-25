@@ -127,6 +127,11 @@ RSpec.describe ACPAddress do
       a1 = ACPAddress.iid_from_eui("00163e8d519b")
       expect(a1.to_s).to eq("::216:3efe:ff8d:519b")
     end
+
+    it "random from ULA" do
+      a1 = ACPAddress.new "fd3c:e618:51e2:0:a11:96ff:fe01:81e0"
+      expect(a1.ula_random_part_base).to eq("3CE61851E2")
+    end
   end
 
 end

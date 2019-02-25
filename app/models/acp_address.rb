@@ -24,6 +24,13 @@ class ACPAddress < IPAddress::IPv6
     end
   end
 
+  def ula_random_part
+    self.class.parse_u128(to_u128 & (0xffffffffff << (16+64)))
+  end
+  def ula_random_part_base
+    ula_random_part.to_hex[2..11].upcase
+  end
+
   #
   # split a prefix into n subnets
   #
