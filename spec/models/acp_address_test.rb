@@ -110,5 +110,23 @@ RSpec.describe ACPAddress do
     end
   end
 
+  describe "link-local address" do
+    it "from EUI64" do
+      a1 = ACPAddress.iid_from_eui64("0123456789abcdef")
+      expect(a1.to_s).to eq("::323:4567:89ab:cdef")
+    end
+    it "from EUI64 with bit set" do
+      a1 = ACPAddress.iid_from_eui64("1f23456789abcdef")
+      expect(a1.to_s).to eq("::1f23:4567:89ab:cdef")
+    end
+    it "from EUI48" do
+      a1 = ACPAddress.iid_from_eui48("00163e8d519b")
+      expect(a1.to_s).to eq("::216:3efe:ff8d:519b")
+    end
+    it "from EUI" do
+      a1 = ACPAddress.iid_from_eui("00163e8d519b")
+      expect(a1.to_s).to eq("::216:3efe:ff8d:519b")
+    end
+  end
 
 end

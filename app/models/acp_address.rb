@@ -1,5 +1,27 @@
+# this is copied from fountain, and does not come with the test cases.
+# it obviously needs to be a gem.
 class ACPAddress < IPAddress::IPv6
   class WrongACPPoolType < Exception
+  end
+
+
+  # turn a 64-bit L2 MAC address into an IPv6 Link-Local IID.
+  def self.iid_from_eui64(eui64)
+    ip = ACPAddress::parse_hex eui64
+    # now set bit 64+6, which is "bit 2" in little-endian format.
+    addr = (ip.to_u128 | (1 << (127-(64+6))))
+    parse_u128(addr)
+  end
+  def self.iid_from_eui48(eui48)
+    e64 = eui48[0..5] + "feff" + eui48[6..11]
+    iid_from_eui64(e64)
+  end
+  def self.iid_from_eui(eui)
+    if eui.length == 16
+      iid_from_eui64(eui)
+    else
+      iid_from_eui48(eui)
+    end
   end
 
   #
