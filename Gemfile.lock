@@ -37,7 +37,7 @@ GIT
 GIT
   remote: https://github.com/mcr/ChariWTs.git
   revision: 2c544ba184d16d9bd783cdad0ae421f5a5ba734f
-  branch: master
+  branch: v0.6.0
   specs:
     chariwt (0.6.0)
       cbor (~> 0.5.0)
@@ -199,7 +199,7 @@ GEM
     nio4r (2.3.1)
     nokogiri (1.10.1)
       mini_portile2 (~> 2.4.0)
-    oj (3.7.8)
+    oj (3.7.9)
     pg (0.20.0)
     polyglot (0.3.5)
     pry (0.12.2)
@@ -266,7 +266,7 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    safe_yaml (1.0.4)
+    safe_yaml (1.0.5)
     sass (3.7.3)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)

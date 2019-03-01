@@ -18,7 +18,7 @@ gem "turbolinks"
 gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
 #gem 'chariwt', :path => '../chariwt'
-gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git', :branch => 'master'
+gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git', :branch => 'v0.6.0'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
@@ -26,7 +26,6 @@ gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
 gem 'active_scaffold',  :git => "https://github.com/mcr/active_scaffold.git"
 #gem 'active_scaffold', :git => "https://github.com/activescaffold/active_scaffold.git", :branch => 'master'
-gem 'therubyracer', platforms: :ruby
 
 gem 'jbuilder', '~> 2.0'
 gem 'rake'
@@ -81,6 +80,7 @@ gem 'byebug'
 gem 'sucker_punch'
 
 group :development, :test do
+  gem 'therubyracer', platforms: :ruby
   gem 'pry'
   gem 'pry-doc'
 
