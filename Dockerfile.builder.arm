@@ -1,0 +1,9 @@
+FROM ruby261-openssl:margarita as builder
+
+RUN apk add postgresql-dev sqlite-dev
+RUN apk add bash ntop sqlite procps
+RUN apk add g++
+COPY Gemfile Gemfile.lock /app/fountain/
+RUN /usr/local/rvm/bin/rvm 2.6.1 do bundle install
+COPY . /app/fountain
+

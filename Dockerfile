@@ -1,30 +1,31 @@
-FROM ruby:2.6 as ruby
-FROM ruby:2.6 as builder
+FROM mcr314/ruby261-openssl:margarita as builder
 
-RUN apt-get update -qq && apt-get install -y postgresql-client
-RUN mkdir -p /app/fountain
-WORKDIR /app/fountain
-COPY Gemfile /app/fountain/Gemfile
-COPY Gemfile.lock /app/fountain/Gemfile.lock
-RUN mkdir -p /src/minerva
-RUN mkdir -p /app/minerva
-RUN cd /src/minerva && git clone -b dtls-listen-refactor git://github.com/mcr/openssl.git
-RUN cd /src/minerva/openssl && ./Configure --prefix=/app/minerva linux-x86_64 && id && make install_sw
-RUN cd /app/minerva && git clone -b dtls-coap-client git://github.com/mcr/ruby-openssl.git
-RUN gem install rake-compiler
-RUN cd /app/minerva/ruby-openssl && rake compile -- --with-openssl-dir=/app/minerva
-RUN gem install bundler
-RUN bundle install
+RUN apt-get install libpq-dev
+COPY Gemfile Gemfile.lock /app/fountain/
+RUN /usr/local/rvm/bin/rvm 2.6.1 do bundle install
 COPY . /app/fountain
 
-FROM alpine
-RUN apk add bash ntop sqlite
-COPY --from=builder /lib/x86_64-linux-gnu/libz.so.* /lib/x86_64-linux-gnu/
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libyaml* /usr/lib/x86_64-linux-gnu/
-COPY --from=builder /app/minerva/lib/lib* /lib/x86_64-linux-gnu/
-COPY --from=builder /app/minerva/lib/lib* /usr/lib/x86_64-linux-gnu/
+FROM alpine as alpinebase
+RUN mkdir -p /lib64
+RUN apk add bash ntop sqlite procps
+
+FROM alpinebase
+COPY --from=builder /lib64/*                        /lib64
+COPY --from=builder /lib/x86_64-linux-gnu/libpthread.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /lib/x86_64-linux-gnu/librt.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /lib/x86_64-linux-gnu/libdl.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /lib/x86_64-linux-gnu/libm.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libgmp.so.* /lib/x86_64-linux-gnu/
 COPY --from=builder /usr/local/lib/ /usr/local/lib
 COPY --from=builder /usr/local/bin/ /usr/local/bin
+COPY --from=builder /usr/local/rvm/ /usr/local/rvm
+COPY --from=builder /etc/profile.d/ /etc/profile.d
+COPY --from=builder /lib/x86_64-linux-gnu/libcrypt.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /lib/x86_64-linux-gnu/libc.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /lib/x86_64-linux-gnu/libz.so.* /lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libyaml* /usr/lib/x86_64-linux-gnu/
+#COPY --from=builder /app/minerva/lib/lib* /lib/x86_64-linux-gnu/
+#COPY --from=builder /app/minerva/lib/lib* /usr/lib/x86_64-linux-gnu/
 COPY --from=builder /app /app
 
 WORKDIR /app/fountain
@@ -35,4 +36,4 @@ RUN chmod +x /usr/bin/entrypoint.sh
 EXPOSE 3000
 EXPOSE 443
 
-CMD ["/app/fountain/startjrc"]
+CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc"]
