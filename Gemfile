@@ -82,7 +82,7 @@ gem 'sucker_punch'
 gem 'rb-readline'
 
 group :development, :test do
-  #gem 'therubyracer', platforms: :ruby
+  gem 'therubyracer', platforms: :ruby
   gem 'pry'
   gem 'pry-doc'
 
