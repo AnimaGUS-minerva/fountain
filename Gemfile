@@ -31,7 +31,8 @@ gem 'jbuilder', '~> 2.0'
 gem 'rake'
 
 gem 'sdoc', '~> 0.4.0'
-gem 'uglifier'
+#gem 'uglifier'
+gem 'tzinfo-data'
 
 gem 'mail'
 gem 'ffi', '~> 1.9.24'
@@ -80,7 +81,7 @@ gem 'byebug'
 gem 'sucker_punch'
 
 group :development, :test do
-  gem 'therubyracer', platforms: :ruby
+  #gem 'therubyracer', platforms: :ruby
   gem 'pry'
   gem 'pry-doc'
 
