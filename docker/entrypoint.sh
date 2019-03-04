@@ -13,7 +13,6 @@ RAILS_ENV=${RAILS_ENV-production}
 export RAILS_ENV
 
 bundle exec thin start --ssl \
-       --servers 2 \
        --port    8081  \
        --user    fountain \
        --ssl-cert-file ${SERVCERT} \

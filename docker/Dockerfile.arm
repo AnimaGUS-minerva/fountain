@@ -26,14 +26,15 @@ ENV CERTDIR=/app/certificates
 WORKDIR /app/fountain
 # Add a script to be executed every time the container starts.
 COPY ./docker/entrypoint.sh /root/start
-RUN chmod +x /root/start
+RUN chmod a+rx /root/start
 COPY ./docker/config/database.yml /app/fountain/config
+COPY ./docker/inittab /etc/inittab
+COPY ./docker/profile /app/fountain/.profile
 RUN chown -R fountain /app
 RUN mkdir -p /app/database /app/certificates
-ENTRYPOINT ["/root/start"]
+#ENTRYPOINT ["/root/start"]
 
 RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
-RUN chmod +x /usr/bin/entrypoint.sh
 EXPOSE 3000
 EXPOSE 443
 

@@ -1,0 +1,7 @@
+. /etc/profile.d/rvm.sh
+rvm use 2.6.1
+PATH=$HOME/bin:$PATH export PATH
+export RAILS_ENV=production
+export CERTDIR=/app/certificates
+export SERVCERT=${CERTDIR}/jrc_prime256v1.crt
+export SERVKEY=${CERTDIR}/jrc_prime256v1.key
