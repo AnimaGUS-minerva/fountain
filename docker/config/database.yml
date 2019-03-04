@@ -3,3 +3,4 @@ production:
   database: /app/database/production.sqlite3
   pool: 5
   timeout: 5000
+
