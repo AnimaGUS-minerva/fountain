@@ -2,7 +2,7 @@ FROM shg_mud_builder:margarita as builder
 
 FROM alpine:latest as alpinebase
 RUN mkdir -p /lib64
-RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add bash ntop sqlite procps libstdc++
+RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add bash sqlite procps libstdc++
 
 COPY --from=builder /usr/local/lib/ /usr/local/lib
 COPY --from=builder /usr/local/bin/ /usr/local/bin
