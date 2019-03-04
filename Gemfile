@@ -1,9 +1,8 @@
 # coding: utf-8
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 5.1"
+gem 'rails', "~> 5.2.0"
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -69,8 +68,7 @@ gem 'json'
 gem 'rabl'
 gem 'oj'
 
-gem 'amalgalite'
-gem 'sqlite3'
+gem 'sqlite3', "~> 1.3.6"
 gem 'pg', '0.20'
 
 # used in production on SecureHomeGateway
@@ -87,7 +85,7 @@ group :development, :test do
   gem 'pry-doc'
 
   #
-  gem 'rspec-rails', '~> 3.0'
+  gem 'rspec-rails'
   gem 'rails-controller-testing'
   gem 'cbor-diag'
 end
