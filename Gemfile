@@ -69,6 +69,7 @@ gem 'json'
 gem 'rabl'
 gem 'oj'
 
+gem 'amalgalite'
 gem 'sqlite3'
 gem 'pg', '0.20'
 
