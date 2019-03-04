@@ -21,12 +21,16 @@ RUN rm -rf /app/fountain/.git
 RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add shadow
 RUN useradd -d /app/fountain -r -u 998 fountain
 ENV RAILS_ENV=production
+ENV CERTDIR=/app/certificates
 
 WORKDIR /app/fountain
 # Add a script to be executed every time the container starts.
-COPY ./docker/entrypoint.sh /usr/bin/
+COPY ./docker/entrypoint.sh /root/start
+RUN chmod +x /root/start
 COPY ./docker/config/database.yml /app/fountain/config
 RUN chown -R fountain /app
+RUN mkdir -p /app/database /app/certificates
+ENTRYPOINT ["/root/start"]
 
 RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
 RUN chmod +x /usr/bin/entrypoint.sh
