@@ -1,24 +1,4 @@
-FROM ruby261-openssl:margarita as builder
-
-RUN apk add postgresql-dev sqlite-dev
-RUN apk add bash ntop sqlite procps
-RUN apk add g++
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.10.1 nokogiri
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v2.3.1 nio4r
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.2.7 eventmachine
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.9.25 ffi
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v3.7.9 oj
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.17.3 bundler
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v11.0.0 byebug
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install cbor
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.8.6  json
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v0.20.0 pg
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.4.0 sqlite3
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.7.2 thin
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.6.3 amalgalite
-COPY Gemfile Gemfile.lock /app/fountain/
-RUN /usr/local/rvm/bin/rvm 2.6.1 do bundle install --system --without=development --without=test
-#COPY . /app/fountain
+FROM shg_mud_builder:margarita as builder
 
 FROM alpine:latest as alpinebase
 RUN mkdir -p /lib64
@@ -36,13 +16,21 @@ COPY --from=builder /usr/lib/libpq.so.* /usr/lib/
 COPY --from=builder /usr/lib/liblber-2.4.so.2 /usr/lib/libsasl2.so.3 /usr/lib/libldap_r-2.4.so.2 /usr/lib/
 COPY --from=builder /app /app
 COPY . /app/fountain
+RUN rm -rf /app/fountain/.git
+
+RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add shadow
+RUN useradd -d /app/fountain -r -u 998 fountain
+ENV RAILS_ENV=production
 
 WORKDIR /app/fountain
 # Add a script to be executed every time the container starts.
 COPY ./docker/entrypoint.sh /usr/bin/
 COPY ./docker/config/database.yml /app/fountain/config
+RUN chown -R fountain /app
+
+RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
 RUN chmod +x /usr/bin/entrypoint.sh
 EXPOSE 3000
 EXPOSE 443
 
-CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc"]
+CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc --address 0.0.0.0"]

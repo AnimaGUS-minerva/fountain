@@ -18,4 +18,4 @@ RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.7.2 thin
 COPY Gemfile Gemfile.lock /app/fountain/
 RUN /usr/local/rvm/bin/rvm 2.6.1 do bundle install --system --without=development --without=test
 COPY . /app/fountain
-
+COPY ./docker/config/database.yml /app/fountain/config

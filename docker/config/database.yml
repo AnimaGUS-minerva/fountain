@@ -1,6 +1,11 @@
 production:
   adapter: sqlite3
-  database: /app/database/production.sqlite3
+  database: /app/fountain/production.sqlite3
+  pool: 5
+  timeout: 5000
+development:
+  adapter: sqlite3
+  database: /app/fountain/development.sqlite3
   pool: 5
   timeout: 5000
 
