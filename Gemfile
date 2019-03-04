@@ -70,6 +70,7 @@ gem 'rabl'
 gem 'oj'
 
 gem 'sqlite3', "~> 1.3.6"
+ file take less time due to caching
 gem 'pg', '0.20'
 
 # used in production on SecureHomeGateway
