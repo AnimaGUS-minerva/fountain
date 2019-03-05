@@ -35,6 +35,7 @@ gem 'tzinfo-data'
 
 gem 'mail'
 gem 'ffi', '~> 1.9.24'
+gem 'bundler', '1.17.3'
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development

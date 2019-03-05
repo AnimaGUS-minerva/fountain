@@ -325,6 +325,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_scaffold!
+  bundler (= 1.17.3)
   byebug
   capistrano (~> 3.11.0)
   capistrano-bundler
