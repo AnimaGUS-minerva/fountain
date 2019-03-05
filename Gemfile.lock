@@ -325,10 +325,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_scaffold!
-<<<<<<< HEAD
   bundler (= 1.17.3)
-=======
->>>>>>> 66bafad... update rails to 5.2
   byebug
   capistrano (~> 3.11.0)
   capistrano-bundler
