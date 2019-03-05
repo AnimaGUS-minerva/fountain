@@ -4,9 +4,15 @@ class FountainKeys
   def rootkey
     @rootkey ||= ca_load_pub_key
   end
+  def cacert
+    rootkey
+  end
 
   def rootprivkey
     @rootprivkey ||= ca_load_priv_key
+  end
+  def ca_signing_key
+    rootprivkey
   end
 
   def registrarkey
@@ -61,6 +67,61 @@ class FountainKeys
   end
   def domain_priv_key
     @domain_priv_key ||= load_domain_priv_key
+  end
+
+  def sign_end_certificate(certname, privkeyfile, pubkeyfile, dnstr)
+    dnobj = OpenSSL::X509::Name.parse dnstr
+
+    sign_certificate(certname, nil, privkeyfile,
+                     pubkeyfile, dnobj, 2*365*60*60) { |cert,ef|
+      cert.add_extension(ef.create_extension("basicConstraints","CA:FALSE",true))
+    }
+  end
+
+  def sign_certificate(certname, issuer, privkeyfile, pubkeyfile, dnobj, duration=(2*365*60*60), &efblock)
+    FileUtils.mkpath(certdir)
+
+    if File.exists?(privkeyfile)
+      puts "#{certname} using existing key at: #{privkeyfile}"
+      key = OpenSSL::PKey.read(File.open(privkeyfile))
+    else
+      # the CA's public/private key - 3*1024 + 8
+      key = OpenSSL::PKey::EC.new(curve)
+      key.generate_key
+      File.open(privkeyfile, "w", 0600) do |f| f.write key.to_pem end
+    end
+
+    ncert  = OpenSSL::X509::Certificate.new
+    # cf. RFC 5280 - to make it a "v3" certificate
+    ncert.version = 2
+    ncert.serial  = SystemVariable.randomseq(:serialnumber)
+    ncert.subject = dnobj
+
+    # note, root CA's are "self-signed", so pass dnobj.
+    issuer ||= cacert.subject
+
+    ncert.issuer = issuer
+    #ncert.public_key = root_key.public_key
+    ncert.public_key = key
+    ncert.not_before = Time.now
+
+    # 2 years validity
+    ncert.not_after = ncert.not_before + duration
+
+    # Extension Factory
+    ef = OpenSSL::X509::ExtensionFactory.new
+    ef.subject_certificate = ncert
+    ef.issuer_certificate  = ncert
+
+    if efblock
+      efblock.call(ncert, ef)
+    end
+    ncert.sign(ca_signing_key, OpenSSL::Digest::SHA256.new)
+
+    File.open(pubkeyfile,'w') do |f|
+      f.write ncert.to_pem
+    end
+    ncert
   end
 
   protected
