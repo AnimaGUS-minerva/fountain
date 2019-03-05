@@ -30,8 +30,8 @@ RUN chmod a+rx /root/start
 COPY ./docker/config/database.yml /app/fountain/config
 COPY ./docker/inittab /etc/inittab
 COPY ./docker/profile /app/fountain/.profile
+RUN mkdir -p /app/database /app/certificates /home/mud/tmp /tmp/mudfiles
 RUN chown -R fountain /app
-RUN mkdir -p /app/database /app/certificates
 #ENTRYPOINT ["/root/start"]
 
 RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
