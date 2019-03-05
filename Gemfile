@@ -78,6 +78,7 @@ gem 'byebug'
 # use for background processing of mud files, and interaction with
 # mud-controller.
 gem 'sucker_punch'
+gem 'rb-readline'
 
 group :development, :test do
   #gem 'therubyracer', platforms: :ruby
