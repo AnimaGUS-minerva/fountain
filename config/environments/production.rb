@@ -81,8 +81,7 @@ end
 $MUD_TMPDIR_PUBLIC = "/tmp/mudfiles"
 $MUD_TMPDIR        = "/home/mud/tmp"
 
-# in development mode, use the canned certificates from spec/files/cert,
-# which are also used for test.
+# relocate certificate files based upon variables
 if ENV['CERTDIR']
   FountainKeys.ca.certdir = Pathname.new(ENV['CERTDIR'])
 end

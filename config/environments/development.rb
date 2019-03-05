@@ -54,5 +54,12 @@ end
 $MUD_TMPDIR_PUBLIC = "/tmp/mudfiles"
 $MUD_TMPDIR        = "/tmp/mudfiles"
 
+# in development mode, use the canned certificates from spec/files/cert,
+# which are also used for test.
+if ENV['CERTDIR']
+  FountainKeys.ca.certdir = Pathname.new(ENV['CERTDIR'])
+else
+  FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+end
 
 
