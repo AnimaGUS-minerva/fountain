@@ -14,6 +14,10 @@ export RAILS_ENV
 
 cd /app/fountain
 
+# clean up previous log entries in case they are owned by root
+rm -f log/thin.log.1 tmp/pids/thin.pid
+mv log/thin.log log/thin.log.1
+
 bundle exec thin start --ssl \
        --address ::    \
        --port    8081  \

@@ -13,9 +13,8 @@ RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v11.0.0 byebug
 RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install cbor
 RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.8.6  json
 RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v0.20.0 pg
-RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.4.0 sqlite3
+RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.3.13 sqlite3
 RUN /usr/local/rvm/bin/rvm 2.6.1 do gem install -v1.7.2 thin
 COPY Gemfile Gemfile.lock /app/fountain/
 RUN /usr/local/rvm/bin/rvm 2.6.1 do bundle install --system --without=development --without=test
-COPY . /app/fountain
-COPY ./docker/config/database.yml /app/fountain/config
+RUN /usr/local/rvm/bin/rvm 2.6.1 do bundle clean

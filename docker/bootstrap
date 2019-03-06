@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# this command is to be invoked with
+#   $1 being the hostname that has been assigned to this MUD controller.
+#
+# this will get revised to do all the work for enrollment.
+
+cd /app/fountain
+bundle exec rake fountain:s0_set_hostname HOSTNAME=$1
+bundle exec rake fountain:s1_registrar_ca
+bundle exec rake fountain:s2_create_registrar
+bundle exec rake fountain:s4_domain_authority

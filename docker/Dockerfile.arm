@@ -26,23 +26,25 @@ COPY ./docker/entrypoint.sh /root/start
 RUN chmod a+rx /root/start && chmod a+rx /root
 #ENTRYPOINT ["/root/start"]
 
-COPY . /app/fountain
-RUN rm -rf /app/fountain/.git
-
+RUN chown -R fountain /app
+RUN mkdir -p /home/mud/tmp /tmp/mudfiles
 USER fountain
 ENV RAILS_ENV=production
 ENV CERTDIR=/app/certificates
 
-WORKDIR /app/fountain
-COPY ./docker/config/database.yml /app/fountain/config
-COPY ./docker/profile /app/fountain/.profile
-RUN mkdir -p /app/database /app/certificates /home/mud/tmp /tmp/mudfiles
+COPY --chown=fountain . /app/fountain
+RUN rm -rf /app/fountain/.git
 
-# not needed because USER fountain above.
-#RUN chown -R fountain /app
+# in case there is a build postgresql system here.
+RUN rm -rf /app/fountain/run
+RUN rm -rf /app/fountain/log && mkdir -p /app/fountain/log
+
+WORKDIR /app/fountain
+COPY --chown=fountain ./docker/config/database.yml /app/fountain/config
+COPY --chown=fountain ./docker/profile /app/fountain/.profile
+RUN mkdir -p /app/database /app/certificates
 
 RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
-EXPOSE 3000
-EXPOSE 443
+EXPOSE 8081
 
 #CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc --address 0.0.0.0"]
