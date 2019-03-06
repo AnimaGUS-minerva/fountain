@@ -59,6 +59,7 @@ namespace :fountain do
 
     SystemVariable.dump_vars
 
+    # initial serial number is now randomized, do not ask for it anymore.
     prompt_variable_value("Hostname for this instance",
                           :hostname)
 

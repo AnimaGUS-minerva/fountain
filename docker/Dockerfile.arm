@@ -1,4 +1,4 @@
-FROM shg_mud_builder:margarita as builder
+FROM mcr314/shg_mud_builder:margarita as builder
 
 FROM alpine:latest as alpinebase
 RUN mkdir -p /lib64
@@ -15,27 +15,34 @@ COPY --from=builder /lib/libssl.so.* /lib/
 COPY --from=builder /usr/lib/libpq.so.* /usr/lib/
 COPY --from=builder /usr/lib/liblber-2.4.so.2 /usr/lib/libsasl2.so.3 /usr/lib/libldap_r-2.4.so.2 /usr/lib/
 COPY --from=builder /app /app
+
+RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add shadow openrc
+RUN useradd -d /app/fountain -r -u 998 fountain
+
+COPY ./docker/inittab /etc/inittab
+
+# Add a script to be executed every time the container starts.
+COPY ./docker/entrypoint.sh /root/start
+RUN chmod a+rx /root/start && chmod a+rx /root
+#ENTRYPOINT ["/root/start"]
+
 COPY . /app/fountain
 RUN rm -rf /app/fountain/.git
 
-RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add shadow
-RUN useradd -d /app/fountain -r -u 998 fountain
+USER fountain
 ENV RAILS_ENV=production
 ENV CERTDIR=/app/certificates
 
 WORKDIR /app/fountain
-# Add a script to be executed every time the container starts.
-COPY ./docker/entrypoint.sh /root/start
-RUN chmod a+rx /root/start
 COPY ./docker/config/database.yml /app/fountain/config
-COPY ./docker/inittab /etc/inittab
 COPY ./docker/profile /app/fountain/.profile
 RUN mkdir -p /app/database /app/certificates /home/mud/tmp /tmp/mudfiles
-RUN chown -R fountain /app
-#ENTRYPOINT ["/root/start"]
+
+# not needed because USER fountain above.
+#RUN chown -R fountain /app
 
 RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
 EXPOSE 3000
 EXPOSE 443
 
-CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc --address 0.0.0.0"]
+#CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc --address 0.0.0.0"]

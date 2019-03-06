@@ -12,7 +12,10 @@ export SERVKEY=${CERTDIR}/jrc_prime256v1.key
 RAILS_ENV=${RAILS_ENV-production}
 export RAILS_ENV
 
+cd /app/fountain
+
 bundle exec thin start --ssl \
+       --address ::    \
        --port    8081  \
        --user    fountain \
        --ssl-cert-file ${SERVCERT} \
