@@ -99,6 +99,10 @@ class Manufacturer < ApplicationRecord
     if !url.blank? and !url.include?("/")
       url = "https://" + url + "/.well-known/est/"
     end
+    # always have a trailing /
+    unless url[-1]=='/'
+      url = url + '/'
+    end
     url
   end
 
