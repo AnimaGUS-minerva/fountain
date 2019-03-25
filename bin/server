@@ -15,7 +15,7 @@ cert=${dir}/db/cert/jrc_prime256v1.crt
 
 bundle exec thin start --ssl \
   --address ::  \
-  --port    8081  \
+  --port    8443  \
   --ssl-cert-file ${cert} \
   --ssl-key-file  ${priv} "$@"
 

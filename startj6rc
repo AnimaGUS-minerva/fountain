@@ -15,7 +15,7 @@ tail -f log/${RAILS_ENV}.log &
 TAIL_PID=$!
 trap "kill $TAIL_PID; exit 0" 1 2 3 15
 
-LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1  ./ruby bin/rails server david -b 2607:f0b0:f:6::2 -p 5684 $*
+LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1  bin/rails server david -b :: -p 5684 $*
 #LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1  bundle exec ruby bin/rails server david -b :: -p 5684
 
 
