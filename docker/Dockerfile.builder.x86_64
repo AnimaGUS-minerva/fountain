@@ -27,7 +27,6 @@ RUN rm -rf /usr/include/x86_64-linux-gnu/openssl && \
     gem install rake-compiler --source=http://rubygems.org && \
     cd /gems/highway/ruby-openssl && rake compile
 
-WORKDIR /app/highway
 RUN gem install bundler --source=http://rubygems.org
 
 # install gems with extensions explicitely so that layers are cached.

@@ -377,9 +377,16 @@ class VoucherRequest < ApplicationRecord
     request.body         = self.registrar_request = registrar_voucher_request
     request.content_type = registrar_voucher_request_type
     request.add_field("Accept", registrar_voucher_desired_type)
-    response = http_handler.request request     # Net::HTTPResponse object
 
-    logger.info "MASA at #{target_uri} says #{response.message}"
+    begin
+      response = http_handler.request request     # Net::HTTPResponse object
+
+      logger.info "MASA at #{target_uri} says #{response.message}"
+
+    rescue
+      logger.error "Error $! was raised"
+      raise $!
+    end
 
     case response
     when Net::HTTPServerError
@@ -412,6 +419,9 @@ class VoucherRequest < ApplicationRecord
 
     when Net::HTTPRedirection
       nil
+
+    when nil
+      logger.error "An error was raised, and response was not set"
     end
 
     return nil
