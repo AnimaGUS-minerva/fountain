@@ -60,7 +60,8 @@ GIT
 PATH
   remote: /gems/highway/ruby-openssl
   specs:
-    openssl (2.1.0)
+    openssl (2.2.0.pre.mcr1)
+      ipaddr
 
 GEM
   remote: https://rubygems.org/
@@ -154,6 +155,7 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
+    ipaddr (1.2.2)
     ipaddress (0.8.3)
     jbuilder (2.8.0)
       activesupport (>= 4.2.0)
