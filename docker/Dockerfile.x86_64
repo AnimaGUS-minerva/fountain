@@ -9,13 +9,16 @@ COPY --from=builder /gems/highway /gems/highway
 COPY --from=builder /bin/sash     /bin/sash
 COPY --from=builder /usr/bin/env  /usr/bin/env
 COPY --from=builder /bin/busybox  /bin/busybox
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-RUN rm -rf /app/highway && mkdir -p /app/fountain
+# can not do this, because distroless has no rm or mkdir -p
+#RUN ["rm","-rf","/app/highway"]
+#RUN ["mkdir", "-p", "/app/fountain" ]
 COPY . /app/fountain
-ADD ./docker/Gemfile /app/highway/Gemfile
-ADD ./docker/Gemfile.lock /app/highway/Gemfile.lock
+ADD ./docker/Gemfile /app/fountain/Gemfile
+ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 ENV GEM_HOME="/usr/local/bundle"
 
 WORKDIR /app/fountain
@@ -23,7 +26,7 @@ WORKDIR /app/fountain
 EXPOSE 8443
 
 CMD ["bundle", "_2.0.1_", "exec", "thin", "start", "--ssl",      \
-    "--address", "::", "--port", "8443",                         \
+    "--address", "0.0.0.0", "--port", "8443",                         \
     "--ssl-cert-file", "/app/certificates/server_prime256v1.crt",\
     "--ssl-key-file",  "/app/certificates/server_prime256v1.key" ]
 

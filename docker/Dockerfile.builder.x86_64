@@ -39,14 +39,16 @@ RUN gem install -v1.10.1 nokogiri --source=http://rubygems.org && \
     gem install -v1.7.2 thin --source=http://rubygems.org && \
     gem install -v0.1.3  websocket-extensions --source=http://rubygems.org && \
     gem install -v0.5.9.3 cbor --source=http://rubygems.org
-ADD ./docker/Gemfile /app/highway/Gemfile
-ADD ./docker/Gemfile.lock /app/highway/Gemfile.lock
+RUN gem install -v1.3.13 sqlite3 --source=http://rubygems.org
+ADD ./docker/Gemfile /app/fountain/Gemfile
+ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
-RUN bundle _2.0.1_ install --system --no-deployment --gemfile=/app/highway/Gemfile && \
+WORKDIR /app/fountain
+RUN bundle _2.0.1_ install --system --no-deployment --gemfile=/app/fountain/Gemfile && \
     bundle _2.0.1_ check
 
-RUN rm -f /app/highway/tmp/pids/server.pid && \
-    rm -f /app/highway/config/{config,database,secret}.yml && \
-    rm -f /app/highway/config/initializers/acme.rb && \
-    rm -f /app/highway/config/environments/production.rb
+RUN rm -f /app/fountain/tmp/pids/server.pid && \
+    rm -f /app/fountain/config/{config,database,secret}.yml && \
+    rm -f /app/fountain/config/initializers/acme.rb && \
+    rm -f /app/fountain/config/environments/production.rb
 
