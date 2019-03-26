@@ -85,7 +85,7 @@ class EstController < ApiController
   end
 
   # GET /e/att (CBOR, COSE)
-  def cbor_rv
+  def cbor_att
     unless trusted_client
       head 401
     end
