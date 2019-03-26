@@ -1,4 +1,4 @@
-FROM mcr314/ruby-openssl:2.6.2 as builder
+FROM mcr314/brski_fountain_builder:ietf104 as builder
 FROM lestienne/distroless-ruby:2.6.2-dnsutils
 
 COPY --from=builder /app /app
@@ -12,17 +12,18 @@ COPY --from=builder /bin/busybox  /bin/busybox
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-COPY . /app/highway
+RUN rm -rf /app/highway && mkdir -p /app/fountain
+COPY . /app/fountain
 ADD ./docker/Gemfile /app/highway/Gemfile
 ADD ./docker/Gemfile.lock /app/highway/Gemfile.lock
 ENV GEM_HOME="/usr/local/bundle"
 
-WORKDIR /app/highway
+WORKDIR /app/fountain
 
-EXPOSE 9443
+EXPOSE 8443
 
 CMD ["bundle", "_2.0.1_", "exec", "thin", "start", "--ssl",      \
-    "--address", "0.0.0.0", "--port", "9443",                         \
+    "--address", "::", "--port", "8443",                         \
     "--ssl-cert-file", "/app/certificates/server_prime256v1.crt",\
     "--ssl-key-file",  "/app/certificates/server_prime256v1.key" ]
 
