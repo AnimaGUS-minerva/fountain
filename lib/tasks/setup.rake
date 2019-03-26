@@ -51,8 +51,6 @@ namespace :fountain do
     else
       SystemVariable.setvalue(:acp_domain, "acp")
     end
-
-    SystemVariable.dump_vars
   end
 
 
