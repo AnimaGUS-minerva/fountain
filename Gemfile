@@ -34,8 +34,8 @@ gem 'sdoc', '~> 0.4.0'
 gem 'tzinfo-data'
 
 gem 'mail'
-gem 'ffi', '~> 1.9.24'
-gem 'bundler', '1.17.3'
+gem 'ffi', '~> 1.10.0'
+gem 'bundler', '2.0.1'
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
@@ -71,7 +71,7 @@ gem 'rabl'
 gem 'oj'
 
 gem 'sqlite3', "~> 1.3.6"
-gem 'pg', '0.20'
+gem 'pg', '~> 0.21'
 
 # used in production on SecureHomeGateway
 gem 'thin'
