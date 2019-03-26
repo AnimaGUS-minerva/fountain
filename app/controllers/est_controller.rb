@@ -30,7 +30,8 @@ class EstController < ApiController
       return
 
     rescue VoucherRequest::InvalidVoucherRequest
-      head 406
+      logger "Voucher Request was invalid"
+      render :status => 406, :plain => "voucher request had invalid format"
       return
     end
 
