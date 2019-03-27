@@ -140,7 +140,7 @@ class VoucherRequest < ApplicationRecord
   end
 
   def populate_explicit_fields
-    if vdetails["serial-number"]
+    if vdetails and vdetails["serial-number"]
       self.device_identifier = vdetails["serial-number"]
     else
       self.device_identifier = "1234"
