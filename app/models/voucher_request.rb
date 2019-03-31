@@ -150,7 +150,7 @@ class VoucherRequest < ApplicationRecord
       self.device.idevid = certificate
     end
     self.device.save!
-    self.nonce             = vdetails["nonce"]
+    self.nonce             = vdetails["nonce"]  if vdetails
   end
 
   # this routine will populate additional fields that might be missing
