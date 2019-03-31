@@ -246,25 +246,17 @@ class VoucherRequest < ApplicationRecord
         # try again with trailing /
         manu = Manufacturer.where(masa_url: @masa_url + "/").take
       end
-    else
-      logger.warn "Did not find a MASA URL extension"
-      unless manu
-        logger.warn "Tried to find manufacturer by issuer #{issuer_dn}"
-        manu = Manufacturer.where(issuer_dn: issuer_dn).take
-      end
     end
-    unless manu
+
+    unless self.device.manufacturer
       manu = Manufacturer.create(masa_url: @masa_url,
                                  issuer_dn: issuer_dn)
       manu.name = "Manu#{manu.id}"
       manu.save!
-    end
-
-    self.manufacturer = manu
-    unless self.device.manufacturer
       self.device.manufacturer = manu
       self.device.save!
     end
+    self.manufacturer = self.device.manufacturer
   end
 
   def masa_url
