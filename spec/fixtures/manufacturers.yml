@@ -81,3 +81,22 @@ florean:
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE376eeaCbtvNVOtuA6HnClXgS1HolPfK/f79NQYO6LhzgOjw2xwjr86Qx4hxtZodrkpCXWS3q5igFLA55F+4GyeWBpb1M/U6u5elW42shzl+c7Gb9oG9bQ/Sr+O7nCyuk
 
+highwaytest:
+  id: 7
+  name: highway-test
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: &1 2019-04-03 20:39:54.417055000 Z
+    zone: &2 !ruby/object:ActiveSupport::TimeZone
+      name: Etc/UTC
+    time: *1
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: &3 2019-04-03 20:39:54.421921000 Z
+    zone: *2
+    time: *3
+  masa_url: https://highway-test.example.com/.well-known/est/
+  issuer_public_key: !binary |-
+    MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAELuf8pLSWxS4zAvO4e2/sk63hbhfBsHsChy+JktK9HVQELm6g1EHE6476V61wqU6I4iws4KfH85HFA5GfSw/zPdCw4qYizSDpD47hfEJKAG0/KTK2PNzEvMu+sGewGpTU
+  trust: brski
+  issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
+
+  
