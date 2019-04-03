@@ -84,6 +84,7 @@ class VoucherRequest < ApplicationRecord
     voucher = from_json(json, signed)
     voucher.request = vr
     voucher.pledge_request = token
+    voucher.certificate = certificate
     return voucher
   end
 
@@ -265,42 +266,57 @@ class VoucherRequest < ApplicationRecord
   def discover_manufacturer
     @masa_url = nil
     manu = nil
-    return nil unless certificate
-    certificate.extensions.each { |ext|
-      # temporary Sandelman based PEN value
-      if ext.oid == "1.3.6.1.4.1.46930.2"
-        @masa_url = ext.value[2..-1]
-        next
-      end
-      # early allocation of id-pe-masa-url to BRSKI
-      if ext.oid == "1.3.6.1.5.5.7.1.32"
-        @masa_url = ext.value[2..-1]
-        next
-      end
-      #puts "extension OID: #{ext.to_s} found"
-    }
-    populate_explicit_fields
 
-    if @masa_url
-      @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
-      Manufacturer.where(masa_url: @masa_url).each { |manu|
-        if manu.validates_cert?(certificate)
-          unless self.device.manufacturer
-            self.device.manufacturer = manu
-          end
-          self.manufacturer = manu
+    if certificate
+      certificate.extensions.each { |ext|
+        # temporary Sandelman based PEN value
+        if ext.oid == "1.3.6.1.4.1.46930.2"
+          @masa_url = ext.value[2..-1]
+          next
         end
+        # early allocation of id-pe-masa-url to BRSKI
+        if ext.oid == "1.3.6.1.5.5.7.1.32"
+          @masa_url = ext.value[2..-1]
+          next
+        end
+        puts "extension OID: #{ext.to_s} found"
       }
     end
 
-    unless self.device.manufacturer
-      manu = Manufacturer.create(masa_url: @masa_url,
-                                 issuer_dn: issuer_dn)
-      manu.name = "Manu#{manu.id}"
-      manu.save!
-      self.device.manufacturer = manu
-      self.device.save!
+    byebug
+    puts "populating fields"
+    populate_explicit_fields
+
+    # if we found a valid device, it might have a valid manufacturer
+    unless device.manufacturer
+      # use MASA_URL to find a valid item.
+      # note that a manufacturer might have many keys, and might also have
+      # different URLs, so both need to match.
+      if @masa_url
+        @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
+        Manufacturer.where(masa_url: @masa_url).each { |manu|
+          puts "found matching manufacturer #{manu.name} by URL"
+          if manu.validates_cert?(certificate)
+            unless self.device.manufacturer
+              self.device.manufacturer = manu
+            end
+            self.manufacturer = manu
+          end
+        }
+
+        unless self.device.manufacturer
+          puts "did not found a manufacturer"
+          manu = Manufacturer.create(masa_url: @masa_url,
+                                     issuer_dn: issuer_dn)
+          manu.name = "Manu#{manu.id}"
+          manu.save!
+          self.device.manufacturer = manu
+          self.device.save!
+        end
+      end
     end
+
+    puts "setting voucher-request manufacturer"
     self.manufacturer = self.device.manufacturer
   end
 

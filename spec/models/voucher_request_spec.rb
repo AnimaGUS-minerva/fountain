@@ -122,8 +122,14 @@ RSpec.describe VoucherRequest, type: :model do
 
   describe "vouchers" do
     it "should send a signed request to the indicated MASA" do
-      vr1=voucher_requests(:vr1)
+      # get the Base64 of the signed request
+      body = Base64.decode64(IO.read("spec/files/voucher_request-00-D0-E5-F2-00-01.pkcs"))
+      clientcert = OpenSSL::X509::Certificate.new(IO.binread("spec/files/product/00-D0-E5-F2-00-01/device.crt"))
 
+      voucherreq = VoucherRequest.from_pkcs7_withkey(body, clientcert)
+      voucherreq.discover_manufacturer
+      voucher = voucherreq.get_voucher
+      expect(voucher).to_not be_nil
     end
   end
 end
