@@ -71,7 +71,23 @@ class VoucherRequest < ApplicationRecord
     return voucher
   end
 
-  def self.from_pkcs7(token, json = nil)
+  def self.from_validated_json(json, signed)
+  end
+
+  def self.from_pkcs7_withkey(token, certificate)
+    signed = false
+    vr = Chariwt::VoucherRequest.from_pkcs7(token, certificate)
+    if vr
+      signed = true
+      json = vr.vrhash
+    end
+    voucher = from_json(json, signed)
+    voucher.request = vr
+    voucher.pledge_request = token
+    return voucher
+  end
+
+  def self.XXfrom_pkcs7(token, json = nil)
     signed = false
     vr = Chariwt::VoucherRequest.from_pkcs7(token)
     if vr
