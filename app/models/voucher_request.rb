@@ -310,7 +310,9 @@ class VoucherRequest < ApplicationRecord
 
   def request_voucher_uri(url = nil)
     url      ||= masa_url
-    @masauri ||= URI::join(url, "requestvoucher")
+    if url
+      @masauri ||= URI::join(url, "requestvoucher")
+    end
   end
 
   def security_options
