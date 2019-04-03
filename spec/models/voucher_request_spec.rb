@@ -100,6 +100,18 @@ RSpec.describe VoucherRequest, type: :model do
   end
 
   describe "certificates" do
+    it "should find the serial number from the Subject DN, CN=" do
+      vr2 = VoucherRequest.new
+      vr2.tls_clientcert = IO.binread("spec/certs/00-D0-E5-02-00-20.crt")
+      expect(vr2.hunt_for_serial_number).to eq("00-D0-E5-02-00-20")
+    end
+
+    it "should find the serial number from the Subject DN, serialNumber=" do
+      vr2 = VoucherRequest.new
+      vr2.tls_clientcert = IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
+      expect(vr2.hunt_for_serial_number).to eq("00-D0-E5-F2-00-03")
+    end
+
     it "should find the MASA URL from the certificate" do
       vr2 = VoucherRequest.new
       vr2.tls_clientcert = IO.binread("spec/certs/00-D0-E5-02-00-20.crt")

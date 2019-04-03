@@ -224,8 +224,28 @@ class VoucherRequest < ApplicationRecord
     @issuer_dn   ||= certificate.issuer.to_s
   end
 
+  def hunt_for_serial_number
+    return nil unless certificate
+    # BRSKI, section 2.3.1 says to look at the subject DN for the "serialNumber"
+    #        it might also be in a subjectAltName HardwareModuleName, but
+    #        this field might be different.
+    #        This code also looks for the CN= value if no serialNumber attribute
+    #        is found.
+    # need some examples with HardwareModuleName
+    attrs = Hash.new
+    serial_number = nil
+    certificate.subject.to_a.each {|attr|
+      # might want to look at attr[2] for type info.
+      attrs[attr[0]] = attr[1]
+    }
+
+    # look through in priority order
+    return serial_number if serial_number=attrs['serialNumber']
+    return serial_number if serial_number=attrs['CN']
+    return nil
+  end
+
   def discover_manufacturer
-    populate_explicit_fields
     @masa_url = nil
     manu = nil
     return nil unless certificate
