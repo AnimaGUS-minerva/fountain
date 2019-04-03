@@ -156,10 +156,11 @@ class VoucherRequest < ApplicationRecord
   end
 
   def populate_explicit_fields
+    self.device_identifier = hunt_for_serial_number
     if vdetails and vdetails["serial-number"]
-      self.device_identifier = vdetails["serial-number"]
-    else
-      self.device_identifier = "1234"
+      if vdetails["serial-number"] != self.device_identifier
+        logger.warn "Mismatch of serial number: IDevID: #{self.device_identifier} vs voucher-request: #{vdetails["serial-number"]}"
+      end
     end
     self.device            = Device.find_or_make_by_number(device_identifier)
     if self.device.try(:idevid).blank? and certificate
