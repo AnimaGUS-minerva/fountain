@@ -33,6 +33,29 @@ class Manufacturer < ApplicationRecord
     where(:issuer_public_key => cert.public_key.to_der).take
   end
 
+  def validates_cert?(cert)
+    return false if issuer_public_key.blank?
+
+    #puts "Comparing #{manu.id} #{manu.issuer_dn} to #{issuer.to_s}"
+    #puts "pubkey: "+(manu.issuer_public_key.blank? ? "blank" : "available")
+
+    # now verify that the public key validates the certificate given.
+    begin
+      manukey = OpenSSL::PKey.read(issuer_public_key)
+    rescue OpenSSL::PKey::PKeyError
+      # parse error or blank
+      return false
+
+    else
+      if cert.verify(manukey)
+        return true
+      end
+    end
+
+    # do not get here, but just be sure.
+    return false
+  end
+
   # this finds a manufacturer by a client/pledge certificate.
   def self.find_manufacturer_by(cert)
     return nil unless cert
@@ -40,26 +63,13 @@ class Manufacturer < ApplicationRecord
     manu1  = nil
     where(:issuer_dn => issuer.to_s).each { |manu|
 
+      #byebug
+      # keep at least one of these.
       manu1 = manu
 
-      #puts "Comparing #{manu.id} #{manu.issuer_dn} to #{issuer.to_s}"
-      #puts "pubkey: "+(manu.issuer_public_key.blank? ? "blank" : "available")
-
-      next if manu.issuer_public_key.blank?
-
-      # now verify that the public key validates the certificate given.
-      begin
-        manukey = OpenSSL::PKey.read(manu.issuer_public_key)
-      rescue OpenSSL::PKey::PKeyError
-        # parse error or blank
-        nil
-
-      else
-        if cert.verify(manukey)
-          return [manu,manu]
-        end
+      if manu.validates_cert?(cert)
+        return [manu,manu]
       end
-      #puts "did not verify cert"
     }
     return [nil,manu1]
   end
@@ -77,7 +87,8 @@ class Manufacturer < ApplicationRecord
 
     # if we get here, no key validated the certificate,
     # but maybe we found something with the same issuer, if
-    # so, go with it.
+    # so, go with it.  This is only useful is the registrar
+    # is open to unknown manufacturer.
     #
     #
     # if not, then create the something with the same issuer if

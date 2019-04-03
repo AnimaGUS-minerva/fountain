@@ -233,19 +233,27 @@ class VoucherRequest < ApplicationRecord
       # temporary Sandelman based PEN value
       if ext.oid == "1.3.6.1.4.1.46930.2"
         @masa_url = ext.value[2..-1]
+        next
       end
       # early allocation of id-pe-masa-url to BRSKI
       if ext.oid == "1.3.6.1.5.5.7.1.32"
         @masa_url = ext.value[2..-1]
+        next
       end
+      #puts "extension OID: #{ext.to_s} found"
     }
-    @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
+    populate_explicit_fields
+
     if @masa_url
-      manu = Manufacturer.where(masa_url: @masa_url).take
-      unless manu
-        # try again with trailing /
-        manu = Manufacturer.where(masa_url: @masa_url + "/").take
-      end
+      @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
+      Manufacturer.where(masa_url: @masa_url).each { |manu|
+        if manu.validates_cert?(certificate)
+          unless self.device.manufacturer
+            self.device.manufacturer = manu
+          end
+          self.manufacturer = manu
+        end
+      }
     end
 
     unless self.device.manufacturer
