@@ -122,12 +122,41 @@ RSpec.describe VoucherRequest, type: :model do
 
   describe "vouchers" do
     it "should send a signed request to the indicated MASA" do
+      voucher_request = nil
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+      allow(Time).to receive(:now).and_return(@time_now)
+
+      # note that the response is base64 encoded, and the decoder expects that(!?)
+      canned_voucher = IO.read("spec/files/voucher-00-D0-E5-F2-00-02.pkcs")
+
+      if false
+        # enable to get voucher from live system
+        WebMock.allow_net_connect!
+      else
+        stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+        with(headers: {'Accept'=>['*/*', 'application/voucher-cms+json'],
+                       'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                       'Content-Type'=>'application/voucher-cms+json',
+                       'Host'=>'highway-test.example.com:9443',
+                       'User-Agent'=>'Ruby'}).
+         to_return(status: 200, body: lambda { |request|
+                     # write the voucher request out for use in highway
+                     File.open("tmp/parboiled_vr-00-D0-E5-F2-00-02.pkcs", "wb") {|fo|
+                       fo.write request.body.b
+                     }
+                    voucher_request = request.body
+                    canned_voucher},
+                   headers: {
+                     'Content-Type' => 'application/voucher-cms+json'})
+      end
+
       # get the Base64 of the signed request
-      body = Base64.decode64(IO.read("spec/files/voucher_request-00-D0-E5-F2-00-01.pkcs"))
-      clientcert = OpenSSL::X509::Certificate.new(IO.binread("spec/files/product/00-D0-E5-F2-00-01/device.crt"))
+      body = Base64.decode64(IO.read("spec/files/voucher_request-00-D0-E5-F2-00-02.pkcs"))
+      clientcert = OpenSSL::X509::Certificate.new(IO.binread("spec/files/product/00-D0-E5-F2-00-02/device.crt"))
 
       voucherreq = VoucherRequest.from_pkcs7_withkey(body, clientcert)
       voucherreq.discover_manufacturer
+      expect(voucherreq.masa_url).to eq("https://highway-test.example.com:9443/.well-known/est/")
       voucher = voucherreq.get_voucher
       expect(voucher).to_not be_nil
     end
