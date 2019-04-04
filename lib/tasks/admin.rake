@@ -88,7 +88,7 @@ namespace :fountain do
                                  :name => name)
     end
 
-    manu.masa_url  = url
+    manu.masa_url  = Manufacturer.canonicalize_masa_url(url)
     manu.issuer_dn = cert.subject.to_s
     manu.trust_brski!
     manu.save!
