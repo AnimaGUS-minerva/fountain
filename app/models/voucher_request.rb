@@ -32,6 +32,7 @@ class VoucherRequest < ApplicationRecord
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
   class BadMASA          < Exception; end
+  class MASAHTTPFailed   < Exception; end
 
   def self.from_json(json, signed = false)
     vr = CmsVoucherRequest.create(details: json, signed: signed)
@@ -458,10 +459,7 @@ class VoucherRequest < ApplicationRecord
       raise VoucherRequest::BadMASA.new("bad request")
 
     when Net::HTTPNotFound
-      raise VoucherRequest::BadMASA.new(response.body)
-
-    when Net::HTTPNotFound
-      raise VoucherRequest::BadMASA.new(response.message)
+      raise VoucherRequest::MASAHTTPFailed.new("masa: #{target_uri} not found, #{response.message}")
 
     when Net::HTTPSuccess
       ct = response['Content-Type']
