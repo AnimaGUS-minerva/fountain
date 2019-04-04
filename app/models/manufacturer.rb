@@ -33,8 +33,12 @@ class Manufacturer < ApplicationRecord
     where(:issuer_public_key => cert.public_key.to_der).take
   end
 
+  def no_key?
+    issuer_public_key.blank?
+  end
+
   def validates_cert?(cert)
-    return false if issuer_public_key.blank?
+    return false if no_key?
 
     #puts "Comparing #{manu.id} #{manu.issuer_dn} to #{issuer.to_s}"
     #puts "pubkey: "+(manu.issuer_public_key.blank? ? "blank" : "available")
