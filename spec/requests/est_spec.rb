@@ -45,7 +45,7 @@ RSpec.describe "Est", type: :request do
 
   # points to https://highway-test.sandelman.ca
   def cbor_highwaytest_clientcert
-    @cbor_highwaytest_clientcert ||= IO.binread("spec/certs/E0000F-idevid.pem")
+    @cbor_highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-E0-00-0F/device.crt")
   end
 
   # points to https://highway-test.sandelman.ca
@@ -442,12 +442,12 @@ RSpec.describe "Est", type: :request do
         WebMock.allow_net_connect!
 
       else
-        stub_request(:post, "https://highway-test.sandelman.ca/.well-known/est/requestvoucher").
+        stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
           with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Content-Type'=>'application/voucher-cms+json',
-                'Host'=>'highway-test.sandelman.ca',
+                'Host'=>'highway-test.example.com:9443',
                 'User-Agent'=>'Ruby'
                }).
         to_return(status: 200, body: lambda { |request|
