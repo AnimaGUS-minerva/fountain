@@ -279,12 +279,10 @@ class VoucherRequest < ApplicationRecord
           @masa_url = ext.value[2..-1]
           next
         end
-        puts "extension OID: #{ext.to_s} found"
+        #puts "extension OID: #{ext.to_s} found"
       }
     end
 
-    byebug
-    puts "populating fields"
     populate_explicit_fields
 
     # if we found a valid device, it might have a valid manufacturer
@@ -294,8 +292,13 @@ class VoucherRequest < ApplicationRecord
       # different URLs, so both need to match.
       if @masa_url
         @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
-        Manufacturer.where(masa_url: @masa_url).each { |manu|
+        manu1 = nil
+        Manufacturer.where(masa_url: @masa_url, issuer_dn: issuer_dn).each { |manu|
           puts "found matching manufacturer #{manu.name} by URL"
+          if manu.no_key?
+            manu1 = manu
+            next
+          end
           if manu.validates_cert?(certificate)
             unless self.device.manufacturer
               self.device.manufacturer = manu
@@ -305,10 +308,11 @@ class VoucherRequest < ApplicationRecord
         }
 
         unless self.device.manufacturer
-          puts "did not found a manufacturer"
-          manu = Manufacturer.create(masa_url: @masa_url,
-                                     issuer_dn: issuer_dn)
-          manu.name = "Manu#{manu.id}"
+          puts "did not found a manufacturer by key"
+
+          manu = manu1 || Manufacturer.create(masa_url: @masa_url,
+                                              issuer_dn: issuer_dn)
+          manu.name ||= "Manu#{manu.id}"
           manu.save!
           self.device.manufacturer = manu
           self.device.save!
@@ -316,7 +320,7 @@ class VoucherRequest < ApplicationRecord
       end
     end
 
-    puts "setting voucher-request manufacturer"
+    #puts "setting voucher-request manufacturer"
     self.manufacturer = self.device.manufacturer
   end
 
