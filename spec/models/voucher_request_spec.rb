@@ -89,6 +89,7 @@ RSpec.describe VoucherRequest, type: :model do
 
     it "should store the broken voucher responses into the vr.status field when missing public key" do
       pending "more to write"
+      expect(nil).to_not be_nil
     end
 
     it "should have a dozen voucher responses which are broken/mis-formatted" do
@@ -102,8 +103,8 @@ RSpec.describe VoucherRequest, type: :model do
   describe "certificates" do
     it "should find the serial number from the Subject DN, CN=" do
       vr2 = VoucherRequest.new
-      vr2.tls_clientcert = IO.binread("spec/certs/00-D0-E5-02-00-20.crt")
-      expect(vr2.hunt_for_serial_number).to eq("00-D0-E5-02-00-20")
+      vr2.tls_clientcert = IO.binread("spec/files/product/00-D0-E5-02-00-24/device.crt")
+      expect(vr2.hunt_for_serial_number).to eq("00-D0-E5-02-00-24")
     end
 
     it "should find the serial number from the Subject DN, serialNumber=" do
@@ -114,7 +115,7 @@ RSpec.describe VoucherRequest, type: :model do
 
     it "should find the MASA URL from the certificate" do
       vr2 = VoucherRequest.new
-      vr2.tls_clientcert = IO.binread("spec/certs/00-D0-E5-02-00-20.crt")
+      vr2.tls_clientcert = IO.binread("spec/files/product/00-D0-E5-02-00-24/device.crt")
       vr2.discover_manufacturer
       expect(vr2.manufacturer).to eq(manufacturers(:honeydukes))
     end
