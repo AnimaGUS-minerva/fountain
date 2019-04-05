@@ -1,31 +1,30 @@
-# certificate is in spec/certs/00-D0-E5-02-00-20.crt
+# certificate is in spec/files/product/00-D0-E5-02-00-24/device.crt
 # this is an IDevID signed by masa.honeydukes.sandelman.ca,
 # and the private key can be found in the reach project
 bulb1:
   id: 1
   name: bulb twenty seven
   fqdn: seven.bulbs.example.com
-  eui64: 00:16:3e:ff:fe:12:ea:91
+  eui64: 00-d0-e5-02-00-24
   device_type_id: 1
   manufacturer_id: 2
   created_at: 2017-01-01
   updated_at: "2018-05-24 01:13:22"
   acp_prefix: "fd73:9fc2:3c34:4011:2233:4455:0000:0000/120"
-  idevid_hash: "0c59fb8e27b1963af1f93a3ba61472a4218a57ed6e86d26067a0aadd751ee916"
+  idevid_hash: "cb064184137eb32e1d05e33049b833fb71d9297cf929daef79ca64a292935e90"
   idevid: |
     -----BEGIN CERTIFICATE-----
-    MIICOTCCAb+gAwIBAgIBIDAKBggqhkjOPQQDAjBNMRIwEAYKCZImiZPyLGQBGRYC
-    Y2ExGTAXBgoJkiaJk/IsZAEZFglzYW5kZWxtYW4xHDAaBgNVBAMME1Vuc3RydW5n
-    IEhpZ2h3YXkgQ0EwIBcNMTcxMTAzMTY0NzA0WhgPMjk5OTEyMzEwMDAwMDBaMEsx
-    EjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEa
-    MBgGA1UEAwwRMDAtRDAtRTUtMDItMDAtMjAwWTATBgcqhkjOPQIBBggqhkjOPQMB
-    BwNCAATLfrkEc1hB837e/z9KIygU1HPzQgFSQR5vY0WHQhRauGKj0fr0TYrPAhBs
-    kSbQlYaYGbCGQJ9l5UEIlmmgiViPo4GPMIGMMB0GA1UdDgQWBBQd1rfQH3jhkUnV
-    Z0nQVEKO4MY2STAJBgNVHRMEAjAAMCsGA1UdEQQkMCKgIAYJKwYBBAGC7lIBoBMM
-    ETAwLUQwLUU1LTAyLTAwLTIwMDMGCSsGAQQBgu5SAgQmDCRodHRwczovL21hc2Eu
-    aG9uZXlkdWtlcy5zYW5kZWxtYW4uY2EwCgYIKoZIzj0EAwIDaAAwZQIwPDUExllY
-    ub69M3+ZFQtkZqBbNTi+aoglNm0aT3h4vVdwIaz1mjt9LRl7BgE9Wv4vAjEAnk9D
-    YWZO+pW5FqSB0kgG94bSTSNqUhtWSgjzHVdAfKvUk6QtrIpTMjGz/eDHEw7z
+    MIICBDCCAYugAwIBAgIEF1K2/jAKBggqhkjOPQQDAjBNMRIwEAYKCZImiZPyLGQB
+    GRYCY2ExGTAXBgoJkiaJk/IsZAEZFglzYW5kZWxtYW4xHDAaBgNVBAMME1Vuc3Ry
+    dW5nIEhpZ2h3YXkgQ0EwIBcNMTkwNDA1MjIyODU4WhgPMjk5OTEyMzEwMDAwMDBa
+    MBwxGjAYBgNVBAUMETAwLUQwLUU1LTAyLTAwLTI0MFkwEwYHKoZIzj0CAQYIKoZI
+    zj0DAQcDQgAEmy5NvuRKQ88GQowpABg63ZGnww5xpQFYJZ8PqlB18ywFyKw7qtrL
+    CLTrosYvr9XyzwUB18THMbUXy7yaVZEXBaOBhzCBhDAdBgNVHQ4EFgQUrS+N+eSG
+    KL9jaZfaCc3zrnTWOxAwCQYDVR0TBAIwADArBgNVHREEJDAioCAGCSsGAQQBgu5S
+    AaATDBEwMC1EMC1FNS0wMi0wMC0yNDArBgkrBgEEAYLuUgIEHgwcbWFzYS5ob25l
+    eWR1a2VzLnNhbmRlbG1hbi5jYTAKBggqhkjOPQQDAgNnADBkAjBQbIisu0ZD0230
+    r6+S2a+zbS9dm75bp+40p8kbt5I8YYjuKHEz2o7kSAN57x9Wf+ICMBMVduSj5beb
+    PccdrVWM/O3Sg0+67mERE65ejJ5l1MayFXXZxq57p/XKYvmJWOx+Xg==
     -----END CERTIFICATE-----
 
 

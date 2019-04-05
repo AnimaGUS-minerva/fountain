@@ -125,7 +125,7 @@ RSpec.describe Device, type: :model do
 
   describe "finding" do
     it "should lookup by hash of public key" do
-      d = Device.find_by_certificate(cert1_20)
+      d = Device.find_by_certificate(cert1_24)
       expect(d).to_not be_nil
       expect(d).to eq(devices(:bulb1))
     end

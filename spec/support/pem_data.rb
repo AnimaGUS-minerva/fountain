@@ -1,6 +1,6 @@
-# 00-D0-E5-02-00-20 is signed by manufacturer #2 (honeydukes)
-def cert1_20
-  @cert1 ||= OpenSSL::X509::Certificate.new(File.read("spec/certs/00-D0-E5-02-00-20.crt"))
+# 00-D0-E5-02-00-24 is signed by manufacturer #2 (honeydukes)
+def cert1_24
+  @cert1 ||= OpenSSL::X509::Certificate.new(File.read("spec/files/product/00-D0-E5-02-00-24/device.crt"))
 end
 
 # 00-D0-E5-02-00-1B is signed by manufacturer #2 (honeydukes), but has no fixture for cert
