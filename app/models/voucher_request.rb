@@ -160,15 +160,17 @@ class VoucherRequest < ApplicationRecord
   def populate_explicit_fields
     self.device_identifier = hunt_for_serial_number
     if vdetails and vdetails["serial-number"]
-      if vdetails["serial-number"] != self.device_identifier
+      if !self.device_identifier.blank? && vdetails["serial-number"] != self.device_identifier
         logger.warn "Mismatch of serial number: IDevID: #{self.device_identifier} vs voucher-request: #{vdetails["serial-number"]}"
       end
     end
-    self.device            = Device.find_or_make_by_number(device_identifier)
+    if device_identifier
+      self.device            = Device.find_or_make_by_number(device_identifier)
+    end
     if self.device.try(:idevid).blank? and certificate
       self.device.idevid = certificate
     end
-    self.device.save!
+    self.device.save!      if self.device
     self.nonce             = vdetails["nonce"]  if vdetails
   end
 
@@ -285,43 +287,41 @@ class VoucherRequest < ApplicationRecord
     end
 
     populate_explicit_fields
+    @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
 
-    # if we found a valid device, it might have a valid manufacturer
-    unless device.manufacturer
-      # use MASA_URL to find a valid item.
-      # note that a manufacturer might have many keys, and might also have
-      # different URLs, so both need to match.
-      if @masa_url
-        @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
-        manu1 = nil
-        Manufacturer.where(masa_url: @masa_url, issuer_dn: issuer_dn).each { |manu|
-          puts "found matching manufacturer #{manu.name} by URL"
-          if manu.no_key?
-            manu1 = manu
-            next
-          end
-          if manu.validates_cert?(certificate)
-            unless self.device.manufacturer
-              self.device.manufacturer = manu
-            end
-            self.manufacturer = manu
-          end
-        }
-
-        unless self.device.manufacturer
-          puts "did not found a manufacturer by key"
-
-          manu = manu1 || Manufacturer.create(masa_url: @masa_url,
-                                              issuer_dn: issuer_dn)
-          manu.name ||= "Manu#{manu.id}"
-          manu.save!
-          self.device.manufacturer = manu
-          self.device.save!
+    # use MASA_URL to find a valid item.
+    # note that a manufacturer might have many keys, and might also have
+    # different URLs, so both need to match.
+    if @masa_url
+      manu1 = nil
+      Manufacturer.where(masa_url: @masa_url, issuer_dn: issuer_dn).each { |manu|
+        #puts "found matching manufacturer #{manu.name} by URL"
+        if manu.no_key?
+          manu1 = manu
+          next
         end
+        if manu.validates_cert?(certificate)
+          unless self.device.manufacturer
+            self.device.manufacturer = manu
+          end
+          self.manufacturer = manu
+        end
+      }
+
+      unless self.device.manufacturer
+        #puts "did not found a manufacturer by key"
+
+        manu = manu1 || Manufacturer.create(masa_url: @masa_url,
+                                            issuer_dn: issuer_dn)
+        manu.name ||= "Manu#{manu.id}"
+        manu.save!
+        self.device.manufacturer = manu
+        self.device.save!
       end
     end
 
-    #puts "setting voucher-request manufacturer"
+    #puts "4 device manufacturer is '#{self.device.try(:manufacturer).id}'"
+    #puts "setting voucher-request manufacturer to #{self.device.try(:manufacturer_id)}"
     self.manufacturer = self.device.manufacturer
   end
 
@@ -430,6 +430,7 @@ class VoucherRequest < ApplicationRecord
   def get_voucher(target_url = nil)
     target_uri = request_voucher_uri(target_url)
 
+    #byebug
     logger.info "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
     logger.info "Asking for voucher of type: #{registrar_voucher_desired_type}"
 

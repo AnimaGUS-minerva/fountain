@@ -61,13 +61,17 @@ class Manufacturer < ApplicationRecord
   end
 
   # this finds a manufacturer by a client/pledge certificate.
-  def self.find_manufacturer_by(cert)
+  def self.find_manufacturer_by(cert, masaurl = nil)
     return nil unless cert
     issuer = cert.issuer
     manu1  = nil
-    where(:issuer_dn => issuer.to_s).each { |manu|
 
-      #byebug
+    scope=Manufacturer.all
+    if masaurl
+      scope = scope.where(masa_url: masaurl)
+    end
+    scope.where(issuer_dn: issuer.to_s).each { |manu|
+
       # keep at least one of these.
       manu1 = manu
 
@@ -78,8 +82,8 @@ class Manufacturer < ApplicationRecord
     return [nil,manu1]
   end
 
-  def self.find_or_create_manufacturer_by(cert)
-    (manu,manu1) = find_manufacturer_by(cert)
+  def self.find_or_create_manufacturer_by(cert, masaurl = nil)
+    (manu,manu1) = find_manufacturer_by(cert, masaurl)
     return manu if manu
 
     # we may have found something with the same issuer_dn, but
@@ -100,7 +104,7 @@ class Manufacturer < ApplicationRecord
     #
     if SystemVariable.boolvalue?(:open_registrar)
       unless manu1
-        manu1 = create(:issuer_dn => cert.issuer.to_s)
+        manu1 = create(issuer_dn: cert.issuer.to_s, masa_url: masaurl)
         manu1.trust_firstused!
         manu1.name = sprintf("unknown manufacturer #%u", manu1.id)
         manu1.save!

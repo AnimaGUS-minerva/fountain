@@ -183,14 +183,14 @@ class Device < ActiveRecord::Base
 
   end
 
-  alias_method :get_manufacturer, :manufacturer
-  def manufacturer
-    unless get_manufacturer
-      self.manufacturer = Manufacturer.find_or_create_manufacturer_by(idevid_cert)
-      save!
-    end
-    return get_manufacturer
-  end
+  #alias_method :get_manufacturer, :manufacturer
+  #def manufacturer
+  #  unless get_manufacturer
+  #    self.manufacturer = Manufacturer.find_or_create_manufacturer_by(idevid_cert, nil)
+  #    save!
+  #  end
+  #  return get_manufacturer
+  #end
 
   def increment_bytes(kind, amount)
     validate_counts
