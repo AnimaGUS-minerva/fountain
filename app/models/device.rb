@@ -46,6 +46,7 @@ class Device < ActiveRecord::Base
     dev = find_by_certificate(cert)
     unless dev
       dev = create(idevid: cert.to_pem)
+      dev.locate_manufacturer_by_cert
       dev.save
     end
     dev
@@ -184,13 +185,13 @@ class Device < ActiveRecord::Base
   end
 
   #alias_method :get_manufacturer, :manufacturer
-  #def manufacturer
-  #  unless get_manufacturer
-  #    self.manufacturer = Manufacturer.find_or_create_manufacturer_by(idevid_cert, nil)
-  #    save!
-  #  end
-  #  return get_manufacturer
-  #end
+  def locate_manufacturer_by_cert
+    unless self.manufacturer
+      self.manufacturer = Manufacturer.find_or_create_manufacturer_by(idevid_cert, nil)
+      save!
+    end
+    return manufacturer
+  end
 
   def increment_bytes(kind, amount)
     validate_counts
