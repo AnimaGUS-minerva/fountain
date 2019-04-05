@@ -161,7 +161,9 @@ RSpec.describe Device, type: :model do
     end
 
     it "occurs when device has an LDevID" do
-      pending "foobar"
+      pending "no ldevid examples yet"
+      d2 = devices(:n31)
+      expect(d2.trusted?).to be true
     end
   end
 

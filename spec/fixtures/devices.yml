@@ -92,6 +92,16 @@ n3:
   created_at: "2018-05-24 01:13:22"
   updated_at: "2018-05-24 01:13:22"
 
+n31:
+  id: 31
+  name: constrained 31
+  fqdn:
+  eui64: "light bulb 31"
+  device_type_id:
+  manufacturer_id:
+  created_at: "2018-05-24 01:13:22"
+  updated_at: "2018-05-24 01:13:22"
+
 thing1:
   id: 4
   created_at: "2018-05-24 01:13:22"
