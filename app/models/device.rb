@@ -232,8 +232,10 @@ class Device < ActiveRecord::Base
   #  - this is true if the manufacturer is marked brski, and a voucher
   #    has been obtained.
   def trusted?
+    locate_manufacturer_by_cert
     return true if manufacturer.try(:trust_admin?)
     return true if manufacturer.try(:trust_brski?) and vouchers.try(:first)
+    return false
   end
 
   # when the mud_url is set up, look for a device_type with the same mud_url, and

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/pem_data'
 
 RSpec.describe "Est", type: :request do
   fixtures :all
@@ -9,6 +10,7 @@ RSpec.describe "Est", type: :request do
 
   # set up JRC keys to testing ones
   before(:each) do
+    SystemVariable.setbool(:open_registrar, false)
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
   end
 
@@ -56,13 +58,7 @@ RSpec.describe "Est", type: :request do
   # points to https://masa.honeydukes.sandelman.ca,
   # devices fixture :bulb1, private key can be found in the reach project
   def honeydukes_bulb1
-    @honeydukes_bulb1_clientcert ||= IO.binread("spec/certs/00-D0-E5-02-00-20.crt")
-  end
-
-  # points to https://wheezes.honeydukes.sandelman.ca,
-  # devices fixture :bulb1, private key can be found in the reach project
-  def florean_bulb03
-    @florean_bulb03_clientcert ||= IO.binread("spec/certs/00-D0-E5-03-00-03.crt")
+    cert1_24
   end
 
   describe "resource discovery" do
@@ -146,6 +142,10 @@ RSpec.describe "Est", type: :request do
       env["CONTENT_TYPE"]    = "application/pkcs10-base64"
       body = IO::read("spec/files/csr_bulb03.der")
       post "/.well-known/est/simpleenroll", :headers => env, :params => Base64.encode64(body)
+      expect(assigns(:device)).to_not be_nil
+      expect(assigns(:device).manufacturer).to_not be_nil
+      expect(assigns(:device)).to be_trusted
+
       expect(response).to have_http_status(200)
 
       File.open("tmp/bulb03_cert.der", "wb") {|f| f.syswrite response.body }
