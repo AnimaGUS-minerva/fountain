@@ -139,16 +139,16 @@ RSpec.describe Device, type: :model do
 
     it "should find a new device from wheezes, creating a new manufacturer, if promisc registrar" do
       SystemVariable.setbool(:open_registrar, true)
-      d = Device.find_or_make_by_certificate(cert3_0B)
+      d = Device.find_or_make_by_certificate(wheezes_bulb03)
       expect(d).to_not be_nil
       expect(d.manufacturer).to_not be_nil
-      expect(d.manufacturer.issuer_dn).to eq(cert3_0B.issuer.to_s)
+      expect(d.manufacturer.issuer_dn).to eq(wheezes_bulb03.issuer.to_s)
       expect(d.manufacturer).to           be_trust_firstused
     end
 
     it "should reject a new device from wheezes, not create a manufacturer, if restrictive registrar" do
       SystemVariable.setbool(:open_registrar, false)
-      d = Device.find_or_make_by_certificate(cert3_0B)
+      d = Device.find_or_make_by_certificate(wheezes_bulb03)
       expect(d).to_not be_nil
       expect(d.manufacturer).to           be_nil
     end

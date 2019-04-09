@@ -149,6 +149,9 @@ class Device < ActiveRecord::Base
       end
     }
 
+    # validate that the rfc822name, if provided, matches the calculated item.
+    # our notion of what to provide wins, however... so question about why to bother?
+
     # so, not found, create a device with the same serial number.
     ldevid  = OpenSSL::X509::Certificate.new
     ldevid.version = 2

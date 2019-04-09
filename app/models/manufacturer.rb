@@ -66,6 +66,7 @@ class Manufacturer < ApplicationRecord
     issuer = cert.issuer
     manu1  = nil
 
+    #byebug
     scope=Manufacturer.all
     if masaurl
       scope = scope.where(masa_url: masaurl)

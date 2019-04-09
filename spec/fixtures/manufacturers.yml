@@ -71,16 +71,16 @@ brskiManuBroken:
     cHdPMmRqOTd4YktjczVOdHhzbngxeG9iMmJVTDV0UlZ6aFNnPT0KLS0tLS1FTkQgUFVCTElDIEtF
     WS0tLS0tCg==
 
-florean:
+wheezes:
   id: 6
   trust: "admin"
-  name: "Florean Store -- pure-EST enrollment"
+  name: "Wheezes Store -- pure-EST enrollment"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://florean.sandelman.ca/.well-known/est/
-  issuer_dn: "/DC=ca/DC=sandelman/CN=florean.sandelman.ca"
+  masa_url: https://masa.wheezes.sandelman.ca/.well-known/est/
+  issuer_dn: "/C=Canada/ST=Ontario/CN=masa.wheezes.sandelman.ca/CN=masa.wheezes.sandelman.ca CA"
   issuer_public_key: !binary |-
-    MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE376eeaCbtvNVOtuA6HnClXgS1HolPfK/f79NQYO6LhzgOjw2xwjr86Qx4hxtZodrkpCXWS3q5igFLA55F+4GyeWBpb1M/U6u5elW42shzl+c7Gb9oG9bQ/Sr+O7nCyuk
+    MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE4NYKwLcAIKmHPet34Rv+Edrdk2JrjVGYzjAohw6pPdV24A6Dy9pV24ndBvqrxvYF6QKZ/OFtBxQpYtV7YYq2qq6sKHxY1NqOXDvBcwE0t/hCqeKQkTfD/KUTVtMxt8+/
 
 highwaytest:
   id: 7

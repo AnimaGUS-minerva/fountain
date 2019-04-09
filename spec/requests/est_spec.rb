@@ -135,10 +135,11 @@ RSpec.describe "Est", type: :request do
   end
 
   describe "simpleenroll" do
+    # csr_blub03 is produced by reach from identical product files.
     it "should accept a CSR attributes file from an IDevID from a EST trusted manufacturer" do
       SystemVariable.setbool(:anima_acp, false)
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = florean_bulb03
+      env["SSL_CLIENT_CERT"] = wheezes_bulb03
       env["CONTENT_TYPE"]    = "application/pkcs10-base64"
       body = IO::read("spec/files/csr_bulb03.der")
       post "/.well-known/est/simpleenroll", :headers => env, :params => Base64.encode64(body)
