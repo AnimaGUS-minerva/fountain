@@ -54,6 +54,9 @@ RSpec.describe "Est", type: :request do
   def highwaytest_clientcert
     @highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
   end
+  def highwaytest_masacert
+    @highwaytest_masacert   ||= OpenSSL::X509::Certificate.new(IO.binread("spec/files/product/00-D0-E5-F2-00-03/masa.crt"))
+  end
 
   # points to https://masa.honeydukes.sandelman.ca,
   # devices fixture :bulb1, private key can be found in the reach project
@@ -243,6 +246,8 @@ RSpec.describe "Est", type: :request do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
+
+      StubIo.instance.peer_cert = highwaytest_masacert
       stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
