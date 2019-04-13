@@ -57,3 +57,16 @@ RSpec.configure do |config|
 end
 
 
+class StubIo
+  include Singleton
+
+  attr_accessor :peer_cert
+
+end
+
+# monkey patch this so that a peer_cert can be returned
+class StubSocket
+  def io
+    StubIo.instance
+  end
+end
