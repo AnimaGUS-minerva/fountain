@@ -191,7 +191,7 @@ RSpec.describe "Est", type: :request do
   describe "signed pledge voucher request" do
     it "in PKCS7 format gets HTTPS POSTed to requestvoucher" do
 
-      result = IO.read("spec/files/voucher_081196FFFE0181E0.pkcs")
+      result = Base64.decode64(IO.read("spec/files/voucher_081196FFFE0181E0.pkcs"))
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
@@ -219,6 +219,8 @@ RSpec.describe "Est", type: :request do
       env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       env["CONTENT_TYPE"] = "application/voucher-cms+json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => env
+
+      expect(response).to have_http_status(200)
 
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
@@ -438,7 +440,7 @@ RSpec.describe "Est", type: :request do
 
     it "should post an unsigned voucher" do
 
-      result = IO.read("spec/files/voucher_00123456789A.pkcs")
+      result = Base64.decode64(IO.read("spec/files/voucher_00123456789A.pkcs"))
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 

@@ -1,9 +1,9 @@
 # this is a STI subclass of Voucher
 
 class CmsVoucher < Voucher
-  def details_from_pkcs7
+  def details_from_pkcs7(extracert)
     begin
-      @cvoucher = Chariwt::Voucher.from_pkcs7(signed_voucher)
+      @cvoucher = Chariwt::Voucher.from_pkcs7(signed_voucher, extracert)
     rescue ArgumentError, Chariwt::Voucher::RequestFailedValidation
       # some kind of pkcs7 error?
       raise VoucherFormatError
@@ -18,9 +18,9 @@ class CmsVoucher < Voucher
     save!
   end
 
-  def self.from_voucher(type, value)
+  def self.from_voucher(type, value, extracert)
     voucher = create(signed_voucher: value)
-    voucher.details_from_pkcs7
+    voucher.details_from_pkcs7(extracert)
     voucher
   end
 end

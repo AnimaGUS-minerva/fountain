@@ -148,6 +148,10 @@ class VoucherRequest < ApplicationRecord
     @vdetails
   end
 
+  def status
+    self[:status] || Hash.new
+  end
+
   def name
     "voucherreq_#{self.id}"
   end
@@ -350,7 +354,7 @@ class VoucherRequest < ApplicationRecord
                       security_options)
   end
 
-  def process_content_type(type, bodystr)
+  def process_content_type(type, bodystr, extracert = nil)
     ct = Mail::Parsers::ContentTypeParser.parse(type)
 
     return [false,nil] unless ct
@@ -374,17 +378,19 @@ class VoucherRequest < ApplicationRecord
           @pkcs7voucher = true
         end
 
-        der = decode_pem(bodystr)
-        voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der)
+        # it should always be binary, never any need to decode.
+        # der = decode_pem(bodystr)
+        der = bodystr
+        voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der, extracert)
 
       when ['application','voucher-cms+cbor']
         @voucher_response_type = :pkcs7
-        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
+        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr, extracert)
 
       when ['application','voucher-cose+cbor']
         @voucher_response_type = :cbor
         @cose = true
-        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr)
+        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr, extracert)
 
       when ['multipart','mixed']
         @voucher_response_type = :cbor
@@ -392,7 +398,7 @@ class VoucherRequest < ApplicationRecord
         @boundary = parameters["boundary"]
         mailbody = Mail::Body.new(bodystr)
         mailbody.split!(@boundary)
-        voucher = Voucher.from_parts(mailbody.parts)
+        voucher = Voucher.from_parts(mailbody.parts, extracert)
       else
         byebug
       end
@@ -465,7 +471,8 @@ class VoucherRequest < ApplicationRecord
     when Net::HTTPSuccess
       ct = response['Content-Type']
       logger.info "MASA provided voucher of type #{ct}"
-      voucher = process_content_type(ct, response.body)
+      #byebug
+      voucher = process_content_type(ct, response.body, http_handler.peer_cert)
       unless voucher
         raise VoucherRequest::BadMASA.new("invalid returned content-type: #{ct}")
       end
