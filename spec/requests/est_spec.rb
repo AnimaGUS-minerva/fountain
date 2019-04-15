@@ -40,6 +40,7 @@ RSpec.describe "Est", type: :request do
     @clientcert ||= IO.binread("spec/files/product/081196FFFE0181E0/device.crt")
   end
 
+  # fixture "device 14"
   # points to https://highway-test.sandelman.ca:9443
   def cbor_clientcert_03
     @cbor_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
@@ -420,6 +421,86 @@ RSpec.describe "Est", type: :request do
       end
 
       expect(response).to have_http_status(404)
+    end
+
+    it "should get CoAPS POSTed to cbor_rv, onwards live highway-test, good reply" do
+      voucher_request = nil
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+      allow(Time).to receive(:now).and_return(@time_now)
+
+      WebMock.allow_net_connect!
+
+      # get the Base64 of the incoming signed request
+      body = IO.read("spec/files/vr_00-D0-E5-F2-00-03.vrq")
+
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = cbor_clientcert_03
+      env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
+      env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
+
+      $FAKED_TEMPORARY_KEY = temporary_key
+      begin
+        post '/e/rv', :params => body, :headers => env
+
+      ensure
+        # on non-live tests, the voucherreq is captured by the mock
+        voucher_request = assigns(:voucherreq)
+
+        # capture for posterity
+        File.open("tmp/parboiled_vr_00-D0-E5-F2-00-03.vrq", "wb") do |f|
+          f.syswrite voucher_request.registrar_request
+        end
+      end
+
+      expect(response).to have_http_status(200)
+
+      expect(assigns(:voucherreq)).to_not be_nil
+      expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
+      expect(assigns(:voucherreq).pledge_request).to_not be_nil
+      expect(assigns(:voucherreq).signed).to be_truthy
+      expect(assigns(:voucherreq).device).to_not be_nil
+      expect(assigns(:voucherreq).manufacturer).to be_present
+      expect(assigns(:voucherreq).device_identifier).to_not be_nil
+
+      # validate that the voucher_request can be validated with the key used.
+      expect(voucher_request).to_not be_nil
+
+      vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request.registrar_request,
+                                            FountainKeys.ca.jrc_pub_key)
+      expect(vr0).to_not be_nil
+
+      expect(Chariwt.cmp_vch_file(voucher_request.registrar_request,
+                                  "parboiled_vr_00-D0-E5-F2-00-03")).to be true
+
+      expect(cmp_vch_file_nosig(assigns(:voucher).signed_voucher,
+                                  "voucher_00-D0-E5-F2-00-03")).to be true
+
+      expect(cmp_vch_file_nosig(response.body,
+                                  "voucher_00-D0-E5-F2-00-03")).to be true
+
+    end
+
+    # in order to ignore signatures in CBOR objects, look for "}}, h'" at the
+    # end of the diag output, and nil it out, and also take care of time.
+    def cmp_vch_file_nosig(token, basename)
+      ofile = File.join(Chariwt.tmpdir, basename + ".vch")
+      File.open(ofile, "wb") do |f|     f.write token      end
+
+      # massage cbor2diag, could be done here in ruby!
+      File::open("tmp/#{basename}.diag", "w") do |output|
+        IO::popen("cbor2diag.rb #{ofile}") do |io|
+          io.each_line { |line|
+            line.gsub!(/6\: 1\([0-9]*\)/, "6: 1(time)")
+            line.gsub!(/\}\}\, h'.*'\]\)$/, "}}, h'SIG'])")
+            output.puts line
+          }
+        end
+      end
+
+      cmd = sprintf("diff tmp/%s.diag spec/files/%s.diag",
+                    basename, basename)
+      #puts cmd
+      system(cmd)
     end
 
     it "should post an unsigned voucher" do
