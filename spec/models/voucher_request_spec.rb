@@ -133,6 +133,8 @@ RSpec.describe VoucherRequest, type: :model do
 
 
 
+
+
       if false
         # enable to get voucher from live system
         WebMock.allow_net_connect!
