@@ -174,18 +174,22 @@ RSpec.describe "Est", type: :request do
 
     it "should accept a CSR attributes file to renew from an LDevID signed by us" do
       pending "LDevID renewing"
+      expect(false).to be true
     end
 
     it "should accept a CSR attributes file from a trusted endpoint" do
       pending "LDevID from pinned IDevID"
+      expect(false).to be true
     end
 
     it "should reject CSR attributes file from an unknown IDevID" do
       pending "unknown IDevID"
+      expect(false).to be true
     end
 
     it "should reject CSR attributes file from a known IDevID that has no voucher" do
       pending "known IDevID, no voucher"
+      expect(false).to be true
     end
   end
 
@@ -396,6 +400,8 @@ RSpec.describe "Est", type: :request do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
 
+      pending "highway-test:9443 not available" unless ENV['HIGHWAY_TEST']
+
       WebMock.allow_net_connect!
 
       # get the Base64 of the incoming signed request
@@ -427,6 +433,8 @@ RSpec.describe "Est", type: :request do
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
+
+      pending "highway-test:9443 not available" unless ENV['HIGHWAY_TEST']
 
       WebMock.allow_net_connect!
 
