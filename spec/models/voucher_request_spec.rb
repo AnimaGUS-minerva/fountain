@@ -131,6 +131,8 @@ RSpec.describe VoucherRequest, type: :model do
 
       canned_voucher = Base64::decode64(IO.read("spec/files/voucher-00-D0-E5-F2-00-02.pkcs"))
 
+
+
       if false
         # enable to get voucher from live system
         WebMock.allow_net_connect!
