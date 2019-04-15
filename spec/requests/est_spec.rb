@@ -388,7 +388,9 @@ RSpec.describe "Est", type: :request do
       expect(response).to have_http_status(403)
     end
 
-    it "should get CoAPS POSTed to cbor_rv, onwards to highway-test" do
+    # this uses the almec fixture, which on MASA has no key loaded,
+    # so it causes a validation error to be returned.
+    it "should get CoAPS POSTed to cbor_rv, onwards to highway-test, receive error" do
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
@@ -404,48 +406,20 @@ RSpec.describe "Est", type: :request do
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
 
       $FAKED_TEMPORARY_KEY = temporary_key
-      post '/e/rv', :params => body, :headers => env
+      begin
+        post '/e/rv', :params => body, :headers => env
 
-      expect(response).to have_http_status(200)
+      ensure
+        # on non-live tests, the voucherreq is captured by the mock
+        voucher_request = assigns(:voucherreq)
 
-      expect(assigns(:voucherreq)).to_not be_nil
-      expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
-      expect(assigns(:voucherreq).pledge_request).to_not be_nil
-      expect(assigns(:voucherreq).signed).to be_truthy
-      expect(assigns(:voucherreq).device).to_not be_nil
-      expect(assigns(:voucherreq).manufacturer).to be_present
-      expect(assigns(:voucherreq).device_identifier).to_not be_nil
-
-      # on non-live tests, the voucherreq is captured by the mock
-      voucher_request = assigns(:voucherreq)
-
-      # validate that the voucher_request can be validated with the key used.
-      expect(voucher_request).to_not be_nil
-
-      # capture for posterity
-      File.open("tmp/parboiled_vr_00-D0-E5-F2-00-01.vrq", "wb") do |f|
-        f.syswrite voucher_request.registrar_request
+        # capture for posterity
+        File.open("tmp/parboiled_vr_00-D0-E5-F2-00-01.vrq", "wb") do |f|
+          f.syswrite voucher_request.registrar_request
+        end
       end
 
-      vr0 = Chariwt::Voucher.from_cbor_cose(voucher_request.registrar_request,
-                                            FountainKeys.ca.jrc_pub_key)
-      expect(vr0).to_not be_nil
-
-      expect(Chariwt.cmp_vch_file(voucher_request.registrar_request,
-                                  "parboiled_vr_00-D0-E5-F2-00-01")).to be true
-
-      # capture for posterity
-      File.open("tmp/voucher_00-D0-E5-F2-00-01.vch", "wb") do |f|
-        f.syswrite response.body
-      end
-
-      pending "smarter cmp_vch, which can ignore signatures"
-      expect(Chariwt.cmp_vch_file(assigns(:voucher).signed_voucher,
-                                  "voucher_00-D0-E5-F2-00-01")).to be true
-
-      expect(Chariwt.cmp_vch_file(response.body,
-                                  "voucher_00-D0-E5-F2-00-01")).to be true
-
+      expect(response).to have_http_status(404)
     end
 
     it "should post an unsigned voucher" do
