@@ -23,7 +23,7 @@ class Voucher < ActiveRecord::Base
     end
   end
 
-  def self.from_parts(parts)
+  def self.from_parts(parts, extracert = nil)
     pubkey = nil
     contents = nil
     type = nil

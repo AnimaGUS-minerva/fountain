@@ -40,9 +40,9 @@ RSpec.describe "Est", type: :request do
     @clientcert ||= IO.binread("spec/files/product/081196FFFE0181E0/device.crt")
   end
 
-  # points to https://highway.sandelman.ca
-  def cbor_clientcert
-    @cbor_clientcert ||= IO.binread("spec/certs/F21003-idevid.pem")
+  # points to https://highway-test.sandelman.ca:9443
+  def cbor_clientcert_03
+    @cbor_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
   end
 
   # points to https://highway-test.sandelman.ca
@@ -295,12 +295,13 @@ RSpec.describe "Est", type: :request do
       allow(Time).to receive(:now).and_return(@time_now)
     end
 
-    def do_coaps_posted
+    # this request is created by cv3.sh in reach.
+    def do_coaps_posted_03
       # get the Base64 of the incoming signed request
-      body = IO.read("spec/files/vr_00-D0-E5-F2-10-03.vch")
+      body = IO.read("spec/files/vr_00-D0-E5-F2-00-03.vrq")
 
       env = Hash.new
-      env["SSL_CLIENT_CERT"] = cbor_clientcert
+      env["SSL_CLIENT_CERT"] = cbor_clientcert_03
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
 
@@ -332,6 +333,7 @@ RSpec.describe "Est", type: :request do
     end
 
     it "should get CoAPS POSTed to cbor_rv" do
+      # should not be 00-D0-E5-F2-10-03 XXX, but F2-00-03.
       resultio = File.open("spec/files/voucher_00-D0-E5-F2-10-03.mvch","rb")
       ct = resultio.gets
       ctvalue = ct[14..-3]
@@ -339,12 +341,12 @@ RSpec.describe "Est", type: :request do
       result=resultio.read
       voucher_request = nil
 
-      stub_request(:post, "https://highway.sandelman.ca/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
         with(headers: {
                'Accept'=>['*/*', 'multipart/mixed'],
                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                'Content-Type'=>'application/voucher-cose+cbor',
-               'Host'=>'highway.sandelman.ca',
+               'Host'=>'highway-test.example.com:9443',
              }).
         to_return(status: 200, body: lambda { |request|
 
@@ -355,7 +357,15 @@ RSpec.describe "Est", type: :request do
                   })
 
       start_coaps_posted
-      do_coaps_posted
+      do_coaps_posted_03
+      # capture outgoing request for posterity
+      if voucher_request
+        File.open("tmp/parboiled_vr_00-D0-E5-F2-00-03.vrq", "wb") do |f|
+          f.syswrite voucher_request
+        end
+      end
+
+      expect(response).to have_http_status(200)
       validate_coaps_posted(voucher_request)
     end
 

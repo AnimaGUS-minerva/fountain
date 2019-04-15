@@ -130,6 +130,8 @@ RSpec.describe VoucherRequest, type: :model do
       # note that the response is base64 encoded, and the decoder expects that(!?)
       canned_voucher = IO.read("spec/files/voucher-00-D0-E5-F2-00-02.pkcs")
 
+
+
       if false
         # enable to get voucher from live system
         WebMock.allow_net_connect!
@@ -140,7 +142,7 @@ RSpec.describe VoucherRequest, type: :model do
                        'Content-Type'=>'application/voucher-cms+json',
                        'Host'=>'highway-test.example.com:9443',
                        'User-Agent'=>'Ruby'}).
-         to_return(status: 200, body: lambda { |request|
+        to_return(status: 200, body: lambda { |request|
                      # write the voucher request out for use in highway
                      File.open("tmp/parboiled_vr-00-D0-E5-F2-00-02.pkcs", "wb") {|fo|
                        fo.write request.body.b
