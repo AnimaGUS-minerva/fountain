@@ -43,6 +43,13 @@ class EstController < ApiController
       logger.info "invalid MASA response: #{e.message}"
       head 404, text: e.message
       return
+
+    rescue VoucherRequest::MASAHTTPFailed => e
+      @voucherreq.status["masa"] = e.message
+      @voucherreq.save!
+      logger.info "invalid MASA response: #{e.message}"
+      head 404, text: e.message
+      return
     end
 
     if @voucher
