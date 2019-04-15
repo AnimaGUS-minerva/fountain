@@ -39,7 +39,7 @@ RSpec.describe Voucher, type: :model do
       voucher_base64 = IO::read(File.join("spec","files","voucher_JADA_f2-00-01.pkcs"))
       voucher_binary = Base64.decode64(voucher_base64)
 
-      v1 = CmsVoucher.from_voucher(:pkcs7, voucher_binary)
+      v1 = CmsVoucher.from_voucher(:pkcs7, voucher_binary, nil)
 
       expect(v1.device).to eq(devices(:jadaf20001))
       expect(v1).to_not be_proximity
@@ -61,7 +61,7 @@ RSpec.describe Voucher, type: :model do
       voucher_binary = Base64.decode64(voucher_base64)
 
       expect {
-        v1 = Voucher.from_voucher(:pkcs7, voucher_binary)
+        v1 = Voucher.from_voucher(:pkcs7, voucher_binary, nil)
       }.to raise_exception(Voucher::VoucherFormatError)
     end
 

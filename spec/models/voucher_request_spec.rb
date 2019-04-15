@@ -53,6 +53,7 @@ RSpec.describe VoucherRequest, type: :model do
   describe "sending requests" do
     it "should request a voucher from the MASA" do
       voucher1_base64 = IO::read(File::join(Rails.root, "spec", "files", "voucher_081196FFFE0181E0.pkcs"))
+      voucher1 = Base64::decode64(voucher1_base64)
 
       voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
@@ -66,7 +67,7 @@ RSpec.describe VoucherRequest, type: :model do
                        'User-Agent'=>'Ruby'}).
          to_return(status: 200, body: lambda { |request|
                     voucher_request = request.body
-                    voucher1_base64},
+                    voucher1},
                    headers: {
                    'Content-Type' => 'application/voucher-cms+json'})
 
@@ -80,7 +81,8 @@ RSpec.describe VoucherRequest, type: :model do
 
     it "should process content-type to extract voucher/response" do
       vr1 = voucher_requests(:vr1)
-      bodystr = IO::read(File.join('spec', 'files', 'voucher_081196FFFE0181E0.pkcs'))
+      bodystr64 = IO::read(File.join('spec', 'files', 'voucher_081196FFFE0181E0.pkcs'))
+      bodystr = Base64::decode64(bodystr64)
       voucher = vr1.process_content_type('application/voucher-cms+json', bodystr)
       expect(voucher).to_not be_nil
       expect(voucher.type).to eq("CmsVoucher")
@@ -127,10 +129,7 @@ RSpec.describe VoucherRequest, type: :model do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
 
-      # note that the response is base64 encoded, and the decoder expects that(!?)
-      canned_voucher = IO.read("spec/files/voucher-00-D0-E5-F2-00-02.pkcs")
-
-
+      canned_voucher = Base64::decode64(IO.read("spec/files/voucher-00-D0-E5-F2-00-02.pkcs"))
 
       if false
         # enable to get voucher from live system

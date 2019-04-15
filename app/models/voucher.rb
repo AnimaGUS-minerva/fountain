@@ -15,7 +15,7 @@ class Voucher < ActiveRecord::Base
   def self.from_voucher(type, value, pubkey = nil)
     case type
     when :pkcs7
-      return CmsVoucher.from_voucher(type, value)
+      return CmsVoucher.from_voucher(type, value, pubkey)
     when :cose
       return CoseVoucher.from_voucher(type, value, pubkey)
     else
