@@ -28,8 +28,8 @@ class CoseVoucher < Voucher
     Base64.urlsafe_decode64(self[:signed_voucher])
   end
 
-  def self.from_voucher(type, value, pubkey = nil)
-    voucher = create(signed_voucher: value)
+  def self.from_voucher(voucherreq, type, value, pubkey = nil)
+    voucher = create(signed_voucher: value, voucher_request: voucherreq)
     voucher.details_from_cose(pubkey)
     voucher
   end

@@ -381,16 +381,16 @@ class VoucherRequest < ApplicationRecord
         # it should always be binary, never any need to decode.
         # der = decode_pem(bodystr)
         der = bodystr
-        voucher = ::CmsVoucher.from_voucher(@voucher_response_type, der, extracert)
+        voucher = ::CmsVoucher.from_voucher(self, @voucher_response_type, der, extracert)
 
       when ['application','voucher-cms+cbor']
         @voucher_response_type = :pkcs7
-        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr, extracert)
+        voucher = ::CoseVoucher.from_voucher(self, @voucher_response_type, bodystr, extracert)
 
       when ['application','voucher-cose+cbor']
         @voucher_response_type = :cbor
         @cose = true
-        voucher = ::CoseVoucher.from_voucher(@voucher_response_type, bodystr, extracert)
+        voucher = ::CoseVoucher.from_voucher(self, @voucher_response_type, bodystr, extracert)
 
       when ['multipart','mixed']
         @voucher_response_type = :cbor
@@ -398,7 +398,7 @@ class VoucherRequest < ApplicationRecord
         @boundary = parameters["boundary"]
         mailbody = Mail::Body.new(bodystr)
         mailbody.split!(@boundary)
-        voucher = Voucher.from_parts(mailbody.parts, extracert)
+        voucher = Voucher.from_parts(self, mailbody.parts, extracert)
       else
         byebug
       end
@@ -409,6 +409,7 @@ class VoucherRequest < ApplicationRecord
                       :parameters   => parameters,
                       :encoded_voucher => Base64::urlsafe_encode64(bodystr),
                       :masa_url     => request_voucher_uri.to_s }
+      save!
       return nil
     end
 

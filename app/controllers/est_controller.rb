@@ -195,7 +195,7 @@ class EstController < ApiController
       # this is raised when the returned voucher is not parsable
       @voucherreq.status["masa_voucher_error"]=e.message
       @voucherreq.save!
-      logger.info "invalid MASA voucher: #{e.message}"
+      logger.info "invalid MASA voucher: #{e.message}, logged voucher_request id\##{@voucherreq.id}"
       head 404, text: e.message
       return
     end

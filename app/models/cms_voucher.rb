@@ -18,8 +18,8 @@ class CmsVoucher < Voucher
     save!
   end
 
-  def self.from_voucher(type, value, extracert)
-    voucher = create(signed_voucher: value)
+  def self.from_voucher(voucherreq, type, value, extracert)
+    voucher = create(signed_voucher: value, voucher_request: voucherreq)
     voucher.details_from_pkcs7(extracert)
     voucher
   end

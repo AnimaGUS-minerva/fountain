@@ -12,18 +12,18 @@ class Voucher < ActiveRecord::Base
   class MissingPublicKey < Exception
   end
 
-  def self.from_voucher(type, value, pubkey = nil)
+  def self.from_voucher(voucherreq, type, value, pubkey = nil)
     case type
     when :pkcs7
-      return CmsVoucher.from_voucher(type, value, pubkey)
+      return CmsVoucher.from_voucher(voucherreq, type, value, pubkey)
     when :cose
-      return CoseVoucher.from_voucher(type, value, pubkey)
+      return CoseVoucher.from_voucher(voucherreq, type, value, pubkey)
     else
       raise InvalidVoucher
     end
   end
 
-  def self.from_parts(parts, extracert = nil)
+  def self.from_parts(voucherreq, parts, extracert = nil)
     pubkey = nil
     contents = nil
     type = nil
@@ -52,17 +52,17 @@ class Voucher < ActiveRecord::Base
       raise InvalidVoucher
     end
 
-    from_voucher(type, contents, pubkey)
+    from_voucher(voucherreq, type, contents, pubkey)
   end
 
-  def self.from_multipart(type, mimecontents)
+  def self.from_multipart(voucherreq, type, mimecontents)
     voucher_mime = Mail.read_from_string(mimecontents)
 
     unless voucher_mime.mime_type == "multipart/mixed"
       raise InvalidVoucher.exception("invalid content-type: #{voucher_mime.mime_type}")
     end
 
-    from_parts(voucher_mime.parts)
+    from_parts(voucherreq, voucher_mime.parts)
   end
 
 

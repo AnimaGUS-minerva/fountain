@@ -20,7 +20,7 @@ RSpec.describe Voucher, type: :model do
       voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789_bad.vch"))
 
       expect {
-        v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
+        v1 = CoseVoucher.from_voucher(nil, :cose, voucher_binary)
       }.to raise_error(Chariwt::Voucher::MissingPublicKey)
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Voucher, type: :model do
       # this input comes from chariwt/tmp/voucher_jada123456789.vch
       voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789.vch"))
 
-      v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
+      v1 = CoseVoucher.from_voucher(nil, :cose, voucher_binary)
       expect(v1).to               be_proximity
       expect(v1.serial_number).to eq('JADA123456789')
       expect(v1.nonce).to         eq('abcd12345')
@@ -39,7 +39,7 @@ RSpec.describe Voucher, type: :model do
       voucher_base64 = IO::read(File.join("spec","files","voucher_JADA_f2-00-01.pkcs"))
       voucher_binary = Base64.decode64(voucher_base64)
 
-      v1 = CmsVoucher.from_voucher(:pkcs7, voucher_binary, nil)
+      v1 = CmsVoucher.from_voucher(nil, :pkcs7, voucher_binary, nil)
 
       expect(v1.device).to eq(devices(:jadaf20001))
       expect(v1).to_not be_proximity
@@ -52,7 +52,7 @@ RSpec.describe Voucher, type: :model do
 
     it "should load a constrained voucher representation, and create a database object for it" do
       voucher_binary = IO::read(File.join("spec","files","voucher_jada123456789.vch"))
-      v1 = CoseVoucher.from_voucher(:cose, voucher_binary)
+      v1 = CoseVoucher.from_voucher(nil, :cose, voucher_binary)
       expect(v1.device).to eq(devices(:n3))
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Voucher, type: :model do
       voucher_binary = Base64.decode64(voucher_base64)
 
       expect {
-        v1 = Voucher.from_voucher(:pkcs7, voucher_binary, nil)
+        v1 = Voucher.from_voucher(nil, :pkcs7, voucher_binary, nil)
       }.to raise_exception(Voucher::VoucherFormatError)
     end
 
@@ -79,7 +79,7 @@ RSpec.describe Voucher, type: :model do
     it "should process a multipart voucher response into a validated voucher" do
       input_voucher = IO::binread(File.join("spec","files","voucher_00-D0-E5-F2-10-03.mvch"))
 
-      v1 = Voucher.from_multipart(:cbor, input_voucher)
+      v1 = Voucher.from_multipart(nil, :cbor, input_voucher)
       expect(v1).to_not be_nil
       expect(v1.type).to eq("CoseVoucher")
       expect(v1).to be_valid
