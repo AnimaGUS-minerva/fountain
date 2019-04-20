@@ -273,14 +273,14 @@ RSpec.describe "Est", type: :request do
       # get the Base64 of the parboiled signed request
       body = IO.read("spec/files/parboiled_vr-00-D0-E5-F2-00-03.pkcs")
 
-      env = Hash.new
-      env["SSL_CLIENT_CERT"] = highwaytest_clientcert
-      env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
-      env["CONTENT_TYPE"] = "application/voucher-cms+json"
-      post '/.well-known/est/requestvoucher', :params => body, :headers => env
+      @env = Hash.new
+      @env["SSL_CLIENT_CERT"] = highwaytest_clientcert
+      @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
+      @env["CONTENT_TYPE"] = "application/voucher-cms+json"
+      post '/.well-known/est/requestvoucher', :params => body, :headers => @env
     end
 
-    it "in CMS format should get HTTPS POSTed to requestvoucher" do
+    it "in CMS format, with known manufacturer should get HTTPS POSTed to requestvoucher" do
       @voucher_request = nil
 
       setup_cms_mock_03
@@ -294,11 +294,35 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:voucherreq).manufacturer).to be_present
       expect(assigns(:voucherreq).device_identifier).to_not be_nil
 
-      expect(Chariwt.cmp_pkcs_file(voucher_request,
+      expect(Chariwt.cmp_pkcs_file(@voucher_request,
                                    "voucher_request-00-D0-E5-F2-00-03.pkcs",
                                    "spec/files/cert/certs.crt"
                                   )).to be true
 
+    end
+
+    it "in CMS format, should get POSTed to an open registrar, get a voucher, and then enroll" do
+      SystemVariable.setbool(:open_registrar, true)
+      @voucher_request = nil
+
+      setup_cms_mock_03
+      posted_cms_03
+
+      #env["SSL_CLIENT_CERT"] = highwaytest_clientcert
+      @env["CONTENT_TYPE"]    = "application/pkcs10-base64"
+      body = IO::read("spec/files/csr_bulb03.der")
+      post "/.well-known/est/simpleenroll", :headers => @env, :params => Base64.encode64(body)
+
+      expect(assigns(:device)).to_not be_nil
+      expect(assigns(:device).manufacturer).to_not be_nil
+      byebug
+      expect(assigns(:device)).to be_trusted
+
+      expect(response).to have_http_status(200)
+
+      File.open("tmp/bulb03_cert.der", "wb") {|f| f.syswrite response.body }
+      cert = OpenSSL::X509::Certificate.new(response.body)
+      expect(cert).to_not be_nil
     end
 
 
