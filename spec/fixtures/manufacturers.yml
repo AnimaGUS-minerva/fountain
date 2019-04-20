@@ -43,6 +43,8 @@ unknownManu:
     cHdPMmRqOTd4YktjczVOdHhzbngxeG9iMmJVTDV0UlZ6aFNnPT0KLS0tLS1FTkQgUFVCTElDIEtF
     WS0tLS0tCg==
 
+# note that this manufacturer has an incorrect MASA_URL, so it really
+# can not match, it should match #7 instead.
 brskiManu:
   id: 4
   name: "BRSKI-trusted Manufacturer"
