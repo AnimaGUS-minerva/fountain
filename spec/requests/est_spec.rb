@@ -286,6 +286,7 @@ RSpec.describe "Est", type: :request do
       setup_cms_mock_03
       posted_cms_03
 
+      expect(response).to have_http_status(200)
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).pledge_request).to_not be_nil
@@ -307,6 +308,7 @@ RSpec.describe "Est", type: :request do
 
       setup_cms_mock_03
       posted_cms_03
+      expect(response).to have_http_status(200)
 
       #env["SSL_CLIENT_CERT"] = highwaytest_clientcert
       @env["CONTENT_TYPE"]    = "application/pkcs10-base64"
@@ -315,7 +317,6 @@ RSpec.describe "Est", type: :request do
 
       expect(assigns(:device)).to_not be_nil
       expect(assigns(:device).manufacturer).to_not be_nil
-      byebug
       expect(assigns(:device)).to be_trusted
 
       expect(response).to have_http_status(200)
