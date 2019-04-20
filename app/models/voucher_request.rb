@@ -310,7 +310,7 @@ class VoucherRequest < ApplicationRecord
 
     #puts "4 device manufacturer is '#{self.device.try(:manufacturer).id}'"
     #puts "setting voucher-request manufacturer to #{self.device.try(:manufacturer_id)}"
-    self.manufacturer = self.device.manufacturer
+    self.manufacturer ||= self.device.manufacturer
   end
 
   def masa_url
