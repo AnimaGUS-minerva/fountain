@@ -273,25 +273,11 @@ class VoucherRequest < ApplicationRecord
   def discover_manufacturer
     @masa_url = nil
     manu = nil
-
     if certificate
-      certificate.extensions.each { |ext|
-        # temporary Sandelman based PEN value
-        if ext.oid == "1.3.6.1.4.1.46930.2"
-          @masa_url = ext.value[2..-1]
-          next
-        end
-        # early allocation of id-pe-masa-url to BRSKI
-        if ext.oid == "1.3.6.1.5.5.7.1.32"
-          @masa_url = ext.value[2..-1]
-          next
-        end
-        #puts "extension OID: #{ext.to_s} found"
-      }
+      @masa_url = Manufacturer.extract_masa_url_from_cert(certificate)
     end
 
     populate_explicit_fields
-    @masa_url = Manufacturer.canonicalize_masa_url(@masa_url)
 
     # use MASA_URL to find a valid item.
     # note that a manufacturer might have many keys, and might also have

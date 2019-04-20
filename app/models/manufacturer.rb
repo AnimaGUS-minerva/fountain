@@ -33,6 +33,27 @@ class Manufacturer < ApplicationRecord
     where(:issuer_public_key => cert.public_key.to_der).take
   end
 
+  def self.extract_masa_url_from_cert(certificate)
+    masa_url = nil
+
+    if certificate
+      certificate.extensions.each { |ext|
+        # temporary Sandelman based PEN value
+        if ext.oid == "1.3.6.1.4.1.46930.2"
+          masa_url = ext.value[2..-1]
+          next
+        end
+        # early allocation of id-pe-masa-url to BRSKI
+        if ext.oid == "1.3.6.1.5.5.7.1.32"
+          masa_url = ext.value[2..-1]
+          next
+        end
+        #puts "extension OID: #{ext.to_s} found"
+      }
+    end
+    return canonicalize_masa_url(masa_url)
+  end
+
   def no_key?
     issuer_public_key.blank?
   end
