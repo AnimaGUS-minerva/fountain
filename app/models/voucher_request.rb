@@ -271,11 +271,9 @@ class VoucherRequest < ApplicationRecord
   end
 
   def discover_manufacturer
-    @masa_url = nil
+    return nil unless certificate
     manu = nil
-    if certificate
-      @masa_url = Manufacturer.extract_masa_url_from_cert(certificate)
-    end
+    @masa_url = Manufacturer.extract_masa_url_from_cert(certificate)
 
     populate_explicit_fields
 
