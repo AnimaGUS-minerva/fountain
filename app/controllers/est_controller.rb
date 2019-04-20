@@ -187,6 +187,9 @@ class EstController < ApiController
     begin
       @voucher = @voucherreq.get_voucher
     rescue VoucherRequest::BadMASA => e
+      # this is raised when the MASA can not be reached
+      @voucherreq.status["masa"] = "invalid MASA: "+e.message
+      @voucherreq.save!
       logger.info "invalid MASA response: #{e.message}"
       head 404, text: e.message
       return
@@ -196,6 +199,14 @@ class EstController < ApiController
       @voucherreq.status["masa_voucher_error"]=e.message
       @voucherreq.save!
       logger.info "invalid MASA voucher: #{e.message}, logged voucher_request id\##{@voucherreq.id}"
+      head 404, text: e.message
+      return
+
+    rescue VoucherRequest::MASAHTTPFailed => e
+      # this is raised when the MASA returns a 404
+      @voucherreq.status["masa_voucher_error"]=e.message
+      @voucherreq.save!
+      logger.info "MASA does not like voucher request: #{e.message}, not voucher returned"
       head 404, text: e.message
       return
     end
