@@ -115,6 +115,16 @@ class Manufacturer < ApplicationRecord
     return manu1
   end
 
+  # if a voucher validates this manufacturer, then we set the
+  # manufacturer as trust_brski!
+  def trust_brski_if_firstused!
+    if trust_firstused?
+      trust_brski!
+      save!
+    end
+  end
+
+
   def self.canonicalize_masa_url(url)
     if !url.blank? and !url.include?("/")
       url = "https://" + url + "/.well-known/est/"

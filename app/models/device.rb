@@ -234,6 +234,7 @@ class Device < ActiveRecord::Base
   #  - this is true of the manufacturer has been marked as blessed.
   #  - this is true if the manufacturer is marked brski, and a voucher
   #    has been obtained.
+  #  - an unknown manufacturer can be marked brski, if it is an open_registrar.
   def trusted?
     locate_manufacturer_by_cert
     return true if manufacturer.try(:trust_admin?)

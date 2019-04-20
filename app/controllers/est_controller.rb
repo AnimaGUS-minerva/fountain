@@ -203,7 +203,9 @@ class EstController < ApiController
     if @voucher
       ct='application/voucher-cms+json'
       render :body => @voucher.signed_voucher, :content_type => ct
-      logger.info "returning voucher of size #{@voucher.signed_voucher.length} with ct=#{ct}"
+      logger.info "device \##{@voucher.device.id} (name: #{@voucher.device.name}) has been adopted"
+      logger.info "returning voucher \##{@voucher.id} of size #{@voucher.signed_voucher.length} with ct=#{ct}"
+      @voucher.manufacturer.trust_brski_if_firstused!
       @voucher.save!
     else
       head 500
