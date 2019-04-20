@@ -436,6 +436,7 @@ class VoucherRequest < ApplicationRecord
 
   def get_voucher(target_url = nil)
     target_uri = request_voucher_uri(target_url)
+    raise VoucherRequest::BadMASA.new("manufacturer not found") unless target_uri
 
     #byebug
     logger.info "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
