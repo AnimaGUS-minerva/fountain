@@ -98,6 +98,6 @@ highwaytest:
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAELuf8pLSWxS4zAvO4e2/sk63hbhfBsHsChy+JktK9HVQELm6g1EHE6476V61wqU6I4iws4KfH85HFA5GfSw/zPdCw4qYizSDpD47hfEJKAG0/KTK2PNzEvMu+sGewGpTU
   trust: brski
-  issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
+  issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
 
   

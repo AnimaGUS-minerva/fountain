@@ -51,7 +51,7 @@ RSpec.describe "Est", type: :request do
     @cbor_highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-E0-00-0F/device.crt")
   end
 
-  # points to https://highway-test.sandelman.ca
+  # points to https://highway-test.sandelman.ca, which is manufacturer #7
   def highwaytest_clientcert
     @highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
   end
@@ -246,10 +246,8 @@ RSpec.describe "Est", type: :request do
 
     end
 
-    it "in CMS format should get HTTPS POSTed to requestvoucher" do
-
+    def setup_cms_mock_03
       result = IO.read("spec/files/voucher-00-D0-E5-F2-00-03.vch")
-      voucher_request = nil
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
@@ -264,12 +262,14 @@ RSpec.describe "Est", type: :request do
                 'User-Agent'=>'Ruby'
                }).
         to_return(status: 200, body: lambda { |request|
-                    voucher_request = request.body
+                    @voucher_request = request.body
                     result},
                   headers: {
                     'Content-Type'=>'application/voucher-cms+json'
                   })
+    end
 
+    def posted_cms_03
       # get the Base64 of the parboiled signed request
       body = IO.read("spec/files/parboiled_vr-00-D0-E5-F2-00-03.pkcs")
 
@@ -278,6 +278,13 @@ RSpec.describe "Est", type: :request do
       env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       env["CONTENT_TYPE"] = "application/voucher-cms+json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => env
+    end
+
+    it "in CMS format should get HTTPS POSTed to requestvoucher" do
+      @voucher_request = nil
+
+      setup_cms_mock_03
+      posted_cms_03
 
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
