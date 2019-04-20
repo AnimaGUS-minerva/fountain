@@ -316,6 +316,7 @@ class VoucherRequest < ApplicationRecord
   end
 
   def masa_url
+    discover_manufacturer
     manufacturer.try(:masa_url)
   end
 
