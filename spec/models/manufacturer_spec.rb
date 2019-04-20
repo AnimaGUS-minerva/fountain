@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/pem_data'
 
 RSpec.describe Manufacturer, type: :model do
   fixtures :all
@@ -33,7 +34,14 @@ RSpec.describe Manufacturer, type: :model do
 
   end
 
-  describe "trusted signatures" do
+  describe "trust settings" do
+    it "should have a trusted for attribute" do
+      um1 = manufacturers(:unknownManu)
+      expect(um1).to be_trust_unknown
+    end
+  end
+
+  describe "picking a manufacturer" do
     it "should not find a mis-matched issuer" do
       # this file was created with the identical DN as highwaytest, being:
       #    DC = ca, DC = sandelman, CN = highway-test.example.com CA
@@ -45,14 +53,12 @@ RSpec.describe Manufacturer, type: :model do
 
     it "should find a manufacturer" do
       m1 = Manufacturer.trusted_client_by_pem(highwaytest_clientcert_f20001)
+      expect(m1).to eq(manufacturers(:brskiManu))
       expect(m1).to be_trust_brski
     end
-  end
 
-  describe "trust settings" do
-    it "should have a trusted for attribute" do
-      um1 = manufacturers(:unknownManu)
-      expect(um1).to be_trust_unknown
+    it "should match manufacturer by masa_url, and signature" do
+
     end
   end
 

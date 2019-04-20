@@ -22,4 +22,10 @@ def borgin01
   @cert4 ||= OpenSSL::X509::Certificate.new(File.read("spec/files/product/00-D0-E5-F3-00-01/device.crt"))
 end
 
+# points to https://highway-test.sandelman.ca
+# issuer has been added to manufacturers with "trust_brski", #4.
+def highwaytest_clientcert_f20001
+  @highwaytest_clientcert_f20001 ||= IO.binread("spec/files/product/00-D0-E5-F2-00-01/device.crt")
+end
+
 
