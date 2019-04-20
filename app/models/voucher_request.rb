@@ -476,6 +476,7 @@ class VoucherRequest < ApplicationRecord
 
     when nil
       logger.error "An error was raised, and response was not set"
+      raise VoucherRequest::BadMASA.new("unknown error in request")
     end
 
     return nil
