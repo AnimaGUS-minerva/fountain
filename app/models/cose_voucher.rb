@@ -33,4 +33,9 @@ class CoseVoucher < Voucher
     voucher.details_from_cose(pubkey)
     voucher
   end
+
+  def content_type
+    'application/voucher-cose+cbor'
+  end
+
 end

@@ -23,5 +23,9 @@ class CmsVoucher < Voucher
     voucher.details_from_pkcs7(extracert)
     voucher
   end
+
+  def content_type
+    'application/voucher-cms+json'
+  end
 end
 

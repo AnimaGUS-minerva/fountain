@@ -54,7 +54,7 @@ class EstController < ApiController
 
     if @voucher
       render :body => @voucher.signed_voucher,
-             :content_type => 'application/voucher-cose+cbor',
+             :content_type => @voucher.content_type,
              :charset => nil
       logger.info "returned voucher successfully"
     else
@@ -201,10 +201,12 @@ class EstController < ApiController
     end
 
     if @voucher
-      ct='application/voucher-cms+json'
-      render :body => @voucher.signed_voucher, :content_type => ct
+      render :body => @voucher.signed_voucher,
+             :content_type => @voucher.content_type,
+             :charset => nil
+
       logger.info "device \##{@voucher.device.id} (name: #{@voucher.device.name}) has been adopted"
-      logger.info "returning voucher \##{@voucher.id} of size #{@voucher.signed_voucher.length} with ct=#{ct}"
+      logger.info "returning voucher \##{@voucher.id} of size #{@voucher.signed_voucher.length} with ct=#{@voucher.content_type}"
       @voucher.manufacturer.trust_brski_if_firstused!
       @voucher.save!
     else
