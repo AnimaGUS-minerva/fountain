@@ -326,7 +326,6 @@ RSpec.describe "Est", type: :request do
       expect(cert).to_not be_nil
     end
 
-
     def start_coaps_posted
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
@@ -549,7 +548,6 @@ RSpec.describe "Est", type: :request do
 
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).status).to_not be_nil
-      byebug
       expect(assigns(:voucherreq).status["masa_voucher_error"]).to_not be_nil
     end
 

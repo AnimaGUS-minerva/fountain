@@ -20,9 +20,6 @@ class EstController < ApiController
       clientcert =  OpenSSL::X509::Certificate.new(clientcert_pem)
       @voucherreq = VoucherRequest.from_cose_cbor(request.body.read, clientcert)
       @voucherreq.tls_clientcert = clientcert
-      @voucherreq.discover_manufacturer
-      @voucherreq.populate_implicit_fields
-      @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
       @voucherreq.save!
 
     rescue Chariwt::Voucher::RequestFailedValidation
@@ -37,30 +34,8 @@ class EstController < ApiController
 
     logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
 
-    begin
-      @voucher = @voucherreq.get_voucher
-    rescue VoucherRequest::BadMASA => e
-      logger.info "invalid MASA response: #{e.message}"
-      head 404, text: e.message
-      return
-
-    rescue VoucherRequest::MASAHTTPFailed => e
-      @voucherreq.status["masa"] = e.message
-      @voucherreq.save!
-      logger.info "invalid MASA response: #{e.message}"
-      head 404, text: e.message
-      return
-    end
-
-    if @voucher
-      render :body => @voucher.signed_voucher,
-             :content_type => @voucher.content_type,
-             :charset => nil
-      logger.info "returned voucher successfully"
-    else
-      head 500
-    end
-
+    capture_client_info
+    return_voucher
   end
 
   # POST /.well-known/est/requestvoucher

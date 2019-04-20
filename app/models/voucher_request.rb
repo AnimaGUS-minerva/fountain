@@ -149,7 +149,7 @@ class VoucherRequest < ApplicationRecord
   end
 
   def status
-    self[:status] || Hash.new
+    self[:status] ||= Hash.new
   end
 
   def name
@@ -442,6 +442,7 @@ class VoucherRequest < ApplicationRecord
       raise $!
     end
 
+    #byebug
     case response
     when Net::HTTPServerError
       raise VoucherRequest::BadMASA.new("MASA server error")
