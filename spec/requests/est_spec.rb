@@ -156,6 +156,20 @@ RSpec.describe "Est", type: :request do
       File.open("tmp/bulb03_cert.der", "wb") {|f| f.syswrite response.body }
       cert = OpenSSL::X509::Certificate.new(response.body)
       expect(cert).to_not be_nil
+      expect(cert.subject).to_not be_nil
+      dns = cert.subject.to_a
+      cnt = 0
+      dns.each { |item|
+        case item[0]
+        when "serialNumber"
+          expect(item[1]).to eq("00-D0-E5-03-00-03")
+          cnt += 1
+        when "emailAddress"
+          expect(item[1]).to eq("00-D0-E5-03-00-03")
+          cnt += 1
+        end
+      }
+      expect(cnt).to eq(1)
     end
 
     it "should accept a CSR attributes file from an IDevID from a BRSKI manufacturer with voucher" do
@@ -170,6 +184,20 @@ RSpec.describe "Est", type: :request do
       File.open("tmp/bulb1_cert.der", "wb") {|f| f.syswrite response.body }
       cert = OpenSSL::X509::Certificate.new(response.body)
       expect(cert).to_not be_nil
+      expect(cert.subject).to_not be_nil
+      dns = cert.subject.to_a
+      cnt = 0
+      dns.each { |item|
+        case item[0]
+        when "serialNumber"
+          expect(item[1]).to eq("00-D0-E5-03-00-03")
+          cnt += 1
+        when "emailAddress"
+          expect(item[1]).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+          cnt += 1
+        end
+      }
+      expect(cnt).to eq(1)
     end
 
     it "should accept a CSR attributes file to renew from an LDevID signed by us" do
