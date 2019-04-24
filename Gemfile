@@ -44,8 +44,9 @@ gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
 
 #gem 'openssl', "~> 2.1.0"
-gem 'openssl', :path => "../minerva/ruby-openssl"
+#gem 'openssl', :path => "../minerva/ruby-openssl"
 #gem 'openssl', :path => '/gems/highway/ruby-openssl'
+gem 'openssl', :git => 'https://github.com/CIRALabs/ruby-openssl.git', :branch => 'cms-added'
 
 # CoAP server for Rails.
 gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
