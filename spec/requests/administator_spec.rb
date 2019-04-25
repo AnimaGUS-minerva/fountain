@@ -138,6 +138,19 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
+      get url_for(frank2), { :headers => env }
+      stuff = JSON::parse(response.body)
+      expect(stuff.try(:[], "administrator").try(:[], "admin")).to be false
+
+      # make frank an admin directly
+      frank2.admin!
+
+      # verify that it is so.
+      get url_for(frank2), { :headers => env }
+      stuff = JSON::parse(response.body)
+      expect(stuff.try(:[], "administrator").try(:[], "admin")).to be true
+
+
       put url_for(frank2), { :headers => env,
                               :params => {
                                :administrator => {
@@ -165,6 +178,9 @@ RSpec.describe "Administrators", type: :request do
       frank2.reload
       expect(frank2.admin).to be false
 
+      get url_for(frank2), { :headers => env }
+      stuff = JSON::parse(response.body)
+      expect(stuff.try(:[], "administrator").try(:[], "admin")).to be false
     end
 
     it "should rejecting a name to be update, when updating another entry" do
