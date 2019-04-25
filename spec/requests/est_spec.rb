@@ -513,9 +513,11 @@ RSpec.describe "Est", type: :request do
         # on non-live tests, the voucherreq is captured by the mock
         voucher_request = assigns(:voucherreq)
 
-        # capture for posterity
-        File.open("tmp/parboiled_vr_00-D0-E5-F2-00-03.vrq", "wb") do |f|
-          f.syswrite voucher_request.registrar_request
+        if voucher_request
+          # capture for posterity
+          File.open("tmp/parboiled_vr_00-D0-E5-F2-00-03.vrq", "wb") do |f|
+            f.syswrite voucher_request.registrar_request
+          end
         end
       end
 
