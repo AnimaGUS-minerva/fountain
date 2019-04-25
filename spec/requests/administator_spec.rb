@@ -132,6 +132,41 @@ RSpec.describe "Administrators", type: :request do
 
     end
 
+    it "should reject admin=true -> admin=false and then admin=true" do
+      frank2 = administrators(:frank2)
+      frank_admin_cert = OpenSSL::X509::Certificate.new(frank2.public_key)
+      env = ssl_headers(nil)
+      env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
+
+      put url_for(frank2), { :headers => env,
+                              :params => {
+                               :administrator => {
+                                 :name => 'Frank Jones',
+                                 :admin => false
+                               }
+                              }
+                           }
+
+      expect(response).to have_http_status(200)
+      frank2.reload
+      expect(frank2.admin).to be false
+
+      put url_for(frank2), { :headers => env,
+                              :params => {
+                               :administrator => {
+                                 :name => 'Frank Jones',
+                                 :admin => true
+                               }
+                              }
+                           }
+
+      # it will succeed, but won't actually update anything
+      expect(response).to have_http_status(200)
+      frank2.reload
+      expect(frank2.admin).to be false
+
+    end
+
     it "should rejecting a name to be update, when updating another entry" do
       frank2 = administrators(:frank2)
       frank_admin_cert = OpenSSL::X509::Certificate.new(frank2.public_key)
