@@ -26,6 +26,11 @@ class Administrator < ApplicationRecord
     save!
   end
 
+  def enable!
+    self.enabled = true
+    save!
+  end
+
   def pubkey_from_file(file)
     File.open(file, "rb") { |file|
       cert = OpenSSL::X509::Certificate.new(file)

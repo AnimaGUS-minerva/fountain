@@ -141,9 +141,11 @@ RSpec.describe "Administrators", type: :request do
       get url_for(frank2), { :headers => env }
       stuff = JSON::parse(response.body)
       expect(stuff.try(:[], "administrator").try(:[], "admin")).to be false
+      expect(stuff.try(:[], "administrator").try(:[], "enabled")).to be false
 
       # make frank an admin directly
       frank2.admin!
+      frank2.enable!
 
       # verify that it is so.
       get url_for(frank2), { :headers => env }
