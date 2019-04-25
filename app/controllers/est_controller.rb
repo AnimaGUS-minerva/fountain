@@ -13,6 +13,7 @@ class EstController < ApiController
 
   # POST /e/rv (CBOR, COSE)
   def cbor_rv
+    @voucherreq = nil
     begin
       # assumes *DTLS* version.
       clientcert_pem = request.env["SSL_CLIENT_CERT"]
