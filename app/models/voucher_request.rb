@@ -380,12 +380,29 @@ class VoucherRequest < ApplicationRecord
       when ['multipart','mixed']
         @voucher_response_type = :cbor
         @cose = true
-        @boundary = parameters["boundary"]
-        mailbody = Mail::Body.new(bodystr)
-        mailbody.split!(@boundary)
-        voucher = Voucher.from_parts(self, mailbody.parts, extracert)
+
+        if parameters and @boundary = parameters["boundary"]
+          mailbody = Mail::Body.new(bodystr)
+          mailbody.split!(@boundary)
+          voucher = Voucher.from_parts(self, mailbody.parts, extracert)
+        else
+          self.status = { :failed       => "mis-formed multipart/mixed, no boundary parameter",
+                          :voucher_type => ct.to_s,
+                          :parameters   => parameters,
+                          :encoded_voucher => Base64::urlsafe_encode64(bodystr),
+                          :masa_url     => request_voucher_uri.to_s }
+          save!
+          return nil
+        end
+
       else
-        byebug
+        self.status = { :failed       => "invalid mime type: #{type} found",
+                        :voucher_type => ct.to_s,
+                        :parameters   => parameters,
+                        :encoded_voucher => Base64::urlsafe_encode64(bodystr),
+                        :masa_url     => request_voucher_uri.to_s }
+        save!
+        return nil
       end
 
     rescue Chariwt::Voucher::MissingPublicKey => e
