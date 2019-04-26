@@ -25,8 +25,6 @@ from client.models.device_type_body import DeviceTypeBody
 from client.models.device_type_json import DeviceTypeJson
 from client.models.inline_response200 import InlineResponse200
 from client.models.inline_response2001 import InlineResponse2001
-from client.models.inline_response2002 import InlineResponse2002
-from client.models.inline_response2003 import InlineResponse2003
 from client.models.manufacturer import Manufacturer
 from client.models.manufacturer_body import ManufacturerBody
 from client.models.manufacturer_json import ManufacturerJson

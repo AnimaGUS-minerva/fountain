@@ -74,14 +74,6 @@ Class | Method | HTTP request | Description
 *DeviceApi* | [**get_device**](docs/DeviceApi.md#get_device) | **GET** /devices/{id} | Get a device information
 *DeviceApi* | [**list_devices**](docs/DeviceApi.md#list_devices) | **GET** /devices | List devices
 *DeviceApi* | [**update_device**](docs/DeviceApi.md#update_device) | **PUT** /devices/{id} | Update an existing device
-*DeviceTypeApi* | [**create_device_type**](docs/DeviceTypeApi.md#create_device_type) | **POST** /device_types | Add a new device type to the store
-*DeviceTypeApi* | [**get_device_type**](docs/DeviceTypeApi.md#get_device_type) | **GET** /device_types/{id} | Get a device type information
-*DeviceTypeApi* | [**list_device_types**](docs/DeviceTypeApi.md#list_device_types) | **GET** /device_types | Get device types
-*DeviceTypeApi* | [**update_device_type**](docs/DeviceTypeApi.md#update_device_type) | **PUT** /device_types/{id} | Update an existing device type
-*ManufacturerApi* | [**create_manufacturer**](docs/ManufacturerApi.md#create_manufacturer) | **POST** /manufacturers | Add a new manufacturer
-*ManufacturerApi* | [**get_manufacturer**](docs/ManufacturerApi.md#get_manufacturer) | **GET** /manufacturers/{id} | Get a manufacturer information
-*ManufacturerApi* | [**list_manufacturers**](docs/ManufacturerApi.md#list_manufacturers) | **GET** /manufacturers | Get manufacturers
-*ManufacturerApi* | [**update_manufacturer**](docs/ManufacturerApi.md#update_manufacturer) | **PUT** /manufacturers/{id} | Update an existing manufacturer
 *UserApi* | [**create_user**](docs/UserApi.md#create_user) | **POST** /administrators | Create user
 *UserApi* | [**get_user**](docs/UserApi.md#get_user) | **GET** /administrators/{id} | Get user by user id
 *UserApi* | [**list_users**](docs/UserApi.md#list_users) | **GET** /administrators | List users
@@ -100,8 +92,6 @@ Class | Method | HTTP request | Description
  - [DeviceTypeJson](docs/DeviceTypeJson.md)
  - [InlineResponse200](docs/InlineResponse200.md)
  - [InlineResponse2001](docs/InlineResponse2001.md)
- - [InlineResponse2002](docs/InlineResponse2002.md)
- - [InlineResponse2003](docs/InlineResponse2003.md)
  - [Manufacturer](docs/Manufacturer.md)
  - [ManufacturerBody](docs/ManufacturerBody.md)
  - [ManufacturerJson](docs/ManufacturerJson.md)

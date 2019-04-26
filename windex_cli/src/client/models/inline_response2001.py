@@ -32,42 +32,42 @@ class InlineResponse2001(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'device_types': 'list[DeviceType]'
+        'administrators': 'list[User]'
     }
 
     attribute_map = {
-        'device_types': 'deviceTypes'
+        'administrators': 'administrators'
     }
 
-    def __init__(self, device_types=None):  # noqa: E501
+    def __init__(self, administrators=None):  # noqa: E501
         """InlineResponse2001 - a model defined in OpenAPI"""  # noqa: E501
 
-        self._device_types = None
+        self._administrators = None
         self.discriminator = None
 
-        if device_types is not None:
-            self.device_types = device_types
+        if administrators is not None:
+            self.administrators = administrators
 
     @property
-    def device_types(self):
-        """Gets the device_types of this InlineResponse2001.  # noqa: E501
+    def administrators(self):
+        """Gets the administrators of this InlineResponse2001.  # noqa: E501
 
 
-        :return: The device_types of this InlineResponse2001.  # noqa: E501
-        :rtype: list[DeviceType]
+        :return: The administrators of this InlineResponse2001.  # noqa: E501
+        :rtype: list[User]
         """
-        return self._device_types
+        return self._administrators
 
-    @device_types.setter
-    def device_types(self, device_types):
-        """Sets the device_types of this InlineResponse2001.
+    @administrators.setter
+    def administrators(self, administrators):
+        """Sets the administrators of this InlineResponse2001.
 
 
-        :param device_types: The device_types of this InlineResponse2001.  # noqa: E501
-        :type: list[DeviceType]
+        :param administrators: The administrators of this InlineResponse2001.  # noqa: E501
+        :type: list[User]
         """
 
-        self._device_types = device_types
+        self._administrators = administrators
 
     def to_dict(self):
         """Returns the model properties as a dict"""

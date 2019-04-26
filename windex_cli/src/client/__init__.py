@@ -19,8 +19,6 @@ __version__ = "1.0.0"
 
 # import apis into sdk package
 from client.api.device_api import DeviceApi
-from client.api.device_type_api import DeviceTypeApi
-from client.api.manufacturer_api import ManufacturerApi
 from client.api.user_api import UserApi
 
 # import ApiClient
@@ -42,8 +40,6 @@ from client.models.device_type_body import DeviceTypeBody
 from client.models.device_type_json import DeviceTypeJson
 from client.models.inline_response200 import InlineResponse200
 from client.models.inline_response2001 import InlineResponse2001
-from client.models.inline_response2002 import InlineResponse2002
-from client.models.inline_response2003 import InlineResponse2003
 from client.models.manufacturer import Manufacturer
 from client.models.manufacturer_body import ManufacturerBody
 from client.models.manufacturer_json import ManufacturerJson
