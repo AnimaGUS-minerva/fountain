@@ -28,7 +28,7 @@ paths:
         $ref: '#/components/requestBodies/Device'
       responses:
         201:
-          description: Device created
+          $ref: '#/components/responses/Created'
         400:
           $ref: '#/components/responses/InvalidRequest'
         403:
@@ -108,7 +108,7 @@ paths:
         $ref: '#/components/requestBodies/User'
       responses:
         201:
-          description: User sucessfully created
+          $ref: '#/components/responses/Created'
         400:
           $ref: '#/components/responses/InvalidRequest'
         403:
@@ -494,3 +494,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ApiResponse'
+    Created:
+      description: Object created
+      headers:
+        Location:
+          schema:
+            type: string
+            format: url
