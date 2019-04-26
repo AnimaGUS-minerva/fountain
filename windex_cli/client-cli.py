@@ -29,24 +29,31 @@ def cc_to_snake(string):
 
 
 def call_api(coll, method, obj_id=None, obj_body=None, get_params=None):
-    response = None
+    data = None
+    status = None
+    headers = None
+    success = True
     api_instance = getattr(client, '{}Api'.format(up_first(coll)))(client.ApiClient(configuration))
     if method == 'get':
         if obj_id is not None:
             params = get_params or{}
-            response = getattr(api_instance, 'get_{}'.format(cc_to_snake(coll)))(obj_id, **params)
+            data, status, headers = getattr(api_instance, 'get_{}_with_http_info'.format(cc_to_snake(coll)))(obj_id, **params)
         else:
-            response = getattr(api_instance, 'list_{}s'.format(cc_to_snake(coll)))()
+            data, status, headers = getattr(api_instance, 'list_{}s_with_http_info'.format(cc_to_snake(coll)))()
     elif method == 'post':
         body = json.loads(obj_body)
         obj = getattr(client, '{}Body'.format(up_first(coll)))(**body)
-        response = getattr(api_instance, 'create_{}'.format(cc_to_snake(coll)))(obj)
+        data, status, headers = getattr(api_instance, 'create_{}_with_http_info'.format(cc_to_snake(coll)))(obj)
     elif method == 'put':
         body = json.loads(obj_body)
         obj = getattr(client, '{}Body'.format(up_first(coll)))(**body)
-        response = getattr(api_instance, 'update_{}'.format(cc_to_snake(coll)))(obj_id, obj)
+        data, status, headers = getattr(api_instance, 'update_{}_with_http_info'.format(cc_to_snake(coll)))(obj_id, obj)
 
-    return response
+    if not str(status).startswith('20'):
+        success = False
+        print(f'Error {status}')
+
+    return success, data, status, headers
 
 
 def decode_qr(img):
@@ -88,6 +95,12 @@ def read_qr(qr_code_filename=None):
             sys.exit(1)
 
     return qr.data
+
+
+def get_device(device_id):
+    success, resp_data, _, _ = call_api('device', 'get', obj_id=device_id)
+    if success:
+        return resp_data.device
 
 
 if __name__ == '__main__':
@@ -159,8 +172,16 @@ if __name__ == '__main__':
         if 'body' in args:
             obj_body = args.body
         try:
-            api_response = call_api(args.collection, args.method, obj_id=obj_id, obj_body=obj_body)
-            pprint(api_response)
+            success, resp_data, resp_status, resp_headers = call_api(args.collection, args.method, obj_id=obj_id,
+                                                                     obj_body=obj_body)
+            if not success:
+                sys.exit(1)
+            if resp_status == 201:
+                pprint(f'Object created: {resp_headers.get("Location")}')
+            elif resp_data:
+                pprint(resp_data)
+            else:
+                print(f'HTTP {resp_status}')
         except ApiException as e:
             print("Exception when calling api: %s\n" % e)
             sys.exit(1)
@@ -172,28 +193,42 @@ if __name__ == '__main__':
                 mud_url = args.url
             else:
                 mud_url = read_qr(args.qr_code)
-            call_api('device', 'put', obj_id=args.id, obj_body=f'{{"mud_url": "{mud_url}"}}')
-            print(f'Add MUD URL {mud_url} to device')
+            success, _, _, _ = call_api('device', 'put', obj_id=args.id, obj_body=f'{{"mud_url": "{mud_url}"}}')
+            if success:
+                device = get_device(args.id)
+                if device:
+                    print(f'Add MUD URL {device.mud_url} to device')
         if args.method == 'create':
-            device = call_api('device', 'post', obj_body=f'{{"name": "{args.name}"}}')
+            success, _, _, resp_headers = call_api('device', 'post', obj_body=f'{{"name": "{args.name}"}}')
             # call_api('device', 'post', obj_body={"alias": args.name})
-            print(f"New device {device.name} created")
-            print(f"WPA KEY: {device.wpa_key}")
+            if success:
+                device = get_device(resp_headers.get('Location').rsplit('/', 1)[1])
+                if device:
+                    print(f"New device {device.name} created with ID {device.id}")
+                    # print(f"WPA KEY: {device.wpa_key}")
         if args.method == 'new':
-            devices = call_api('device', 'get').devices
-            # devices = call_api('device', 'get', get_params={"deviceStatus": "new"}).devices
-            if not devices:
-                print('No new device detected')
-            else:
-                print('List of devices:\n  - {}'.format(
-                    '\n  - '.join(f"{d.device.id}: {d.device.name}" for d in sorted(devices, key=lambda x: x.device.id))))
-                    # '\n  - '.join(f"{d.device.id}: {d.device.alias}" for d in devices)))
+            success, resp_data, _, _ = call_api('device', 'get')
+            # call_api('device', 'get', get_params={"deviceStatus": "new"})
+            if success:
+                devices = resp_data.devices
+                if not devices:
+                    print('No new device detected')
+                else:
+                    print('List of devices:\n  - {}'.format(
+                        '\n  - '.join(f"{d.device.id}: {d.device.name}" for d in sorted(devices, key=lambda x: x.device.id))))
+                        # '\n  - '.join(f"{d.device.id}: {d.device.alias}" for d in devices)))
         if args.method == 'enable':
-            device = call_api('device', 'get', obj_id=args.id).device
-            if not device.mud_url:
-                print('Please add a MUD URL to the device with the device scan command')
-                sys.exit(1)
-            call_api('device', 'put', obj_id=args.id, obj_body='{"device_enabled": true}')
-            print(f"Device {device.name} enabled")
-            # print(f"Device {device.alias} enabled")
+            success, resp_data, _, _ = call_api('device', 'get', obj_id=args.id)
+            if success:
+                device = resp_data.device
+                if not device.mud_url:
+                    print('Please add a MUD URL to the device with the device scan command')
+                    sys.exit(1)
+                success, _, _, _ = call_api('device', 'put', obj_id=args.id, obj_body='{"device_enabled": true}')
+                if success:
+                    device = get_device(args.id)
+                    if device:
+                        # TODO check enable flag in device
+                        print(f"Device {device.name} enabled")
+                        # print(f"Device {device.alias} enabled")
         sys.exit(0)
