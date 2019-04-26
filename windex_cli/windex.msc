@@ -1,0 +1,44 @@
+msc {
+    hscale = "2";
+
+    C, S;
+    |||;
+
+    C box C [label="Mobile App"], S box S [label="Windex Server"];
+
+    |||;
+    --- [label="User log-in (first time only -> no certificate in the app)"];
+
+    C => S [label="POST /administrators(username)"];
+    S => S [label="Generate certificate"];
+    C << S [label="user(username, publicKey)"];
+
+
+    |||;
+    --- [label="User add device"];
+
+    C => S [label="POST /devices(alias)"];
+    S => S [label="wpaKey = generateWPAKey()"];
+    S => S [label="createDevice(alias, wpaKey)"];
+    C << S [label="device(alias, wpaKey)"];
+
+    |||;
+    C note C [label="User plugs device and enter WPA"];
+    S => S [label="device = newDeviceDetected(wpaKey)"];
+    S => S [label="blockDevice(device)"];
+    S => S [label="mudUrl = retrieveMUDUrlIfAvailable()"];
+    C <= S [label="PUSH /device(name, alias) (optional)"];
+
+
+    |||;
+    --- [label="User authorizes the device"];
+
+    C => S [label="GET /devices?deviceState=new OR GET /devices/id (if PUSH received for a specific device)"];
+    C << S [label="device(s)(name, alias, mudUrl)"];
+    C => C [label="device = selectDevice(alias) (if more than one)"];
+    C => C [label="authorizeDevice(device)"];
+    --- [label="if no MUD URL"];
+    C => C [label="mudUrl = scanQrCode()"];
+    C => S [label="PUT /device/id(deviceEnabled=true, mudUrl)"];
+    C << S [label="device(deviceEnabled=true)"];
+}
