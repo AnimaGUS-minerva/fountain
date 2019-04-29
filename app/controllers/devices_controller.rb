@@ -32,6 +32,7 @@ class DevicesController < SecureGatewayController
       @object = Device.create(device_params)
     end
     if @object
+      @object.generate_wpa
       @object.save
       head 201, :location => url_for(@object)
     else

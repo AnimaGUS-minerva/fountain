@@ -1,4 +1,5 @@
 require 'mud_socket'
+require 'securerandom'
 
 class Device < ActiveRecord::Base
   belongs_to :manufacturer
@@ -407,6 +408,10 @@ class Device < ActiveRecord::Base
     calculate_ldevid_hash
   end
 
+  def generate_wpa
+    self.wpa_key = SecureRandom.hex(4)
+  end
+
   protected
   def validate_counts
     unless self.traffic_counts
@@ -455,6 +460,12 @@ class Device < ActiveRecord::Base
     end
   end
 
+  def wpa_key=(x)
+    if x.length < 8
+      return
+    end
+    self[:wpa_key] = x
+  end
 
 
 end

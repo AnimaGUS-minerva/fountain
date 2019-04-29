@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.text "idevid_hash"
     t.text "ldevid"
     t.text "ldevid_hash"
+    t.text "wpa_key"
   end
 
   create_table "manufacturers", id: :serial, force: :cascade do |t|

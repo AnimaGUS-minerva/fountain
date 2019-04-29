@@ -59,6 +59,7 @@ class DeviceJson(object):
         'idevid_hash': 'str',
         'ldevid': 'str',
         'ldevid_hash': 'str',
+        'wpa_key': 'str',
         'id': 'int'
     }
 
@@ -90,10 +91,11 @@ class DeviceJson(object):
         'idevid_hash': 'idevid_hash',
         'ldevid': 'ldevid',
         'ldevid_hash': 'ldevid_hash',
+        'wpa_key': 'wpa_key',
         'id': 'id'
     }
 
-    def __init__(self, name=None, fqdn=None, eui64=None, created_at=None, updated_at=None, device_type_id=None, manufacturer_id=None, idev_id=None, traffic_counts=None, mud_url=None, profile_id=None, current_vlan=None, wan_enabled=None, lan_enabled=None, firewall_rules=None, firewall_rule_names=None, deleted=False, quaranteed=None, device_enabled=None, device_state=None, failure_details=None, ipv4=None, ipv6=None, acp_prefix=None, idevid_hash=None, ldevid=None, ldevid_hash=None, id=None):  # noqa: E501
+    def __init__(self, name=None, fqdn=None, eui64=None, created_at=None, updated_at=None, device_type_id=None, manufacturer_id=None, idev_id=None, traffic_counts=None, mud_url=None, profile_id=None, current_vlan=None, wan_enabled=None, lan_enabled=None, firewall_rules=None, firewall_rule_names=None, deleted=False, quaranteed=None, device_enabled=None, device_state=None, failure_details=None, ipv4=None, ipv6=None, acp_prefix=None, idevid_hash=None, ldevid=None, ldevid_hash=None, wpa_key=None, id=None):  # noqa: E501
         """DeviceJson - a model defined in OpenAPI"""  # noqa: E501
 
         self._name = None
@@ -123,6 +125,7 @@ class DeviceJson(object):
         self._idevid_hash = None
         self._ldevid = None
         self._ldevid_hash = None
+        self._wpa_key = None
         self._id = None
         self.discriminator = None
 
@@ -180,6 +183,8 @@ class DeviceJson(object):
             self.ldevid = ldevid
         if ldevid_hash is not None:
             self.ldevid_hash = ldevid_hash
+        if wpa_key is not None:
+            self.wpa_key = wpa_key
         if id is not None:
             self.id = id
 
@@ -755,6 +760,27 @@ class DeviceJson(object):
         """
 
         self._ldevid_hash = ldevid_hash
+
+    @property
+    def wpa_key(self):
+        """Gets the wpa_key of this DeviceJson.  # noqa: E501
+
+
+        :return: The wpa_key of this DeviceJson.  # noqa: E501
+        :rtype: str
+        """
+        return self._wpa_key
+
+    @wpa_key.setter
+    def wpa_key(self, wpa_key):
+        """Sets the wpa_key of this DeviceJson.
+
+
+        :param wpa_key: The wpa_key of this DeviceJson.  # noqa: E501
+        :type: str
+        """
+
+        self._wpa_key = wpa_key
 
     @property
     def id(self):

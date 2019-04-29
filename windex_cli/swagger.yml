@@ -287,6 +287,8 @@ components:
           type: string
         ldevid_hash:
           type: string
+        wpa_key:
+          type: string
     Device:
       type: object
       properties:

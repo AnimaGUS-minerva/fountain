@@ -144,7 +144,7 @@ if __name__ == '__main__':
             # - Get new devices
             obj_subparser.add_parser('new', help='Get the list of new devices')
             # - Authorize device
-            obj_parser_enable = obj_subparser.add_parser('enable', help='Enable a device')
+            obj_parser_enable = obj_subparser.add_parser('enable', help='Enable a device (successfull scan will also enable the device)')
             obj_parser_enable.add_argument('--id', type=str, help='The ID of the device to enable', required=True)
 
     args = parser.parse_args()
@@ -205,7 +205,7 @@ if __name__ == '__main__':
                 device = get_device(resp_headers.get('Location').rsplit('/', 1)[1])
                 if device:
                     print(f"New device {device.name} created with ID {device.id}")
-                    # print(f"WPA KEY: {device.wpa_key}")
+                    print(f"WPA KEY: {device.wpa_key}")
         if args.method == 'new':
             success, resp_data, _, _ = call_api('device', 'get')
             # call_api('device', 'get', get_params={"deviceStatus": "new"})
