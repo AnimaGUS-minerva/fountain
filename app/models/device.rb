@@ -463,11 +463,9 @@ class Device < ActiveRecord::Base
   end
 
   def wpa_key=(x)
-    if x.length < 8
-      return
+    unless x.length < 8
+      self[:wpa_key] = x
     end
-    self[:wpa_key] = x
   end
-
 
 end

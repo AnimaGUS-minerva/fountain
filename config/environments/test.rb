@@ -43,3 +43,5 @@ end
 
 $MUD_TMPDIR_PUBLIC = "tmp/mudfiles"
 $MUD_TMPDIR        = "tmp/mudfiles"
+
+$ENABLE_TOFU = true

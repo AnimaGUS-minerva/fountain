@@ -39,8 +39,12 @@ class AdministratorsController < SecureGatewayController
       return
     end
 
+    # if TOFU and first admin, set the administrator flag
+    admin = ($ENABLE_TOFU and Administrator.count == 0)
     @administrator = Administrator.create(public_key: @clientcert.to_der,
-                                          name: params[:name])
+                                          name: params[:name],
+                                          admin: admin)
+
     head 201, :location => url_for(@administrator)
   end
 

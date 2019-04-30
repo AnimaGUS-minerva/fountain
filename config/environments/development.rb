@@ -62,4 +62,4 @@ else
   FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
 end
 
-
+$ENABLE_TOFU = true

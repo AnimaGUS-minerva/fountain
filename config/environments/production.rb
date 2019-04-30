@@ -85,3 +85,5 @@ $MUD_TMPDIR        = "/home/mud/tmp"
 if ENV['CERTDIR']
   FountainKeys.ca.certdir = Pathname.new(ENV['CERTDIR'])
 end
+
+$ENABLE_TOFU = false
