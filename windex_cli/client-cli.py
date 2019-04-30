@@ -102,6 +102,11 @@ def get_device(device_id):
     if success:
         return resp_data.device
 
+def get_user(device_id):
+    success, resp_data, _, _ = call_api('user', 'get', obj_id=device_id)
+    if success:
+        return resp_data.administrator
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='windex-cli')
@@ -125,6 +130,11 @@ if __name__ == '__main__':
         obj_parser_put.add_argument('--id', type=int, help='ID of the {} to update'.format(coll), required=True)
         obj_parser_put.add_argument('--body', type=str, help='{} body with updates'.format(up_first(coll)),
                                     required=True)
+
+        if coll == 'user':
+            # - Add user
+            obj_parser_create = obj_subparser.add_parser('create', help='Create a new user')
+            obj_parser_create.add_argument('--name', type=str, help='Name of the new user', required=True)
 
         if coll == 'device':
             # - Scan QR code
@@ -186,6 +196,19 @@ if __name__ == '__main__':
             print("Exception when calling api: %s\n" % e)
             sys.exit(1)
         sys.exit(0)
+
+    if args.collection == 'user':
+        if args.method == 'create':
+            success, _, _, resp_headers = call_api('user', 'post', obj_body=f'{{"name": "{args.name}"}}')
+            # call_api('device', 'post', obj_body={"alias": args.name})
+            if success:
+                user = get_user(resp_headers.get('Location').rsplit('/', 1)[1])
+                if user:
+                    print(f"New user {user.name} created with ID {user.id}")
+                    if user.admin:
+                        print("User has admin rights")
+                    else:
+                        print("User does not have admin rights")
 
     if args.collection == 'device':
         if args.method == 'scan':
