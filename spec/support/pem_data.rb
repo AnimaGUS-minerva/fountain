@@ -28,4 +28,6 @@ def highwaytest_clientcert_f20001
   @highwaytest_clientcert_f20001 ||= IO.binread("spec/files/product/00-D0-E5-F2-00-01/device.crt")
 end
 
-
+def smarkaklink_client_1502
+  @smarkaklink_client_01 ||= IO.binread("spec/files/product/Smarkaklink-1502449999/ldevice.crt")
+end
