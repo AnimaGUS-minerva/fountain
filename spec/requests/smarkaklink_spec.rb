@@ -44,6 +44,17 @@ RSpec.describe "Smarkaklink", type: :request do
       expect(response).to have_http_status(400)
       expect(response['Text']).to include("request-voucher-request")
     end
+
+    it "should reject a /requestvoucherrequest with a missing voucher-challenge-nonce" do
+      # get the Base64 of the parboiled signed request
+      bodyjs = { "ietf:request-voucher-request":
+                   { "hello": "there" }
+               }.to_json
+
+      do_rvr_post_1502(bodyjs)
+      expect(response).to have_http_status(400)
+      expect(response['Text']).to include("missing voucher-challenge-nonce")
+    end
   end
 
 
