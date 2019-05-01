@@ -26,10 +26,13 @@ class CmsVoucherRequest < VoucherRequest
     @pkcs7_voucher ||= calc_registrar_voucher_request_pkcs7
   end
 
+  CMS_VOUCHER_REQUEST_TYPE = 'application/voucher-cms+json'.freeze
   def registrar_voucher_request_type
-    'application/voucher-cms+json'
+    CMS_VOUCHER_REQUEST_TYPE
   end
+
+  CMS_VOUCHER_TYPE = 'application/voucher-cms+json'.freeze
   def registrar_voucher_desired_type
-    'application/voucher-cms+json'
+    CMS_VOUCHER_TYPE
   end
 end
