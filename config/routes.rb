@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get  '/.well-known/est/cacerts',        to: 'est#cacerts'
   get  '/.well-known/est/csrattributes',  to: 'est#csrattributes'
   post '/.well-known/est/simpleenroll',   to: 'est#simpleenroll'
+  post '/.well-known/est/requestvoucherrequest', to: 'smarkaklink#rvr'
 
   if true # was $COAPSERVER, but it does not get set early enough.
     #get '/.well-known/core',   to: 'core#index'
