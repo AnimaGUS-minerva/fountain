@@ -51,19 +51,31 @@ class SmarkaklinkController < ApiController
       return
     end
 
+    sp_nonce = nil
+    @ec = OpenSSL::PKey::EC::IES.new(FountainKeys.ca.jrc_priv_key, FountainKeys.ca.client_curve)
+    begin
+      sp_nonce = @ec.private_decrypt(Base64.urlsafe_decode64(encryptedSPnonce))
+    end
 
+    unless sp_nonce
+      logger.info "Nonce could not be decrypted with JRC key"
+      head 403, text: "nonce not acceptable"
+      return
+    end
 
     vr = Chariwt::VoucherRequest.new
     vr.generate_nonce
     vr.assertion    = :proximity
-    vr.signing_cert = PledgeKeys.instance.idevid_pubkey
+    vr.signing_cert = FountainKeys.ca.jrc_pub_key
     vr.serialNumber = vr.eui64_from_cert
     vr.createdOn    = Time.now
-    vr.proximityRegistrarCert = http_handler.peer_cert
-    if prior_voucher
-      vr.priorSignedVoucherRequest = prior_voucher
-    end
-    smime = vr.pkcs_sign(PledgeKeys.instance.idevid_privkey)
+    vr.proximityRegistrarCert = @cert
+    vr.attributes['voucher-challenge-nonce'] = sp_nonce
+    smime = vr.pkcs_sign(FountainKeys.ca.jrc_priv_key)
+
+    render :body => Base64.strict_decode64(smime),
+           :content_type => CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE,
+           :charset => nil
 
   end
 
