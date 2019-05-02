@@ -37,6 +37,7 @@ RSpec.describe "Smarkaklink", type: :request do
 
       vr = Chariwt::VoucherRequest.from_pkcs7(response.body)
       expect(vr).to_not be_nil
+      # nonce generated to be well-known, normally random
       expect(vr.attributes['voucher-challenge-nonce']).to eq("abcd1234")
     end
 

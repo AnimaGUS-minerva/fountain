@@ -35,14 +35,6 @@ GIT
     ecdsa (1.3.0)
 
 GIT
-  remote: https://github.com/CIRALabs/ruby-openssl.git
-  revision: f00f1ea7654041296b98a2729326dc8648861694
-  branch: cms-added
-  specs:
-    openssl (2.2.0.pre.mcr1)
-      ipaddr
-
-GIT
   remote: https://github.com/mcr/ChariWTs.git
   revision: f6c52c59a9b54b103c487a8f95a88018a97da916
   branch: master
@@ -64,6 +56,12 @@ GIT
   revision: 307851690b31face4b83c464b4260eae44fb3f4c
   specs:
     fixture_save (0.0.1)
+
+PATH
+  remote: ../minerva/ruby-openssl
+  specs:
+    openssl (2.2.0.pre.mcr1)
+      ipaddr
 
 GEM
   remote: https://rubygems.org/
