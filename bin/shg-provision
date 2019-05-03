@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+
+# this script is adapted from shg-provision, in order to bring a shg_fountain device into
+# communication with a MASA at highway-test.example.com:9443.
+
+WELL_KNOWN_ADDRESS="-k https://highway-test.example.com:9443/shg-provision"
+
+WAN_DEV_NAME=eth0
+UPLOADFILE="tmp/provision.json"
+KEY_NAME="tmp/shg"
+TGZ_NAME="tmp/shg-filesystem"
+
+IP6_ULA_PREFIX=fd3c:e618:51e2::
+
+# extract bytes 2,3,4 of ULA address.
+ULA_HOSTNAME=n$(echo $IP6_ULA_PREFIX | cut -c3-4,6-9 ).r.dasblinkenled.org
+
+printf "[ req ]\ndistinguished_name=shg\n[shg]\n[distinguished_name]\n[SAN]\nsubjectAltName=DNS:${ULA_HOSTNAME},DNS:mud.${ULA_HOSTNAME}" >tmp/shg.ossl.cnf
+
+# generate cert
+if [ ! -f ${KEY_NAME}.key ] || [ ! -f ${KEY_NAME}.csr ]; then
+    echo "Generating certs..."
+    openssl req -new -newkey rsa:2048 -nodes -subj "/CN=${ULA_HOSTNAME}" \
+            -keyout ${KEY_NAME}.key -out ${KEY_NAME}.csr -outform DER \
+            -reqexts SAN \
+            -config tmp/shg.ossl.cnf \
+            #                1>/dev/null 2>&1
+            chmod 600 ${KEY_NAME}.key
+fi
+
+# encode CSR, not wrapped, as it goes into JSON
+ENCODED_CSR=$(base64 -w 0 ${KEY_NAME}.csr)
+
+# retrieve adresses
+echo "Retrieve addresses..."
+WAN_ETH=3c:97:0e:b9:cd:98
+LAN_ETH=6c:88:14:34:93:bc
+
+# POST Turris information
+echo "Contact server with information..."
+JSON="{\"wan-mac\": \"${WAN_ETH}\", \"switch-mac\": \"${LAN_ETH}\", \"ula\": \"${IP6_ULA_PREFIX}\", \"csr\": \"${ENCODED_CSR}\"}"
+echo $JSON >$UPLOADFILE
+HTTP_STATUS=$(curl ${WELL_KNOWN_ADDRESS} -H 'Content-Type: application/json' --data-raw "${JSON}"  -Ss -w "%{http_code}" -o ${TGZ_NAME}.tgz)
+
+if [ ${HTTP_STATUS} -ne 200 ]; then
+    echo "Failed to contact server: HTTP ${HTTP_STATUS}"
+    exit 1;
+fi
+
+
+
+
+

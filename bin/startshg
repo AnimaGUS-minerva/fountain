@@ -1,0 +1,26 @@
+#!/bin/sh
+
+export CERTDIR=spec/files/product/Smarkaklink-n3ce618
+export SERVCERT=$CERTDIR/device.crt
+export SERVKEY=$CERTDIR/key.pem
+
+RAILS_ENV=${RAILS_ENV-development}
+export RAILS_ENV
+
+if [ -n "$TAIL" ]; then
+    touch log/${RAILS_ENV}.log
+    tail -f log/${RAILS_ENV}.log &
+    TAIL_PID=$!
+    trap "kill $TAIL_PID; exit 0" 1 2 3 15
+fi
+
+LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1 bundle exec thin start --ssl \
+  --address ::2  \
+  --port    8443  \
+  --ssl-cert-file $SERVCERT \
+  --ssl-key-file  $SERVKEY  $@
+
+if [ -n "$TAIL_PID" ]; then kill $TAIL_PID; fi
+echo DONE
+
+
