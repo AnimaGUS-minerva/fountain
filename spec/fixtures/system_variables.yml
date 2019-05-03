@@ -30,11 +30,12 @@ register:
   variable: 'registrar_id'
   value: "01122334455"
 
-
 animaacp:
   id: 13
   variable: 'anima_acp'
   value: 1
 
-
-  
+acp_prefix:
+  id: 14
+  variable: 'acp_prefix'
+  value: "fd00:1234:5678::/48"
