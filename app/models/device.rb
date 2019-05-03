@@ -113,6 +113,7 @@ class Device < ActiveRecord::Base
   def csr_attributes
     ca = CSRAttributes.new
     ca.add_attr("subjectAltName", CSRAttributes.rfc822Name(rfc822Name))
+    save!
     return ca
   end
 
@@ -164,6 +165,7 @@ class Device < ActiveRecord::Base
     unless SystemVariable.boolvalue?(:anima_acp)
       ldevid.subject    = csrobj.subject
     else
+
       ldevid.subject    = OpenSSL::X509::Name.new([["emailAddress", rfc822Name, 12]])
 
       extension_factory.subject_certificate = ldevid
