@@ -1,36 +1,37 @@
 #!/bin/sh
 #
 
+cd spec/files/product/Smarkaklink-n3ce618
 # this script is adapted from shg-provision, in order to bring a shg_fountain device into
 # communication with a MASA at highway-test.example.com:9443.
 
 WELL_KNOWN_ADDRESS="-k https://highway-test.example.com:9443/shg-provision"
 
 WAN_DEV_NAME=eth0
-UPLOADFILE="tmp/provision.json"
-KEY_NAME="tmp/shg"
-TGZ_NAME="tmp/shg-filesystem"
+UPLOADFILE="provision.json"
+KEY_FILE="key.pem"
+TGZ_NAME="shg-filesystem"
 
 IP6_ULA_PREFIX=fd3c:e618:51e2::
 
 # extract bytes 2,3,4 of ULA address.
 ULA_HOSTNAME=n$(echo $IP6_ULA_PREFIX | cut -c3-4,6-9 ).r.dasblinkenled.org
 
-printf "[ req ]\ndistinguished_name=shg\n[shg]\n[distinguished_name]\n[SAN]\nsubjectAltName=DNS:${ULA_HOSTNAME},DNS:mud.${ULA_HOSTNAME}" >tmp/shg.ossl.cnf
+printf "[ req ]\ndistinguished_name=shg\n[shg]\n[distinguished_name]\n[SAN]\nsubjectAltName=DNS:${ULA_HOSTNAME},DNS:mud.${ULA_HOSTNAME}" >shg.ossl.cnf
 
 # generate cert
-if [ ! -f ${KEY_NAME}.key ] || [ ! -f ${KEY_NAME}.csr ]; then
+if [ ! -f ${KEY_FILE} ] || [ ! -f ${KEY_NAME}.csr ]; then
     echo "Generating certs..."
-    openssl req -new -newkey rsa:2048 -nodes -subj "/CN=${ULA_HOSTNAME}" \
-            -keyout ${KEY_NAME}.key -out ${KEY_NAME}.csr -outform DER \
+    openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -subj "/CN=${ULA_HOSTNAME}" \
+            -keyout ${KEY_FILE} -out ${KEY_NAME}.csr -outform DER \
             -reqexts SAN \
-            -config tmp/shg.ossl.cnf \
+            -config shg.ossl.cnf \
             #                1>/dev/null 2>&1
-            chmod 600 ${KEY_NAME}.key
+            chmod 600 ${KEY_FILE}
 fi
 
 # encode CSR, not wrapped, as it goes into JSON
-ENCODED_CSR=$(base64 -w 0 ${KEY_NAME}.csr)
+ENCODED_CSR=$(base64 -w 0 shg.csr)
 
 # retrieve adresses
 echo "Retrieve addresses..."
