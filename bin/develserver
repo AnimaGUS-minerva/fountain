@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# see if rvm already initialized
+if [ -z "${MY_RUBY_HOME}" ]; then
+  . /etc/profile.d/rvm.sh
+  rvm use 2.6.2
+fi
+
+echo RUNNING in `pwd`
+dir=$(pwd)
+
+RAILS_ENV=${RAILS_ENV-development}
+export RAILS_ENV
+
+certdir=${dir}/db/cert
+if [ -n "${CERTDIR}" ]; then
+    certdir=${CERTDIR}
+    priv=${CERTDIR}/jrc_prime256v1.key;
+    cert=${CERTDIR}/jrc_prime256v1.cert;
+else
+    case $RAILS_ENV in
+        production) priv=${certdir}/jrc_prime256v1.key;
+                    cert=${certdir}/jrc_prime256v1.crt;;
+
+        *) priv=${dir}/spec/files/cert/jrc_prime256v1.key;
+           cert=${dir}/spec/files/cert/jrc_prime256v1.crt;
+           export CERTDIR=${dir}/spec/files/cert;;
+    esac
+fi
+
+if [ -n "$TAIL" ]; then
+    touch log/${RAILS_ENV}.log
+    tail -f log/${RAILS_ENV}.log &
+    TAIL_PID=$!
+    trap "kill $TAIL_PID; exit 0" 1 2 3 15
+fi
+
+bundle exec thin start --ssl \
+  --address ::  \
+  --port    8443  \
+  --ssl-cert-file ${cert} \
+  --ssl-key-file  ${priv} "$@"
+
+
+
+
