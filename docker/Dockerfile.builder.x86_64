@@ -6,7 +6,7 @@ RUN apt-get update -qq && apt-get install -y postgresql-client libgmp10-dev libg
     mkdir -p /app/highway && \
     mkdir -p /gems/highway && cd /gems/highway && \
     git config --global http.sslVerify "false" && \
-    git clone --single-branch --branch cms-added https://github.com/CIRALabs/ruby-openssl.git && \
+    git clone --single-branch --branch ies-cms-dtls https://github.com/CIRALabs/ruby-openssl.git && \
     git clone --single-branch --branch binary_http_multipart https://github.com/AnimaGUS-minerva/multipart_body.git && \
     git clone --single-branch --branch ecdsa_interface_openssl https://github.com/AnimaGUS-minerva/ruby_ecdsa.git && \
     git clone --single-branch --branch v0.6.0 https://github.com/mcr/ChariWTs.git && \
@@ -19,13 +19,15 @@ RUN apt-get update -qq && apt-get install -y postgresql-client libgmp10-dev libg
 RUN rm -rf /usr/include/x86_64-linux-gnu/openssl && \
     mkdir -p /src/highway && \
     cd /src/highway && \
-    git clone -b dtls-listen-refactor-1.1.1b git://github.com/mcr/openssl.git && \
+    git clone -b dtls-listen-refactor-1.1.1c git://github.com/mcr/openssl.git && \
     cd /src/highway/openssl && \
-    ./Configure --prefix=/usr --openssldir=/usr/lib/ssl --libdir=lib/linux-x86_64 no-idea no-mdc2 no-rc5 no-zlib no-ssl3 enable-unit-test linux-x86_64 && \
+    ./Configure --prefix=/usr --openssldir=/usr/lib/ssl --libdir=lib/x86_64-linux-gnu no-idea no-mdc2 no-rc5 no-zlib no-ssl3 enable-unit-test linux-x86_64 && \
     id && make && \
     cd /src/highway/openssl && make install_sw && \
     gem install rake-compiler --source=http://rubygems.org && \
     cd /gems/highway/ruby-openssl && rake compile
+
+RUN touch /app/ietf104.txt
 
 RUN gem install bundler --source=http://rubygems.org
 

@@ -9,7 +9,9 @@ COPY --from=builder /gems/highway /gems/highway
 COPY --from=builder /bin/sash     /bin/sash
 COPY --from=builder /usr/bin/env  /usr/bin/env
 COPY --from=builder /bin/busybox  /bin/busybox
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libssl.so* \
+                    /usr/lib/x86_64-linux-gnu/libcrypto.so* \
+                    /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
