@@ -1,6 +1,8 @@
 #!/bin/sh
 #
 
+set -e
+
 # spec/files/product/Smarkaklink-n3ce618
 cd $(dirname $0)
 # this script is adapted from shg-provision, in order to bring a shg_fountain device into
@@ -20,19 +22,28 @@ ULA_HOSTNAME=n$(echo $IP6_ULA_PREFIX | cut -c3-4,6-9 ).r.dasblinkenled.org
 
 printf "[ req ]\ndistinguished_name=shg\n[shg]\n[distinguished_name]\n[SAN]\nsubjectAltName=DNS:${ULA_HOSTNAME},DNS:mud.${ULA_HOSTNAME}" >shg.ossl.cnf
 
+# generate key
+if [ ! -f ${KEY_FILE} ] ; then
+    echo "Generating private key certs..."
+    openssl genpkey -out ${KEY_FILE} -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1
+    chmod 600 ${KEY_FILE}
+else
+    echo REUSING PRIVATE KEY
+fi
+
 # generate cert
-if [ ! -f ${KEY_FILE} ] || [ ! -f key.csr ]; then
+if [ ! -f key.csr ]; then
     echo "Generating certs..."
-    openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -subj "/CN=${ULA_HOSTNAME}" \
-            -keyout ${KEY_FILE} -out key.csr -outform DER \
+    openssl req -new -nodes -subj "/CN=${ULA_HOSTNAME}" \
+            -key ${KEY_FILE} -out key.csr -outform DER \
             -reqexts SAN \
-            -config shg.ossl.cnf \
-            #                1>/dev/null 2>&1
-            chmod 600 ${KEY_FILE}
+            -config shg.ossl.cnf
+else
+    echo REUSING CSR
 fi
 
 # encode CSR, not wrapped, as it goes into JSON
-ENCODED_CSR=$(base64 -w 0 shg.csr)
+ENCODED_CSR=$(base64 -w 0 key.csr)
 
 # retrieve adresses
 echo "Retrieve addresses..."
