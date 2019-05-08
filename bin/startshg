@@ -1,8 +1,8 @@
 #!/bin/sh
 
-export CERTDIR=spec/files/product/Smarkaklink-n3ce618
-export SERVCERT=$CERTDIR/device.crt
-export SERVKEY=$CERTDIR/key.pem
+export CERTDIR=`pwd`/spec/files/product/Smarkaklink-n3ce618
+export SERVCERT=$CERTDIR/jrc_prime256v1.crt
+export SERVKEY=$CERTDIR/jrc_prime256v1.key
 
 RAILS_ENV=${RAILS_ENV-development}
 export RAILS_ENV

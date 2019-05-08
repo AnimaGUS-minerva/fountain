@@ -1,7 +1,8 @@
 #!/bin/sh
 #
 
-cd spec/files/product/Smarkaklink-n3ce618
+# spec/files/product/Smarkaklink-n3ce618
+cd $(dirname $0)
 # this script is adapted from shg-provision, in order to bring a shg_fountain device into
 # communication with a MASA at highway-test.example.com:9443.
 
@@ -20,10 +21,10 @@ ULA_HOSTNAME=n$(echo $IP6_ULA_PREFIX | cut -c3-4,6-9 ).r.dasblinkenled.org
 printf "[ req ]\ndistinguished_name=shg\n[shg]\n[distinguished_name]\n[SAN]\nsubjectAltName=DNS:${ULA_HOSTNAME},DNS:mud.${ULA_HOSTNAME}" >shg.ossl.cnf
 
 # generate cert
-if [ ! -f ${KEY_FILE} ] || [ ! -f ${KEY_NAME}.csr ]; then
+if [ ! -f ${KEY_FILE} ] || [ ! -f key.csr ]; then
     echo "Generating certs..."
     openssl req -new -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -subj "/CN=${ULA_HOSTNAME}" \
-            -keyout ${KEY_FILE} -out ${KEY_NAME}.csr -outform DER \
+            -keyout ${KEY_FILE} -out key.csr -outform DER \
             -reqexts SAN \
             -config shg.ossl.cnf \
             #                1>/dev/null 2>&1
