@@ -1,5 +1,14 @@
 # Windex tools
 
+## Installation
+
+```bash
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+You will also need to install the `zbar` library on your system.
 
 ## Using client CLI
 
@@ -27,7 +36,6 @@ openapi-generator-cli generate -i swagger.yml -g python --additional-properties=
 
 
 ## Client documentation
-
 
 [Windex client API](src/README.md)
 
