@@ -1,5 +1,5 @@
-# XXX should this be subclass of SecureGatewayControl
-class SmarkaklinkController < ApiController
+class SmarkaklinkController < SecureGatewayController
+  include Response
 
   def rvr
     media_types = HTTP::Accept::MediaTypes.parse(request.env['CONTENT_TYPE'])
@@ -24,13 +24,19 @@ class SmarkaklinkController < ApiController
 
   # a VOUCHER is posted for the Adolescent Router
   def voucher
-    media_types = HTTP::Accept::MediaTypes.parse(request.env['CONTENT_TYPE'])
     content_type=request.env['CONTENT_TYPE']
+    media_types = HTTP::Accept::MediaTypes.parse(content_type)
+    if media_types == nil or media_types.length < 1
+      head 406,
+           text: "unknown voucher content-type: #{content_type}"
+      return
+    end
+
+    media_type = media_types.first
 
     case
     when (media_type.mime_type  == 'application/voucher-cms+json')
       smarkaklink_voucher_pkcs
-      api_response({ "version": 1, "status": "false", "reason":"invalid voucher type"}, 200)
       return
 
     else
@@ -101,7 +107,24 @@ class SmarkaklinkController < ApiController
   def smarkaklink_voucher_pkcs
     # params has the binary of the voucher in it. Process it into a voucher.
 
-    vr = Chariwt::Voucher.from_pkcs7()
+    begin
+      @voucher = Chariwt::Voucher.from_pkcs7(request.body.read, FountainKeys.ca.masa_crt)
+      unless @voucher.try(:pinnedDomainCert)
+        api_response({ "version": 1, "status": "false", "reason":"voucher did not decode"}, 200)
+        return
+      end
+
+      if @voucher.pinnedDomainCert == @clientcert
+        # it matches, so this is our mommy!
+        if @administator
+          @administrator.admin!
+          api_response({ "version": 1, "status": "true", "reason":"ok"}, 200)
+          return
+        end
+      end
+      api_response({ "version": 1, "status": "false", "reason":"voucher did not verify client"}, 200)
+    end
+
 
   end
 

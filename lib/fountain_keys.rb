@@ -126,7 +126,7 @@ class FountainKeys
 
   def masa_crt
     # load *our* MASA key.
-    @masa_crt ||= OpenSSL::X509::Certificate.new(certdir.join("masa.crt"))
+    @masa_crt ||= OpenSSL::X509::Certificate.new(IO::read(certdir.join("masa.crt")))
   end
 
   protected

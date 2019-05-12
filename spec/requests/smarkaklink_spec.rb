@@ -11,7 +11,7 @@ RSpec.describe "Smarkaklink", type: :request do
   # set up JRC keys to testing ones
   before(:each) do
     SystemVariable.setbool(:open_registrar, false)
-    FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+    FountainKeys.ca.certdir = Rails.root.join('spec','files','product', 'Smarkaklink-n3ce618')
     @env = nil
   end
 
