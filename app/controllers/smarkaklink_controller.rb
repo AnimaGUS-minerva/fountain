@@ -22,6 +22,22 @@ class SmarkaklinkController < ApiController
     end
   end
 
+  # a VOUCHER is posted for the Adolescent Router
+  def voucher
+    media_types = HTTP::Accept::MediaTypes.parse(request.env['CONTENT_TYPE'])
+    content_type=request.env['CONTENT_TYPE']
+
+    case
+    when (media_type.mime_type  == 'application/voucher-cms+json')
+      smarkaklink_voucher_pkcs
+      api_response({ "version": 1, "status": "false", "reason":"invalid voucher type"}, 200)
+      return
+
+    else
+      api_response({ "version": 1, "status": "false", "reason":"invalid voucher type"}, 200)
+    end
+  end
+
   private
 
   def admin_cert_info
@@ -81,5 +97,13 @@ class SmarkaklinkController < ApiController
            :charset => nil
 
   end
+
+  def smarkaklink_voucher_pkcs
+    # params has the binary of the voucher in it. Process it into a voucher.
+
+    vr = Chariwt::Voucher.from_pkcs7()
+
+  end
+
 
 end

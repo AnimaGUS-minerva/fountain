@@ -62,5 +62,20 @@ RSpec.describe "Smarkaklink", type: :request do
     end
   end
 
+  describe "voucher response" do
+    def do_voucher_post_1502(body)
+      @env ||= Hash.new
+      @env["SSL_CLIENT_CERT"] = smarkaklink_client_1502
+      @env["HTTP_ACCEPT"]  = "application/json"
+      @env["CONTENT_TYPE"] = CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE
+      post '/.well-known/est/voucher', :params => body, :headers => @env
+    end
+    it "should accept a voucher in Adolescent Registrar mode" do
+      body = IO::read("spec/files/product/Smarkaklink-n3ce618/voucher_3c-97-0e-b9-cd-98.pkcs")
+      do_voucher_post_1502(body)
+      expect(response).to have_http_status(200)
+      expect(response.content_type).to eq("application/json")
+    end
+  end
 
 end
