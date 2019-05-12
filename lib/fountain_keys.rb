@@ -124,6 +124,11 @@ class FountainKeys
     ncert
   end
 
+  def masa_crt
+    # load *our* MASA key.
+    @masa_crt ||= OpenSSL::X509::Certificate.new(certdir.join("masa.crt"))
+  end
+
   protected
   def ca_load_priv_key
     vendorprivkey=certdir.join("ownerca_#{curve}.key")
