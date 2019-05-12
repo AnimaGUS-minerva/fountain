@@ -55,6 +55,9 @@ class SmarkaklinkController < ApiController
     @ec = OpenSSL::PKey::EC::IES.new(FountainKeys.ca.jrc_priv_key, FountainKeys.ca.client_curve)
     begin
       sp_nonce = @ec.private_decrypt(Base64.urlsafe_decode64(encryptedSPnonce))
+    rescue OpenSSL::PKey::EC::IES::IESError
+      logger.info "SPnonce could not be decrypted, some attacker?"
+      head 403, text: "incorrect gateway selected"
     end
 
     unless sp_nonce
