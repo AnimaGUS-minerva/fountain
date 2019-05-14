@@ -40,7 +40,7 @@ class SmarkaklinkController < SecureGatewayController
       return
 
     else
-      api_response({ "version": 1, "status": "false", "reason":"invalid voucher type"}, 200)
+      api_response({ "version": 1, "status": false, "reason":"invalid voucher type"}, 200)
     end
   end
 
@@ -110,7 +110,7 @@ class SmarkaklinkController < SecureGatewayController
     begin
       @voucher = Chariwt::Voucher.from_pkcs7(request.body.read, FountainKeys.ca.masa_crt)
       unless @voucher.try(:pinnedDomainCert)
-        api_response({ "version": 1, "status": "false", "reason":"voucher did not decode"}, 200)
+        api_response({ "version": 1, "status": false, "reason":"voucher did not decode"}, 200)
         return
       end
 
@@ -118,11 +118,11 @@ class SmarkaklinkController < SecureGatewayController
         # it matches, so this is our mommy!
         if @administator
           @administrator.admin!
-          api_response({ "version": 1, "status": "true", "reason":"ok"}, 200)
-          return
         end
+        api_response({ "version": 1, "status": true, "reason":"ok"}, 200)
+        return
       end
-      api_response({ "version": 1, "status": "false", "reason":"voucher did not verify client"}, 200)
+      api_response({ "version": 1, "status": false, "reason":"voucher did not verify client"}, 200)
     end
 
 
