@@ -46,19 +46,9 @@ class SmarkaklinkController < SecureGatewayController
 
   private
 
-  def admin_cert_info
-    clientcert_pem = request.env["SSL_CLIENT_CERT"]
-    clientcert_pem ||= request.env["rack.peer_cert"]
-    unless clientcert_pem
-      return false
-    end
-
-    @cert = OpenSSL::X509::Certificate.new(clientcert_pem)
-  end
-
   def requestvoucherrequest_json
-    # the requestor might be an existing administrator,  what of it?
-    @cert = admin_cert_info
+    # sets @peer_cert as a side effect
+    ssl_authenticator_lookup
 
     # look for SPnonce, and decrypt it.
     challenge = params["ietf:request-voucher-request"]
