@@ -104,7 +104,7 @@ class SmarkaklinkController < SecureGatewayController
         return
       end
 
-      if @voucher.pinnedDomainCert == @clientcert
+      if @voucher.pinnedDomainCert.public_key.to_der == @clientcert.public_key.to_der
         # it matches, so this is our mommy!
         if @administator
           @administrator.admin!
