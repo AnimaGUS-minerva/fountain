@@ -84,7 +84,7 @@ class SmarkaklinkController < SecureGatewayController
     vr.signing_cert = FountainKeys.ca.jrc_pub_key
     vr.serialNumber = vr.eui64_from_cert
     vr.createdOn    = Time.now
-    vr.proximityRegistrarCert = @cert
+    vr.proximityRegistrarCert = @peer_cert
     vr.attributes['voucher-challenge-nonce'] = sp_nonce
     smime = vr.pkcs_sign(FountainKeys.ca.jrc_priv_key)
 
