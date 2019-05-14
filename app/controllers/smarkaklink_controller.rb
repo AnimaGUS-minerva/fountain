@@ -106,7 +106,7 @@ class SmarkaklinkController < SecureGatewayController
 
       if @voucher.pinnedDomainCert.public_key.to_der == @clientcert.public_key.to_der
         # it matches, so this is our mommy!
-        if @administator
+        if @administrator
           @administrator.admin!
         end
         api_response({ "version": 1, "status": true, "reason":"ok"}, 200)
