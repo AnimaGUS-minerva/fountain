@@ -21,6 +21,11 @@ class Administrator < ApplicationRecord
     Administrator.find_by_public_key(cert.to_der) || Administrator.find_by_public_key(cert.to_pem)
   end
 
+  def self.create_from_certificate(cert, name)
+    Administrator.create(public_key: cert.to_der,
+                         name: name)
+  end
+
   def admin!
     self.admin = true
     save!
