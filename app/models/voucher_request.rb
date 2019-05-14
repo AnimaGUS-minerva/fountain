@@ -171,7 +171,7 @@ class VoucherRequest < ApplicationRecord
     if device_identifier
       self.device            = Device.find_or_make_by_number(device_identifier)
     end
-    if self.device.try(:idevid).blank? and certificate
+    if self.device and self.device.try(:idevid).blank? and certificate
       self.device.idevid = certificate
     end
     self.device.save!      if self.device
@@ -310,7 +310,9 @@ class VoucherRequest < ApplicationRecord
 
     #puts "4 device manufacturer is '#{self.device.try(:manufacturer).id}'"
     #puts "setting voucher-request manufacturer to #{self.device.try(:manufacturer_id)}"
-    self.manufacturer ||= self.device.manufacturer
+    if self.device
+      self.manufacturer ||= self.device.manufacturer
+    end
   end
 
   def masa_url
