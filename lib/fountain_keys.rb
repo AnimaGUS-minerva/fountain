@@ -47,8 +47,19 @@ class FountainKeys
     @devdir  ||= Rails.root.join('db').join('devices')
   end
 
+  # default certdir depends upon environment
+  # this needs to be done here, because doing it in environment.rb does not survive reloads
   def certdir
-    @certdir ||= Rails.root.join('db').join('cert')
+    @certdir ||= case
+                 when ENV['CERTDIR']
+                   Pathname.new(ENV['CERTDIR'])
+
+                 when (Rails.env.development? or Rails.env.test?)
+                   FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+
+                 else
+                   Rails.root.join('db').join('cert')
+                 end
   end
 
   def self.ca
