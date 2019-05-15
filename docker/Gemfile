@@ -81,3 +81,6 @@ gem 'byebug'
 gem 'sucker_punch'
 gem 'rb-readline'
 gem 'public_suffix'
+gem 'addressable'
+gem 'neatjson'
+
