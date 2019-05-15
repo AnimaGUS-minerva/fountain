@@ -113,9 +113,12 @@ class EstController < ApiController
 
     begin
       csr   = OpenSSL::X509::Request.new(body)
-      @device.create_ldevid_from_csr(csr)
 
-      render :body => @device.ldevid_cert.to_der,
+      @device.create_ldevid_from_csr(csr)
+      @device.save!
+      ldevid = @device.ldevid_cert.to_der
+
+      render :body => ldevid,
              :content_type => 'application/pkcs7-mime',
              :charset => nil
     end
