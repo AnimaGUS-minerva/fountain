@@ -142,8 +142,13 @@ class EstController < ApiController
 
     cert = OpenSSL::X509::Certificate.new(clientcert_pem)
     @device = Device.find_or_make_by_certificate(cert)
+    return true if @device.try(:trusted?)
 
-    return @device.try(:trusted?)
+    @administrator = Administrator.find_by_cert(cert)
+    # it could also be trusted by being an administrator.
+    return true if @administrator.try(:admin?)
+
+    return false
   end
 
   def capture_client_certificate
