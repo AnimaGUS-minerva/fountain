@@ -2,7 +2,7 @@ FROM mcr314/shg_mud_builder:margarita as builder
 
 FROM alpine:latest as alpinebase
 RUN mkdir -p /lib64
-RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add bash sqlite sqlite-libs procps libstdc++
+RUN apk add bash sqlite sqlite-libs procps libstdc++
 
 COPY --from=builder /usr/local/lib/ /usr/local/lib
 COPY --from=builder /usr/local/bin/ /usr/local/bin
@@ -16,8 +16,12 @@ COPY --from=builder /usr/lib/libpq.so.* /usr/lib/
 COPY --from=builder /usr/lib/liblber-2.4.so.2 /usr/lib/libsasl2.so.3 /usr/lib/libldap_r-2.4.so.2 /usr/lib/
 COPY --from=builder /app /app
 
-RUN export http_proxy='http://cacher.sandelman.ca:3142/'; apk add shadow openrc
+RUN apk add shadow openrc
 RUN useradd -d /app/fountain -r -u 998 fountain
+
+COPY . /app/fountain
+ADD ./docker/Gemfile /app/fountain/Gemfile
+ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 COPY ./docker/inittab /etc/inittab
 
@@ -44,7 +48,7 @@ COPY --chown=fountain ./docker/config/database.yml /app/fountain/config
 COPY --chown=fountain ./docker/profile /app/fountain/.profile
 RUN mkdir -p /app/database /app/certificates
 
-RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.1 do bundle exec rake db:migrate
+RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.3 do bundle exec rake db:migrate
 EXPOSE 8081
 
-#CMD ["/usr/local/rvm/bin/rvm 2.6.1 do /app/fountain/startjrc --address 0.0.0.0"]
+#CMD ["/usr/local/rvm/bin/rvm 2.6.3 do /app/fountain/startjrc --address 0.0.0.0"]
