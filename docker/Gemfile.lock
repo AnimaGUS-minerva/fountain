@@ -58,7 +58,7 @@ GIT
     fixture_save (0.0.1)
 
 PATH
-  remote: /gems/highway/ruby-openssl
+  remote: /app/minerva/ruby-openssl
   specs:
     openssl (2.2.0.pre.mcr1)
       ipaddr
@@ -187,6 +187,7 @@ GEM
       mini_portile2 (~> 2.4.0)
     oj (3.7.11)
     pg (0.21.0)
+    public_suffix (3.0.3)
     rabl (0.14.0)
       activesupport (>= 2.3.14)
     rack (2.0.6)
@@ -298,6 +299,7 @@ DEPENDENCIES
   oj
   openssl!
   pg (~> 0.21)
+  public_suffix
   rabl
   rails (~> 5.2.2.1)
   rake

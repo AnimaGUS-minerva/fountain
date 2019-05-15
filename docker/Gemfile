@@ -43,7 +43,7 @@ gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
 
 #gem 'openssl', "~> 2.1.0"
-gem 'openssl', :path => '/gems/highway/ruby-openssl'
+gem 'openssl', :path => '/app/minerva/ruby-openssl'
 #gem 'openssl', :path => "../minerva/ruby-openssl"
 
 # CoAP server for Rails.
@@ -80,4 +80,4 @@ gem 'byebug'
 # mud-controller.
 gem 'sucker_punch'
 gem 'rb-readline'
-
+gem 'public_suffix'
