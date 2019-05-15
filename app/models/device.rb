@@ -158,7 +158,7 @@ class Device < ActiveRecord::Base
     ldevid  = OpenSSL::X509::Certificate.new
     ldevid.version = 2
     ldevid.serial = SystemVariable.randomseq(:serialnumber)
-    ldevid.issuer = FountainKeys.ca.registrarkey.issuer
+    ldevid.issuer = FountainKeys.ca.cacert.subject
     ldevid.public_key = csrobj.public_key
 
     # 12 is about the encoding, representing UTF8String, (I think)
