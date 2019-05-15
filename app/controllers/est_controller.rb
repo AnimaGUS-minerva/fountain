@@ -2,14 +2,14 @@ class EstController < ApiController
 
   # CACERTS return
   def cacerts
-    render :plain => FountainKeys.ca.jrc_pub_key.to_pem,
+    render :plain => FountainKeys.ca.cacert.to_pem,
            :content_type => 'application/pkix'
     #render :plain => FountainKeys.ca.jrc_pub_key.to_pem,
     #       :content_type => 'application/pkcs7-mime; smime-type=certs-only'
   end
 
   def cbor_crts
-    render :plain => FountainKeys.ca.jrc_pub_key.to_pem,
+    render :plain => FountainKeys.ca.cacert.to_der,
            :content_type => 'application/pkcs7-mime; smime-type=certs-only'
   end
 

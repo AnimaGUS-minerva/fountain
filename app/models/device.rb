@@ -169,7 +169,7 @@ class Device < ActiveRecord::Base
       ldevid.subject    = OpenSSL::X509::Name.new([["emailAddress", rfc822Name, 12]])
 
       extension_factory.subject_certificate = ldevid
-      extension_factory.issuer_certificate  = FountainKeys.ca.registrarkey
+      extension_factory.issuer_certificate  = FountainKeys.ca.cacert
 
       # the OID: 1.3.6.1.4.1.46930.1 is a Private Enterprise Number OID:
       #    iso.org.dod.internet.private.enterprise . SANDELMAN=46930 . 1
@@ -185,9 +185,8 @@ class Device < ActiveRecord::Base
     ldevid.not_after  = Time.gm(2999,12,31)
     ldevid.add_extension(extension_factory.create_extension("basicConstraints","CA:FALSE",false))
 
-    ldevid.sign(FountainKeys.ca.registrarprivkey, OpenSSL::Digest::SHA256.new)
+    ldevid.sign(FountainKeys.ca.ca_signing_key, OpenSSL::Digest::SHA256.new)
     self.ldevid = ldevid.to_pem
-
   end
 
   #alias_method :get_manufacturer, :manufacturer
