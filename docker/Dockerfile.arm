@@ -14,29 +14,32 @@ COPY --from=builder /usr/lib/libssl.so.* /usr/lib/
 COPY --from=builder /lib/libssl.so.* /lib/
 COPY --from=builder /usr/lib/libpq.so.* /usr/lib/
 COPY --from=builder /usr/lib/liblber-2.4.so.2 /usr/lib/libsasl2.so.3 /usr/lib/libldap_r-2.4.so.2 /usr/lib/
-COPY --from=builder /app /app
 
 RUN apk add shadow openrc
 RUN useradd -d /app/fountain -r -u 998 fountain
-
-COPY . /app/fountain
-ADD ./docker/Gemfile /app/fountain/Gemfile
-ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
-
-COPY ./docker/inittab /etc/inittab
+RUN mkdir -p /home/mud/tmp /tmp/mudfiles
 
 # Add a script to be executed every time the container starts.
 COPY ./docker/entrypoint.sh /root/start
 RUN chmod a+rx /root/start && chmod a+rx /root
 #ENTRYPOINT ["/root/start"]
+COPY ./docker/inittab /etc/inittab
 
+# --chown=fountain only works before we change userid
+COPY --from=builder --chown=fountain /app /app
 RUN chown -R fountain /app
-RUN mkdir -p /home/mud/tmp /tmp/mudfiles
+
 USER fountain
+COPY --chown=fountain . /app/fountain
+
+# two steps, because otherwise the files goes in the wrong place
+COPY docker/Gemfile      /app/fountain/Gemfile
+COPY docker/Gemfile.lock /app/fountain/Gemfile.lock
+RUN sed 10q /app/fountain/Gemfile
+
 ENV RAILS_ENV=production
 ENV CERTDIR=/app/certificates
 
-COPY --chown=fountain . /app/fountain
 RUN rm -rf /app/fountain/.git
 
 # in case there is a build postgresql system here.
@@ -48,6 +51,7 @@ COPY --chown=fountain ./docker/config/database.yml /app/fountain/config
 COPY --chown=fountain ./docker/profile /app/fountain/.profile
 RUN mkdir -p /app/database /app/certificates
 
+RUN sed 10q /app/fountain/Gemfile
 RUN RAILS_ENV=production /usr/local/rvm/bin/rvm 2.6.3 do bundle exec rake db:migrate
 EXPOSE 8081
 
