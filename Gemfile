@@ -23,9 +23,6 @@ gem 'jwt'
 #gem "fixture_save", :path => "../fixture_save"
 gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
-gem 'active_scaffold',  :git => "https://github.com/mcr/active_scaffold.git"
-#gem 'active_scaffold', :git => "https://github.com/activescaffold/active_scaffold.git", :branch => 'master'
-
 gem 'jbuilder', '~> 2.0'
 gem 'rake'
 
