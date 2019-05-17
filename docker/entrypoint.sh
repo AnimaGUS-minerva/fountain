@@ -2,7 +2,7 @@
 
 if [ -z "$MY_RUBY_HOME" ]; then
     . /etc/profile.d/rvm.sh
-    rvm use 2.6.1 >/dev/null
+    rvm use 2.6.3 >/dev/null
 fi
 
 export CERTDIR=/app/certificates
