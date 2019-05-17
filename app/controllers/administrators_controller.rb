@@ -42,7 +42,7 @@ class AdministratorsController < SecureGatewayController
     @administrator = Administrator.create_from_certificate(@clientcert, params[:name])
 
     # if TOFU and first admin, set the administrator flag to true.
-    if ($ENABLE_TOFU and Administrator.count == 0)
+    if ($ENABLE_TOFU and Administrator.count == 1)
       @administrator.admin!
     end
 
