@@ -5,9 +5,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', "~> 5.2.2.1"
 
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
@@ -45,8 +42,8 @@ gem 'openssl', :path => '/app/minerva/ruby-openssl'
 #gem 'openssl', :path => "../minerva/ruby-openssl"
 
 # CoAP server for Rails.
-#gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
-gem 'coap',    :path => "/app/minerva/coap"
+gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
+#gem 'coap',    :path => "/app/minerva/coap"
 
 gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true
 #gem 'celluloid-io', :path => "/app/minerva/celluloid-io"

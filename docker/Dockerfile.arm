@@ -1,7 +1,6 @@
-FROM mcr314/shg_mud_builder:margarita as builder
+FROM mcr314/shg_mud_builder:margarita32 as builder
 
-FROM alpine:latest as alpinebase
-RUN mkdir -p /lib64
+FROM alpinelinux:base32 as alpinebase
 RUN apk add bash sqlite sqlite-libs procps libstdc++
 
 COPY --from=builder /usr/local/lib/ /usr/local/lib
