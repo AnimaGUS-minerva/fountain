@@ -21,7 +21,7 @@ RUN rm -rf /usr/include/x86_64-linux-gnu/openssl && \
     cd /src/highway && \
     git clone -b dtls-listen-refactor-1.1.1c git://github.com/mcr/openssl.git && \
     cd /src/highway/openssl && \
-    ./Configure --prefix=/usr --openssldir=/usr/lib/ssl --libdir=lib/x86_64-linux-gnu no-idea no-mdc2 no-rc5 no-zlib no-ssl3 enable-unit-test linux-x86_64 && \
+    ./Configure --prefix=/usr --openssldir=/usr/lib/ssl --libdir=lib/x86_64-linux-gnu no-idea no-mdc2 no-rc5 no-zlib no-ssl3                  linux-x86_64 && \
     id && make && \
     cd /src/highway/openssl && make install_sw && \
     gem install rake-compiler --source=http://rubygems.org && \
@@ -48,6 +48,9 @@ ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 WORKDIR /app/fountain
 RUN bundle _2.0.1_ install --system --no-deployment --gemfile=/app/fountain/Gemfile && \
     bundle _2.0.1_ check
+
+# install items for use in debugging
+RUN apt-get install strace
 
 RUN rm -f /app/fountain/tmp/pids/server.pid && \
     rm -f /app/fountain/config/{config,database,secret}.yml && \
