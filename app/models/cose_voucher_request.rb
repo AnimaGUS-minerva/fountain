@@ -20,6 +20,9 @@ class CoseVoucherRequest < VoucherRequest
     token = vreq.cose_sign(FountainKeys.ca.jrc_priv_key,
                            ECDSA::Group::Nistp256,
                            $FAKED_TEMPORARY_KEY)  # usually nil.
+    self.registrar_request = token
+    save!
+    return token
   end
 
   def details=(x)
