@@ -457,7 +457,7 @@ class VoucherRequest < ApplicationRecord
       logger.info "MASA at #{target_uri} says #{response.message}"
 
     rescue
-      logger.error "Error $! was raised"
+      logger.error "Error #{$!} was raised"
       raise $!
     end
 
