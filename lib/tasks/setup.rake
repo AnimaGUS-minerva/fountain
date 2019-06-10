@@ -51,6 +51,10 @@ namespace :fountain do
     else
       SystemVariable.setvalue(:acp_domain, "acp")
     end
+
+    if ENV['SWITCH_MAC']
+      SystemVariable.setvalue(:switch_mac, ENV['SWITCH_MAC'])
+    end
   end
 
 

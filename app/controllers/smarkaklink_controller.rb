@@ -47,7 +47,7 @@ class SmarkaklinkController < SecureGatewayController
   private
 
   def requestvoucherrequest_json
-    # sets @peer_cert as a side effect
+    # sets @peer_cert and @clientcert as a side effect
     ssl_authenticator_lookup
 
     # look for SPnonce, and decrypt it.
@@ -82,9 +82,9 @@ class SmarkaklinkController < SecureGatewayController
     vr.generate_nonce
     vr.assertion    = :proximity
     vr.signing_cert = FountainKeys.ca.jrc_pub_key
-    vr.serialNumber = vr.eui64_from_cert
+    vr.serialNumber = SystemVariable.string(:switch_mac) || "unknown-serial-number"
     vr.createdOn    = Time.now
-    vr.proximityRegistrarCert = @peer_cert
+    vr.proximityRegistrarCert = @clientcert
     vr.attributes['voucher-challenge-nonce'] = sp_nonce
     smime = vr.pkcs_sign(FountainKeys.ca.jrc_priv_key)
 
