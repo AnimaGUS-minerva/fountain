@@ -8,9 +8,10 @@ COPY --from=builder /usr/local/bin/ /usr/local/bin
 COPY --from=builder /usr/local/rvm/ /usr/local/rvm
 COPY --from=builder /etc/profile.d/ /etc/profile.d
 COPY --from=builder /usr/lib/libcrypto.so.* /usr/lib/
-COPY --from=builder /lib/libcrypto.so.* /lib/
+RUN ln /usr/lib/libcrypto.so.* /lib/
 COPY --from=builder /usr/lib/libssl.so.* /usr/lib/
-COPY --from=builder /lib/libssl.so.* /lib/
+RUN ln /usr/lib/libssl.so.* /lib
+COPY --from=builder /usr/bin/openssl    /usr/bin
 COPY --from=builder /usr/lib/libpq.so.* /usr/lib/
 COPY --from=builder /usr/lib/liblber-2.4.so.2 /usr/lib/libsasl2.so.3 /usr/lib/libldap_r-2.4.so.2 /usr/lib/
 
