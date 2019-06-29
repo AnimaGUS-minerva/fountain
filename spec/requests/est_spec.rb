@@ -40,6 +40,12 @@ RSpec.describe "Est", type: :request do
     @clientcert ||= IO.binread("spec/files/product/081196FFFE0181E0/device.crt")
   end
 
+  # fixture "device 12" (vizsla) in highway spec
+  # points to https://highway-test.sandelman.ca:9443
+  def cbor_clientcert_02
+    @cbor_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-02/device.crt")
+  end
+
   # fixture "device 14"
   # points to https://highway-test.sandelman.ca:9443
   def cbor_clientcert_03
@@ -366,6 +372,20 @@ RSpec.describe "Est", type: :request do
 
       env = Hash.new
       env["SSL_CLIENT_CERT"] = cbor_clientcert_03
+      env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
+      env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
+
+      $FAKED_TEMPORARY_KEY = temporary_key
+      post '/e/rv', :params => body, :headers => env
+    end
+
+    # this request is created by spec/files/product/00-D0-E5-F2-00-02/constrained.sh in reach.
+    def do_coaps_posted_02
+      # get the Base64 of the incoming signed request
+      body = IO.read("spec/files/vr_00-D0-E5-F2-00-02.vrq")
+
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = cbor_clientcert_02
       env["HTTP_ACCEPT"]  = "application/voucher-cose+cbor"
       env["CONTENT_TYPE"] = "application/voucher-cose+cbor"
 
