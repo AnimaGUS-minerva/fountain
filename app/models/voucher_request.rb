@@ -40,9 +40,10 @@ class VoucherRequest < ApplicationRecord
     vr
   end
 
-  def self.from_cbor(hash, signed = false)
+  def self.from_cbor(hash: , signed: false, pubkey:)
     vr = CoseVoucherRequest.create(signed: signed)
     vr.details = hash
+    vr.certificate = pubkey
     vr.populate_explicit_fields
     vr
   end
@@ -66,7 +67,7 @@ class VoucherRequest < ApplicationRecord
       signed = true
       hash = vr.vrhash
     end
-    voucher = from_cbor(hash, signed)
+    voucher = from_cbor(hash: hash, signed: signed, pubkey: pubkey)
     voucher.request = vr
     voucher.pledge_request = token
     return voucher
