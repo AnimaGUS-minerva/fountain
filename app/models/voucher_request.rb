@@ -439,6 +439,13 @@ class VoucherRequest < ApplicationRecord
     end
   end
 
+  def write_mvch(filename, response)
+    File.open(filename, "wb") { |f|
+      f.puts "Content-Type: multipart/mixed\r\n\r\n"
+      f.write response.body
+    }
+  end
+
   def get_voucher(target_url = nil)
     target_uri = request_voucher_uri(target_url)
     raise VoucherRequest::BadMASA.new("manufacturer not found") unless target_uri
@@ -462,6 +469,7 @@ class VoucherRequest < ApplicationRecord
       raise $!
     end
 
+    # stop here to capture the MASA response
     #byebug
     case response
     when Net::HTTPServerError
