@@ -439,9 +439,9 @@ class VoucherRequest < ApplicationRecord
     end
   end
 
-  def write_mvch(filename, response)
+  def write_mvch(filename, ct, response)
     File.open(filename, "wb") { |f|
-      f.puts "Content-Type: multipart/mixed\r\n\r\n"
+      f.puts "Content-Type: "+ct+"\r\n\r\n"
       f.write response.body
     }
   end

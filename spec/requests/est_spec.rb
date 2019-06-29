@@ -407,13 +407,13 @@ RSpec.describe "Est", type: :request do
       expect(vr0).to_not be_nil
 
       expect(Chariwt.cmp_vch_file(voucher_request,
-                                  "parboiled_vr_00-D0-E5-F2-10-03")).to be true
+                                  "parboiled_vr_00-D0-E5-F2-00-02")).to be true
 
       expect(Chariwt.cmp_vch_file(assigns(:voucher).signed_voucher,
-                                  "voucher_00-D0-E5-F2-10-03")).to be true
+                                  "voucher_00-D0-E5-F2-00-02")).to be true
 
       expect(Chariwt.cmp_vch_file(response.body,
-                                  "voucher_00-D0-E5-F2-10-03")).to be true
+                                  "voucher_00-D0-E5-F2-00-02")).to be true
     end
 
     it "should get CoAPS POSTed to cbor_rv" do
@@ -445,6 +445,46 @@ RSpec.describe "Est", type: :request do
       # capture outgoing request for posterity
       if voucher_request
         File.open("tmp/parboiled_vr_00-D0-E5-F2-00-03.vrq", "wb") do |f|
+          f.syswrite voucher_request
+        end
+      end
+
+      expect(response).to have_http_status(200)
+      validate_coaps_posted(voucher_request)
+    end
+
+    it "should CoAPS POST F2-00-02 to cbor_rv" do
+      resultio = File.open("spec/files/voucher_00-D0-E5-F2-00-02.mvch","rb")
+      ct = resultio.gets
+      ctvalue = ct[14..-3]
+      ct2= resultio.gets
+      result=resultio.read
+      voucher_request = nil
+
+      if true
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+        with(headers: {
+               'Accept'=>['*/*', 'multipart/mixed'],
+               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'Content-Type'=>'application/voucher-cose+cbor',
+               'Host'=>'highway-test.example.com:9443',
+             }).
+        to_return(status: 200, body: lambda { |request|
+
+                    voucher_request = request.body
+                    result},
+                  headers: {
+                    'Content-Type'=>ctvalue
+                  })
+      else
+        WebMock.allow_net_connect!
+      end
+
+      start_coaps_posted
+      do_coaps_posted_02
+      # capture outgoing request for posterity
+      if voucher_request
+        File.open("tmp/parboiled_vr_00-D0-E5-F2-00-02.vrq", "wb") do |f|
           f.syswrite voucher_request
         end
       end
