@@ -24,17 +24,6 @@ RSpec.describe Voucher, type: :model do
       }.to raise_error(Chariwt::Voucher::MissingPublicKey)
     end
 
-    it "should read a sample voucher from a file" do
-      # this input comes from chariwt/tmp/voucher_jada123456789.vch
-      voucher_binary=IO::read(File.join("spec","files","voucher_jada123456789.vch"))
-
-      v1 = CoseVoucher.from_voucher(nil, :cose, voucher_binary)
-      expect(v1).to               be_proximity
-      expect(v1.serial_number).to eq('JADA123456789')
-      expect(v1.nonce).to         eq('abcd12345')
-    end
-
-
     it "should create voucher object and place the signed data in it" do
       voucher_base64 = IO::read(File.join("spec","files","voucher_JADA_f2-00-01.pkcs"))
       voucher_binary = Base64.decode64(voucher_base64)
