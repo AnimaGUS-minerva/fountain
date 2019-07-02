@@ -86,9 +86,9 @@ class SmarkaklinkController < SecureGatewayController
     vr.createdOn    = Time.now
     vr.proximityRegistrarCert = @clientcert
     vr.attributes['voucher-challenge-nonce'] = sp_nonce
-    smime = vr.pkcs_sign(FountainKeys.ca.jrc_priv_key)
+    smime_bin = vr.pkcs_sign_bin(FountainKeys.ca.jrc_priv_key)
 
-    render :body => Base64.strict_decode64(smime),
+    render :body => smime_bin,
            :content_type => CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE,
            :charset => nil
 

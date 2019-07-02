@@ -18,7 +18,7 @@ class UnsignedVoucherRequest < VoucherRequest
     #byebug
     vreq.priorSignedVoucherRequest = self.details
     self.request = vreq
-    token = vreq.pkcs_sign(FountainKeys.ca.jrc_priv_key)
+    token = vreq.pkcs_sign_bin(FountainKeys.ca.jrc_priv_key)
   end
 
   def registrar_voucher_request
