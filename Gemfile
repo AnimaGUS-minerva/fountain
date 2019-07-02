@@ -34,6 +34,9 @@ gem 'mail'
 gem 'ffi', '~> 1.10.0'
 gem 'bundler', '2.0.1'
 
+# due to alerts
+gem "yard", ">= 0.9.20"
+
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
 gem 'capistrano-rails',  group: :development
