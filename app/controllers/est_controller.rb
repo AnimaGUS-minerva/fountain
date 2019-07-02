@@ -224,7 +224,7 @@ class EstController < ApiController
 
 
   def requestvoucher_pkcs_signed
-    token = Base64.decode64(request.body.read)
+    token = request.body.read
     begin
       @voucherreq = VoucherRequest.from_pkcs7_withoutkey(token)
     rescue VoucherRequest::InvalidVoucherRequest
