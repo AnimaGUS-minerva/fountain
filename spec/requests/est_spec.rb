@@ -304,8 +304,8 @@ RSpec.describe "Est", type: :request do
     end
 
     def posted_cms_03
-      # get the Base64 of the parboiled signed request
-      body = IO.read("spec/files/parboiled_vr-00-D0-E5-F2-00-03.pkcs")
+      # decode the Base64 of the pledge signed request
+      body = Base64.decode64(IO.read("spec/files/vr-00-D0-E5-F2-00-03.b64"))
 
       @env = Hash.new
       @env["SSL_CLIENT_CERT"] = highwaytest_clientcert
