@@ -393,7 +393,7 @@ RSpec.describe "Est", type: :request do
       post '/e/rv', :params => body, :headers => env
     end
 
-    def validate_coaps_posted(voucher_request)
+    def validate_coaps_posted_name(voucher_request, name)
       expect(assigns(:voucherreq)).to_not be_nil
       expect(assigns(:voucherreq).tls_clientcert).to_not be_nil
       expect(assigns(:voucherreq).pledge_request).to_not be_nil
@@ -407,18 +407,21 @@ RSpec.describe "Est", type: :request do
       expect(vr0).to_not be_nil
 
       expect(Chariwt.cmp_vch_file(voucher_request,
-                                  "parboiled_vr_00-D0-E5-F2-00-02")).to be true
+                                  "parboiled_vr_00-D0-E5-F2-00-#{name}")).to be true
 
       expect(Chariwt.cmp_vch_file(assigns(:voucher).signed_voucher,
-                                  "voucher_00-D0-E5-F2-00-02")).to be true
+                                  "voucher_00-D0-E5-F2-00-#{name}")).to be true
 
       expect(Chariwt.cmp_vch_file(response.body,
-                                  "voucher_00-D0-E5-F2-00-02")).to be true
+                                  "voucher_00-D0-E5-F2-00-#{name}")).to be true
     end
 
-    it "should get CoAPS POSTed to cbor_rv" do
-      # should not be 00-D0-E5-F2-10-03 XXX, but F2-00-03.
-      resultio = File.open("spec/files/voucher_00-D0-E5-F2-10-03.mvch","rb")
+    def validate_coaps_posted(voucher_request)
+      validate_coaps_posted_name(voucher_request, "02")
+    end
+
+    it "should get 03 CoAPS POSTed to cbor_rv" do
+      resultio = File.open("spec/files/voucher_00-D0-E5-F2-00-03.mvch","rb")
       ct = resultio.gets
       ctvalue = ct[14..-3]
       ct2= resultio.gets
@@ -450,7 +453,7 @@ RSpec.describe "Est", type: :request do
       end
 
       expect(response).to have_http_status(200)
-      validate_coaps_posted(voucher_request)
+      validate_coaps_posted_name(voucher_request, "03")
     end
 
     it "should CoAPS POST F2-00-02 to cbor_rv" do

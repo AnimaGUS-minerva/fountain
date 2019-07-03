@@ -55,7 +55,7 @@ RSpec.describe Voucher, type: :model do
     end
 
     it "should process a multipart voucher response into two parts" do
-      voucher_mime = Mail.read(File.join("spec","files","voucher_00-D0-E5-F2-10-03.mvch"))
+      voucher_mime = Mail.read(File.join("spec","files","voucher_00-D0-E5-F2-00-03.mvch"))
 
       expect(voucher_mime).to_not be_nil
 
@@ -66,7 +66,7 @@ RSpec.describe Voucher, type: :model do
     end
 
     it "should process a multipart voucher response into a validated voucher" do
-      input_voucher = IO::binread(File.join("spec","files","voucher_00-D0-E5-F2-10-03.mvch"))
+      input_voucher = IO::binread(File.join("spec","files","voucher_00-D0-E5-F2-00-03.mvch"))
 
       v1 = Voucher.from_multipart(nil, :cbor, input_voucher)
       expect(v1).to_not be_nil
