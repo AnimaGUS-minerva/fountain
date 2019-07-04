@@ -469,8 +469,10 @@ class VoucherRequest < ApplicationRecord
       raise $!
     end
 
-    # stop here to capture the MASA response
+    # stop here to capture the MASA response to debug mock
+    #write_mvch("tmp/voucher.mvch", response['Content-Type'], response)
     #byebug
+    #
     case response
     when Net::HTTPServerError
       raise VoucherRequest::BadMASA.new("MASA server error")
