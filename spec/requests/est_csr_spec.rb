@@ -14,17 +14,6 @@ RSpec.describe "Est", type: :request do
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
   end
 
-  describe "resource discovery" do
-    it "should return a location for the EST service" do
-      env = Hash.new
-      env["SSL_CLIENT_CERT"] = clientcert
-      get '/.well-known/core?rt=ace.est', :headers => env
-
-      things = CoRE::Link.parse(response.body)
-      expect(things.uri).to eq("/e")
-    end
-  end
-
   it "should return list of CAs from /cacerts" do
     get '/.well-known/est/cacerts'
     expect(response).to have_http_status(200)
