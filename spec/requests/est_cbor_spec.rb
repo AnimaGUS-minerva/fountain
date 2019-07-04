@@ -167,20 +167,20 @@ RSpec.describe "Est", type: :request do
       voucher_request = nil
 
       if true
-      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
-        with(headers: {
-               'Accept'=>['*/*', 'multipart/mixed'],
-               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-               'Content-Type'=>'application/voucher-cose+cbor',
-               'Host'=>'highway-test.example.com:9443',
-             }).
-        to_return(status: 200, body: lambda { |request|
+        stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+          with(headers: {
+                 'Accept'=>['*/*', 'multipart/mixed'],
+                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                 'Content-Type'=>'application/voucher-cose+cbor',
+                 'Host'=>'highway-test.example.com:9443',
+               }).
+          to_return(status: 200, body: lambda { |request|
 
-                    voucher_request = request.body
-                    result},
-                  headers: {
-                    'Content-Type'=>ctvalue
-                  })
+                      voucher_request = request.body
+                      result},
+                    headers: {
+                      'Content-Type'=>ctvalue
+                    })
       else
         WebMock.allow_net_connect!
       end
