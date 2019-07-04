@@ -14,6 +14,27 @@ RSpec.describe "Est", type: :request do
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
   end
 
+  describe "unsigned voucher request" do
+    it "should get posted to requestvoucher" do
+
+      pending "unsigned requests not yet implemented"
+
+      voucherrequest = {
+        "ietf-voucher-request:voucher" => {
+          "nonce" => "62a2e7693d82fcda2624de58fb6722e5",
+          "created-on" => "2017-01-01T00:00:00.000Z",
+          "assertion"  => "proximity",
+          "idevid-issuer" => "base64encodedvalue==",
+          "serial-number" => "JADA123456789",
+          "prior-signed-voucher"=> "base64encodedvalue=="
+        }
+      }
+
+      post "/.well-known/est/requestvoucher", params: voucherrequest.merge(format: 'json')
+      expect(response).to have_http_status(200)
+    end
+  end
+
   describe "resource discovery" do
     it "should return a location for the EST service" do
       env = Hash.new

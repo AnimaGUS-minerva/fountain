@@ -14,6 +14,42 @@ RSpec.describe "Est", type: :request do
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
   end
 
+  # points to https://highway.sandelman.ca
+  def clientcert
+    @clientcert ||= IO.binread("spec/files/product/081196FFFE0181E0/device.crt")
+  end
+
+  # fixture "device 12" (vizsla) in highway spec
+  # points to https://highway-test.sandelman.ca:9443
+  def cbor_clientcert_02
+    @cbor_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-02/device.crt")
+  end
+
+  # fixture "device 14"
+  # points to https://highway-test.sandelman.ca:9443
+  def cbor_clientcert_03
+    @cbor_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
+  end
+
+  # points to https://highway-test.sandelman.ca
+  def cbor_highwaytest_clientcert
+    @cbor_highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-E0-00-0F/device.crt")
+  end
+
+  # points to https://highway-test.sandelman.ca, which is manufacturer #7
+  def highwaytest_clientcert
+    @highwaytest_clientcert ||= IO.binread("spec/files/product/00-D0-E5-F2-00-03/device.crt")
+  end
+  def highwaytest_masacert
+    @highwaytest_masacert   ||= OpenSSL::X509::Certificate.new(IO.binread("spec/files/product/00-D0-E5-F2-00-03/masa.crt"))
+  end
+
+  # points to https://masa.honeydukes.sandelman.ca,
+  # devices fixture :bulb1, private key can be found in the reach project
+  def honeydukes_bulb1
+    cert1_24
+  end
+
   describe "resource discovery" do
     it "should return a location for the EST service" do
       env = Hash.new
