@@ -328,18 +328,17 @@ class VoucherRequest < ApplicationRecord
     end
   end
 
-  def security_options
-    { :verify_mode => OpenSSL::SSL::VERIFY_NONE,
-      :use_ssl => request_voucher_uri.scheme == 'https',
-      :cert    => FountainKeys.ca.jrc_pub_key,
-      :key     => FountainKeys.ca.jrc_priv_key,
-    }
-  end
-
   def http_handler
-    @http_handler ||=
-      Net::HTTP.start(request_voucher_uri.host, request_voucher_uri.port,
-                      security_options)
+    # open code rather than use .start(), so that debug output can be set
+    unless @http_handler
+      @http_handler = Net::HTTP.new(request_voucher_uri.host, request_voucher_uri.port)
+      @http_handler.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      @http_handler.use_ssl     = request_voucher_uri.scheme == 'https'
+      @http_handler.cert        = FountainKeys.ca.jrc_pub_key
+      @http_handler.key         = FountainKeys.ca.jrc_priv_key
+      #@http_handler.set_debug_output($stderr)
+    end
+    @http_handler
   end
 
   def process_content_type(type, bodystr, extracert = nil)
