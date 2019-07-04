@@ -118,10 +118,6 @@ RSpec.describe "Est", type: :request do
                                   "voucher_00-D0-E5-F2-00-#{name}")).to be true
     end
 
-    def validate_coaps_posted(voucher_request)
-      validate_coaps_posted_name(voucher_request, "02")
-    end
-
     it "should get 03 CoAPS POSTed to cbor_rv" do
       resultio = File.open("spec/files/voucher_00-D0-E5-F2-00-03.mvch","rb")
       ct = resultio.gets
@@ -199,7 +195,7 @@ RSpec.describe "Est", type: :request do
       end
 
       expect(response).to have_http_status(200)
-      validate_coaps_posted(voucher_request)
+      validate_coaps_posted_name(voucher_request, "02")
     end
 
     it "should get CoAPS POSTed to cbor_rv, but with mis-matched validation" do
