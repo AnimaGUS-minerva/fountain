@@ -14,33 +14,6 @@ RSpec.describe "Est", type: :request do
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
   end
 
-  describe "resource discovery" do
-    it "should return a location for the EST service" do
-      env = Hash.new
-      env["SSL_CLIENT_CERT"] = clientcert
-      get '/.well-known/core?rt=ace.est', :headers => env
-
-      things = CoRE::Link.parse(response.body)
-      expect(things.uri).to eq("/e")
-    end
-  end
-
-  it "should return list of CAs from /cacerts" do
-    get '/.well-known/est/cacerts'
-    expect(response).to have_http_status(200)
-    root = OpenSSL::X509::Certificate.new(response.body)
-    expect(root.issuer.to_s).to include("Fountain Root CA")
-    expect(response.content_type).to eq('application/pkix')
-  end
-
-  it "should return list of CAs from /crts" do
-    get '/e/crts'
-    expect(response).to have_http_status(200)
-    root = OpenSSL::X509::Certificate.new(response.body)
-    expect(root.issuer.to_s).to include("Fountain Root CA")
-    expect(response.content_type).to eq('application/pkcs7-mime; smime-type=certs-only')
-  end
-
   describe "simpleenroll" do
     # csr_blub03 is produced by reach from identical product files.
     it "should accept a CSR attributes file from an IDevID from a EST trusted manufacturer" do
