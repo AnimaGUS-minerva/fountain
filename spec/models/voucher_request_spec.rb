@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/pem_data'
 
 RSpec.describe VoucherRequest, type: :model do
   fixtures :all
@@ -123,6 +124,17 @@ RSpec.describe VoucherRequest, type: :model do
     end
   end
 
+  describe "voucher request consistency" do
+    it "should reject a voucher request whose serial-number does not match" do
+      vr03f = IO.binread("spec/files/vr_00-D0-E5-03-00-03.b64")
+      vr2 = VoucherRequest.from_pkcs7_withoutkey(Base64.decode64(vr03f))
+      vr2.tls_clientcert = highwaytest_clientcert
+      expect(vr2.voucher_serial_number).to  eq("00-D0-E5-03-00-03")
+      expect(vr2.certificate_serial_number).to eq("00-D0-E5-F2-00-03")
+      expect(vr2.consistency_checks).to be false
+    end
+  end
+
   describe "vouchers" do
     it "should send a signed request to the indicated MASA" do
       voucher_request = nil
@@ -130,10 +142,6 @@ RSpec.describe VoucherRequest, type: :model do
       allow(Time).to receive(:now).and_return(@time_now)
 
       canned_voucher = Base64::decode64(IO.read("spec/files/voucher-00-D0-E5-F2-00-02.pkcs"))
-
-
-
-
 
       if false
         # enable to get voucher from live system

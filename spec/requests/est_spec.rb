@@ -123,6 +123,51 @@ RSpec.describe "Est", type: :request do
 
     end
 
+    def setup_cms_mock_04
+      result = IO.read("spec/files/voucher-00-D0-E5-03-00-03.vch")
+      @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
+
+      allow(Time).to receive(:now).and_return(@time_now)
+
+      StubIo.instance.peer_cert = highwaytest_masacert
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+        with(headers:
+               {'Accept'=>['*/*', 'application/voucher-cms+json'],
+                'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'Content-Type'=>'application/voucher-cms+json',
+                'Host'=>'highway-test.example.com:9443',
+                'User-Agent'=>'Ruby'
+               }).
+        to_return(status: 200, body: lambda { |request|
+                    @voucher_request = request.body
+                    result},
+                  headers: {
+                    'Content-Type'=>'application/voucher-cms+json'
+                  })
+    end
+
+    def posted_cms_04
+      # decode the Base64 of the pledge signed request
+      body = Base64.decode64(IO.read("spec/files/vr_00-D0-E5-03-00-03.b64"))
+
+      @env = Hash.new
+      @env["SSL_CLIENT_CERT"] = highwaytest_clientcert
+      @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
+      @env["CONTENT_TYPE"] = "application/voucher-cms+json"
+      post '/.well-known/est/requestvoucher', :params => body, :headers => @env
+    end
+
+    it "post voucher-request 030003, but with the wrong client certificate, serial-number mismatch" do
+      @voucher_request = nil
+
+      setup_cms_mock_03
+      posted_cms_04
+
+      expect(response).to have_http_status(406)
+      expect(assigns(:voucherreq)).to_not be_nil
+
+    end
+
     it "in CMS format, should get POSTed to an open registrar, get a voucher, and then enroll" do
       SystemVariable.setbool(:open_registrar, true)
       @voucher_request = nil

@@ -167,9 +167,18 @@ class EstController < ApiController
     logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
     @voucherreq.populate_implicit_fields
     @voucherreq.save!
+
+    # some validation checks on the voucher request.
+
+    unless @voucherreq.consistency_checks
+      logger.info "voucher request at \##{@voucherreq.id} had inconsistencies: #{@voucherreq.error_report}"
+      head 406, text: @voucherreq.error_report
+      return
+    end
   end
 
   def return_voucher
+
     begin
       @voucher = @voucherreq.get_voucher
     rescue VoucherRequest::BadMASA => e

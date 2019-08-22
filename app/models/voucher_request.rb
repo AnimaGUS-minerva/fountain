@@ -250,7 +250,25 @@ class VoucherRequest < ApplicationRecord
     @issuer_dn   ||= certificate.issuer.to_s
   end
 
+  def voucher_serial_number
+    vdetails["serial-number"]
+  end
+
   def hunt_for_serial_number
+    certificate_serial_number || voucher_serial_number
+  end
+
+  def certificate_serial_number
+    @certificate_serial_number ||= hunt_for_certificate_serial_number
+  end
+
+  def consistency_checks
+    return false unless certificate_serial_number == voucher_serial_number
+    # other tests here.
+    return true
+  end
+
+  def hunt_for_certificate_serial_number
     return nil unless certificate
     # BRSKI, section 2.3.1 says to look at the subject DN for the "serialNumber"
     #        it might also be in a subjectAltName HardwareModuleName, but
@@ -449,7 +467,7 @@ class VoucherRequest < ApplicationRecord
     target_uri = request_voucher_uri(target_url)
     raise VoucherRequest::BadMASA.new("manufacturer not found") unless target_uri
 
-    #byebug
+    byebug
     logger.info "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
     logger.info "Asking for voucher of type: #{registrar_voucher_desired_type}"
 
