@@ -270,7 +270,7 @@ class VoucherRequest < ApplicationRecord
   # this performs whatever needed consistency checks for the voucher request
   def consistency_checks
     unless certificate_serial_number == voucher_serial_number
-      error_report << "serial number mismatch certificate#{certificate_serial_number} vs #{voucher_serial_number}"
+      error_report << "serial number mismatch certificate #{certificate_serial_number} vs #{voucher_serial_number}"
       return false
     end
     # other tests here.
