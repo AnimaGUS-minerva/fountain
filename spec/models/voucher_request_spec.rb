@@ -131,7 +131,8 @@ RSpec.describe VoucherRequest, type: :model do
       vr2.tls_clientcert = highwaytest_clientcert
       expect(vr2.voucher_serial_number).to  eq("00-D0-E5-03-00-03")
       expect(vr2.certificate_serial_number).to eq("00-D0-E5-F2-00-03")
-      expect(vr2.consistency_checks).to be false
+      expect(vr2.consistency_checks).to        be false
+      expect(vr2.error_report).to_not be_nil
     end
   end
 

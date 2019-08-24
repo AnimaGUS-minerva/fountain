@@ -28,6 +28,7 @@ class VoucherRequest < ApplicationRecord
   has_many   :vouchers
 
   attr_accessor :certificate, :issuer_pki, :request
+  attr_accessor :error_report
 
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
@@ -262,8 +263,16 @@ class VoucherRequest < ApplicationRecord
     @certificate_serial_number ||= hunt_for_certificate_serial_number
   end
 
+  def error_report
+    @error_report ||= []
+  end
+
+  # this performs whatever needed consistency checks for the voucher request
   def consistency_checks
-    return false unless certificate_serial_number == voucher_serial_number
+    unless certificate_serial_number == voucher_serial_number
+      error_report << "serial number mismatch certificate#{certificate_serial_number} vs #{voucher_serial_number}"
+      return false
+    end
     # other tests here.
     return true
   end
@@ -467,7 +476,6 @@ class VoucherRequest < ApplicationRecord
     target_uri = request_voucher_uri(target_url)
     raise VoucherRequest::BadMASA.new("manufacturer not found") unless target_uri
 
-    byebug
     logger.info "Contacting server at: #{target_uri} about #{self.device_identifier} [#{self.id}]"
     logger.info "Asking for voucher of type: #{registrar_voucher_desired_type}"
 
