@@ -164,8 +164,9 @@ RSpec.describe "Est", type: :request do
       posted_cms_04
 
       expect(response).to have_http_status(406)
-      expect(assigns(:voucherreq)).to_not be_nil
-
+      vr=assigns(:voucherreq)
+      expect(vr).to_not be_nil
+      expect(vr.error_report).to_not be_nil
     end
 
     it "in CMS format, should get POSTed to an open registrar, get a voucher, and then enroll" do
