@@ -37,7 +37,7 @@ class EstController < ApiController
 
     logger.info "voucher request from #{request.env["REMOTE_ADDR"]}"
 
-    capture_client_info
+    return unless capture_client_info
     return_voucher
   end
 
@@ -173,8 +173,10 @@ class EstController < ApiController
     unless @voucherreq.consistency_checks
       logger.info "voucher request at \##{@voucherreq.id} had inconsistencies: #{@voucherreq.error_report}"
       head 406, text: @voucherreq.error_report
-      return
+      return false
     end
+
+    return true
   end
 
   def return_voucher
@@ -227,7 +229,7 @@ class EstController < ApiController
     # But, at this point something needs ApplicationController.
     @voucherreq = UnsignedVoucherRequest.from_unsigned_json(request.body.read)
 
-    capture_client_info
+    return unless capture_client_info
     return_voucher
   end
 
@@ -246,7 +248,7 @@ class EstController < ApiController
       return
     end
 
-    capture_client_info
+    return unless capture_client_info
     return_voucher
   end
 
