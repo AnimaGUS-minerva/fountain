@@ -124,18 +124,18 @@ RSpec.describe "Est", type: :request do
     end
 
     def setup_cms_mock_04
-      result = IO.read("spec/files/voucher-00-D0-E5-03-00-03.vch")
+      result = IO.read("spec/files/product/00-D0-E5-03-00-03/voucher_00-D0-E5-03-00-03.pkcs")
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
 
-      StubIo.instance.peer_cert = highwaytest_masacert
-      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+      StubIo.instance.peer_cert = florean03_clientcert
+      stub_request(:post, "https://florean.sandelman.ca:9443/.well-known/est/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                 'Content-Type'=>'application/voucher-cms+json',
-                'Host'=>'highway-test.example.com:9443',
+                'Host'=>'florean.sandelman.ca:9443',
                 'User-Agent'=>'Ruby'
                }).
         to_return(status: 200, body: lambda { |request|
@@ -151,7 +151,7 @@ RSpec.describe "Est", type: :request do
       body = Base64.decode64(IO.read("spec/files/vr_00-D0-E5-03-00-03.b64"))
 
       @env = Hash.new
-      @env["SSL_CLIENT_CERT"] = highwaytest_clientcert
+      @env["SSL_CLIENT_CERT"] = florean03_clientcert
       @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       @env["CONTENT_TYPE"] = "application/voucher-cms+json"
       post '/.well-known/est/requestvoucher', :params => body, :headers => @env
@@ -173,8 +173,8 @@ RSpec.describe "Est", type: :request do
       SystemVariable.setbool(:open_registrar, true)
       @voucher_request = nil
 
-      setup_cms_mock_03
-      posted_cms_03
+      setup_cms_mock_04
+      posted_cms_04
       expect(response).to have_http_status(200)
 
       #env["SSL_CLIENT_CERT"] = highwaytest_clientcert

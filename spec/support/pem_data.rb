@@ -67,3 +67,7 @@ end
 def smarkaklink_client_1502
   @smarkaklink_client_01 ||= IO.binread("spec/files/product/Smarkaklink-1502449999/ldevice.crt")
 end
+
+def florean03_clientcert
+  @florean03_clientcert ||= OpenSSL::X509::Certificate.new(IO.binread("spec/files/product/00-D0-E5-03-00-03/device.crt"))
+end
