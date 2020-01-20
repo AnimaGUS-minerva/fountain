@@ -144,6 +144,11 @@ RSpec.describe "Est", type: :request do
                   headers: {
                     'Content-Type'=>'application/voucher-cms+json'
                   })
+
+      # mark manufacturer as BRSKI trusted.
+      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/est')
+      manu.trust_brski!
+      manu.save!
     end
 
     def posted_cms_04
@@ -179,7 +184,7 @@ RSpec.describe "Est", type: :request do
 
       #env["SSL_CLIENT_CERT"] = highwaytest_clientcert
       @env["CONTENT_TYPE"]    = "application/pkcs10-base64"
-      body = IO::read("spec/files/csr_bulb03.der")
+      body = IO::read("spec/files/product/00-D0-E5-03-00-03/csr1.der")
       post "/.well-known/est/simpleenroll", :headers => @env, :params => Base64.encode64(body)
 
       expect(assigns(:device)).to_not be_nil
