@@ -39,8 +39,12 @@ namespace :fountain do
 
   end
 
-  desc "Do initial setup of system variables, non-interactively, HOSTNAME=foo"
+  desc "Do initial setup of system variables, non-interactively, HOSTNAME=foo PORT=xxx"
   task :s0_set_hostname => :environment do
+    unless ENV['HOSTNAME']
+      puts "Must supply the HOSTNAME="
+      exit
+    end
     SystemVariable.setvalue(:hostname, ENV['HOSTNAME'])
     SystemVariable.setnumber(:portnum, ENV['PORT'])
     set_iauthority
