@@ -30,7 +30,7 @@ namespace :fountain do
   end
 
   def set_iauthority
-    port = SystemVariable.number(:portnum)
+    port = SystemVariable.number(:portnum) || 443
     portinfo = sprintf(":%u", port)
     portinfo = "" if port == 443
     SystemVariable.setvalue(:jrc_iauthority, sprintf("%s%s",

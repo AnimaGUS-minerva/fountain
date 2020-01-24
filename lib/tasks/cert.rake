@@ -33,6 +33,10 @@ namespace :fountain do
     jrcprivkeyfile= FountainKeys.ca.certdir.join("jrc_#{curve}.key")
     outfile       = FountainKeys.ca.certdir.join("jrc_#{curve}.crt")
     dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
+    unless SystemVariable.string(:hostname)
+      puts "Hostname must be set before generating registrar CA"
+      exit 1
+    end
     dn = sprintf("%s/CN=%s", dnprefix, SystemVariable.string(:hostname).chomp)
     dnobj = OpenSSL::X509::Name.parse dn
 
