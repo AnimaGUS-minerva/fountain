@@ -25,13 +25,16 @@ namespace :fountain do
     puts "CA Certificate writtten to: #{outfile}"
   end
 
-  desc "Create a certificate for the Registration Authority to own devices with"
+  desc "Create a certificate for the Registration Authority to own devices with, LIFETIME=5years"
   task :s2_create_registrar => :environment do
 
     curve = FountainKeys.ca.client_curve
-
     jrcprivkeyfile= FountainKeys.ca.certdir.join("jrc_#{curve}.key")
     outfile       = FountainKeys.ca.certdir.join("jrc_#{curve}.crt")
+    lifetime      = nil  # accept default
+    if ENV['LIFETIME']
+      lifetime = ENV['LIFETIME'].to_f * (60*60*24*365)
+    end
     dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
     unless SystemVariable.string(:hostname)
       puts "Hostname must be set before generating registrar CA"
@@ -42,9 +45,9 @@ namespace :fountain do
 
     FountainKeys.ca.sign_certificate("Registar", nil,
                                      jrcprivkeyfile,
-                                     outfile, dnobj) { |cert, ef|
+                                     outfile, dnobj, lifetime) { |cert, ef|
       begin
-        n = ef.create_extension("extendedKeyUsage","cmcRA:TRUE",true)
+        n = ef.create_extension("extendedKeyUsage","cmcRA", true)
         cert.add_extension(n)
       rescue OpenSSL::X509::ExtensionError
         puts "Can not setup cmcRA extension, as openssl not patched, continuing anyway..."

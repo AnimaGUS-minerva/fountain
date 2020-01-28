@@ -89,8 +89,12 @@ class FountainKeys
     }
   end
 
-  def sign_certificate(certname, issuer, privkeyfile, pubkeyfile, dnobj, duration=(2*365*60*60), &efblock)
+  def sign_certificate(certname, issuer, privkeyfile, pubkeyfile, dnobj, duration=(2*365*24*60*60), &efblock)
     FileUtils.mkpath(certdir)
+
+    unless duration
+      duration=(2*365*24*60*60)
+    end
 
     if File.exists?(privkeyfile)
       puts "#{certname} using existing key at: #{privkeyfile}"
