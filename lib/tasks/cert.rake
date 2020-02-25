@@ -49,6 +49,8 @@ namespace :fountain do
       begin
         n = ef.create_extension("extendedKeyUsage","cmcRA", true)
         cert.add_extension(n)
+        n = ef.create_extension("keyUsage","digitalSignature", true)
+        cert.add_extension(n)
       rescue OpenSSL::X509::ExtensionError
         puts "Can not setup cmcRA extension, as openssl not patched, continuing anyway..."
       end
