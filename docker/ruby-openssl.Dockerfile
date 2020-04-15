@@ -18,9 +18,8 @@ RUN rm -rf /usr/include/x86_64-linux-gnu/openssl && \
 
 RUN cd /src/minerva/openssl && make install_sw
 
-RUN mkdir -p /app/minerva && \
+RUN mkdir -p /app/minerva && cd /app/minerva && \
     gem install rake-compiler --source=http://rubygems.org && \
-    cd /app/minervay && \
     git clone --single-branch --branch ies-cms-dtls https://github.com/CIRALabs/ruby-openssl.git && \
     cd /app/minerva/ruby-openssl && rake compile
 
@@ -28,7 +27,8 @@ RUN mkdir -p /app/minerva && cd /app/minerva && \
     git config --global http.sslVerify "false" && \
     git clone --single-branch --branch binary_http_multipart https://github.com/AnimaGUS-minerva/multipart_body.git && \
     git clone --single-branch --branch ecdsa_interface_openssl https://github.com/AnimaGUS-minerva/ruby_ecdsa.git && \
-    git clone --single-branch --branch v0.8.0 https://github.com/mcr/ChariWTs.git && \
+    git clone --single-branch --branch v0.8.0 https://github.com/mcr/ChariWTs.git chariwt && \
+    git clone --single-branch --branch master https://github.com/AnimaGUS-minerva/david.git && \
     git clone --single-branch --branch aaaa_rr https://github.com/CIRALabs/dns-update.git
 
 RUN touch /app/v202004
