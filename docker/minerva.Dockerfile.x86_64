@@ -13,19 +13,4 @@ RUN gem install -v1.10.1 nokogiri --source=http://rubygems.org && \
     gem install -v0.1.3  websocket-extensions --source=http://rubygems.org && \
     gem install -v0.5.9.3 cbor --source=http://rubygems.org
 RUN gem install -v1.3.13 sqlite3 --source=http://rubygems.org
-ADD ./docker/Gemfile /app/fountain/Gemfile
-ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
-
-WORKDIR /app/fountain
-RUN bundle config setup system true
-RUN bundle install --no-deployment --gemfile=/app/fountain/Gemfile && \
-    bundle check
-
-# install items for use in debugging
-RUN apt-get install -y strace
-
-RUN rm -f /app/fountain/tmp/pids/server.pid && \
-    rm -f /app/fountain/config/{config,database,secret}.yml && \
-    rm -f /app/fountain/config/initializers/acme.rb && \
-    rm -f /app/fountain/config/environments/production.rb
 

@@ -1,15 +1,32 @@
-FROM mcr314/brski_fountain_builder:v202004 as builder
+FROM mcr314/minerva_builder:v202004 as builder
+
+ADD ./docker/Gemfile /app/fountain/Gemfile
+ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
+
+WORKDIR /app/fountain
+RUN bundle config setup system true
+RUN bundle install --no-deployment --gemfile=/app/fountain/Gemfile && \
+    bundle check
+
+# install items for use in debugging
+RUN apt-get install -y strace
+
+# clean up just to be sure.
+RUN rm -f /app/fountain/tmp/pids/server.pid && \
+    rm -f /app/fountain/config/{config,database,secret}.yml && \
+    rm -f /app/fountain/config/initializers/acme.rb && \
+    rm -f /app/fountain/config/environments/production.rb
 
 # debugging
-RUN apt-get install strace
+RUN apt-get -y install strace
 
 FROM mcr314/distroless-ruby:2.6.6-dnsutils
 
+# includes /app/minerva, where the gems were installed.
 COPY --from=builder /app /app
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder /usr/local/lib/ruby /usr/local/lib/ruby
 COPY --from=builder /usr/share/zoneinfo/UTC /etc/localtime
-COPY --from=builder /gems/highway /gems/highway
 COPY --from=builder /bin/sash     /bin/sash
 COPY --from=builder /usr/bin/env  /usr/bin/env
 COPY --from=builder /bin/busybox  /bin/busybox
