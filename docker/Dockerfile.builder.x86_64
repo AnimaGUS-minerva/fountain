@@ -1,35 +1,6 @@
-FROM ruby:2.6.2 as builder
+FROM mcr314/minerva_ruby_openssl:v202004 as builder
 
-RUN apt-get update -qq && apt-get install -y postgresql-client libgmp10-dev libgmp10 sash busybox dnsutils && \
-    apt-get remove -y git &&  \
-    apt-get install -y git && \
-    mkdir -p /app/highway && \
-    mkdir -p /gems/highway && cd /gems/highway && \
-    git config --global http.sslVerify "false" && \
-    git clone --single-branch --branch ies-cms-dtls https://github.com/CIRALabs/ruby-openssl.git && \
-    git clone --single-branch --branch binary_http_multipart https://github.com/AnimaGUS-minerva/multipart_body.git && \
-    git clone --single-branch --branch ecdsa_interface_openssl https://github.com/AnimaGUS-minerva/ruby_ecdsa.git && \
-    git clone --single-branch --branch v0.8.0 https://github.com/mcr/ChariWTs.git && \
-    git clone --single-branch --branch aaaa_rr https://github.com/CIRALabs/dns-update.git
-
-# build custom openssl with ruby-openssl patches
-
-# remove directory with broken opensslconf.h,
-# build in /src, as we do not need openssl once installed
-RUN rm -rf /usr/include/x86_64-linux-gnu/openssl && \
-    mkdir -p /src/highway && \
-    cd /src/highway && \
-    git clone -b dtls-listen-refactor-1.1.1c git://github.com/mcr/openssl.git && \
-    cd /src/highway/openssl && \
-    ./Configure --prefix=/usr --openssldir=/usr/lib/ssl --libdir=lib/x86_64-linux-gnu no-idea no-mdc2 no-rc5 no-zlib no-ssl3                  linux-x86_64 && \
-    id && make && \
-    cd /src/highway/openssl && make install_sw && \
-    gem install rake-compiler --source=http://rubygems.org && \
-    cd /gems/highway/ruby-openssl && rake compile
-
-RUN touch /app/ietf104.txt
-
-RUN gem install bundler --source=http://rubygems.org
+WORKDIR /app
 
 # install gems with extensions explicitely so that layers are cached.
 RUN gem install -v1.10.1 nokogiri --source=http://rubygems.org && \
@@ -46,11 +17,12 @@ ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 WORKDIR /app/fountain
-RUN bundle _2.0.1_ install --system --no-deployment --gemfile=/app/fountain/Gemfile && \
-    bundle _2.0.1_ check
+RUN bundle config setup system true
+RUN bundle install --no-deployment --gemfile=/app/fountain/Gemfile && \
+    bundle check
 
 # install items for use in debugging
-RUN apt-get install strace
+RUN apt-get install -y strace
 
 RUN rm -f /app/fountain/tmp/pids/server.pid && \
     rm -f /app/fountain/config/{config,database,secret}.yml && \
