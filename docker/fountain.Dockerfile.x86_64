@@ -1,9 +1,9 @@
-FROM mcr314/brski_fountain_builder:ietf104 as builder
+FROM mcr314/brski_fountain_builder:v202004 as builder
 
 # debugging
 RUN apt-get install strace
 
-FROM lestienne/distroless-ruby:2.6.2-dnsutils
+FROM mcr314/distroless-ruby:2.6.6-dnsutils
 
 COPY --from=builder /app /app
 COPY --from=builder /usr/local/bundle /usr/local/bundle
@@ -32,7 +32,7 @@ WORKDIR /app/fountain
 
 EXPOSE 8443
 
-CMD ["bundle", "_2.0.1_", "exec", "thin", "start", "--ssl",      \
+CMD ["bundle", "exec", "thin", "start", "--ssl",      \
     "--address", "0.0.0.0", "--port", "8443",                         \
     "--ssl-cert-file", "/app/certificates/server_prime256v1.crt",\
     "--ssl-key-file",  "/app/certificates/server_prime256v1.key" ]
