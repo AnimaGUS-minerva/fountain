@@ -1,8 +1,12 @@
 # Docker Setup for MINERVA FOUNTAIN
 
 All of the docker configuration and build scripts are placed in the docker/
-subdirectory.   A series of shell scripts invokes the appropriate Dockerfile
-and tags, and pushes the result.
+subdirectory.   There is no main "Dockerfile", in the root as is frequently
+done because it's not as simple as that, unfortunately.
+
+A series of shell scripts invokes the appropriate Dockerfile and tags, and
+pushes the result for subsequent stages.  This description applies to both
+[[doc/fountain]] and [[doc/highway]].
 
 The shell script and Dockerfile(s) may need to be edited to use your docker
 ID if you need to update the images.  Solutions sought for parameterizing
@@ -11,11 +15,14 @@ the Dockefile and shell scripts without introducing complexity.
 The scripts are to be run in the order:
 1. docker/ruby-openssl.builder.sh
 2. docker/minerva.builder.x86_64.sh
-3. docker/fountain.build.x86_64.sh
+3. docker/fountain.build.x86_64.sh or docker/highway.build.x86_64.sh
+
+But, if you use the shg\_comet\_example below, then you may not need to run
+any of them if you haven't updated any code and/or just want to run release
+tagged images.
 
 Note that there may also be ARM versions for use on home gateways.
-All images are versioned with a "v", the year, and the month.
-As in "v202004"
+All images are versioned with a "v", the year, and the month: as in "v202004"
 
 ## Base Openssl extensions
 
@@ -114,11 +121,11 @@ started, accounts can be set for each web container using:
 
     psql -h 172.17.0.2 -U postgres
 
-use the password specified, which above is xyz1234.  Then create a user and
-database for each container, and set a password.  This can be done with
-CREATE USER / CREATE DATABASE, or with the createdb/createrole commands.
-(createdb, psql and createrole/createuser are part of postgresql-client
-package)
+use the password specified, which above is xyz1234.
+Then create a user and database for each container, and set a password.
+This can be done with CREATE USER / CREATE DATABASE, or with the
+createdb/createrole commands. (createdb, psql and createrole/createuser are
+part of postgresql-client package)
 
 I use:
 
@@ -129,24 +136,41 @@ I use:
 The database is then available using the name "staging_db" within the
 containers below.
 
-## MASA setup and configuration
+## setup and configuration
 
-The arrangement described below creates a single tier IDevID PKI.
+The arrangement described below creates a single tier
+IDevID PKI for [[doc/highway]], and single tier Domain CA for [[doc/fountain]].
 A section at the end describes how to make this a three-tier CA.
-The MASA signing EE is signed by the IDevID CA, but the pledge should pin the
-EE certificate directly.
+The MASA [[doc/highway]] signing End Entity (EE) is signed by the IDevID CA, but
+the pledge should pin the EE certificate directly.
 
-In this situation, the test machine is called _eeylops_.
+For the MASA [[doc/highway]] situation, the test machine is called _eeylops_.
+For the Registrar [[doc/fountain]] situation, the test machine is called _gambol_.
+(Both are shops on Diagon Alley)
+
+An example repo with Dockerfile is at: https://github.com/CIRALabs/shg_comet_example
 
 Create two volumes: eeylops\_certs and eeylops\_devices.
 
 Create a Dockerfile that includes:
 
-1. config/acme.yml  [highway]
+1. config/acme.yml  [[doc/highway]]
 2. config/database.yml
 3. config/environments/production.rb
 4. public/index.html
-5. turris_root [highway]
+5. turris_root [[doc/highway]]
+
+### Dockerfile
+
+In the above example, comet/Dockerfile does these things:
+
+1. imports the build image from mcr314/minerva_highway.
+2. installs the busybox symbolic links to help with debugging.  This can be
+   skipped for a production server that should not have /bin/sh.
+3. sets the GEM_HOME and CERTDIR, to be sure they are set right.
+4. copies the files describe below into the right places. (This is really the
+   key step)
+5. Sets the command, providing the right address and port to bind to.
 
 ### config/acme.yml
 
@@ -194,7 +218,7 @@ As an example:
 
 This goes with a BIND9 configuration containing:
 
-    key highway. {
+    key keyname. {
             algorithm hmac-sha256;
             secret:  'A7thedmnicetPJsecretIRbvaluecQ7youiRsuseWtforTgthePUDTSIG4valuef';
     };
@@ -211,7 +235,7 @@ This goes with a BIND9 configuration containing:
             # place an "update-policy" statement like this one, adjusted as
             # needed for your preferred permissions:
             update-policy {
-                      grant highway. subdomain r.example.org. ANY;
+                      grant keyname. subdomain r.example.org. ANY;
             };
 
     };
@@ -219,8 +243,15 @@ This goes with a BIND9 configuration containing:
 In order to specify the zone, "example.org", and the suffix "r"
 [it should have been called a prefix perhaps, except that DNS names go left-to-right]
 then the database system variables are used.
-This is inconsistent between settings up .yml files and entering things in
-the database, and a future version will unify this into the database only.
+
+The key can be called anything rather than "keyname". Note where the trailing
+period is significant and where it does not belong.
+
+There is inconsistent between settings up some of the .yml file contents and
+entering things in the database, and a future version will put more into the
+the database only.
+The TSIG key will remain in acme.yml in order to avoid putting significant TSIG keys into
+the database.
 
 The two variables that are needed to be set are:
 
@@ -230,7 +261,7 @@ shg\_suffix:
 shg\_zone:
 : Set this to "example.org"
 
-Instructions on setting these is below using h0\_shg\_zone.
+These are currently setup in the example "staging.sh" file using the highway:h0\_shg\_zone.
 
 Devices which register will be given names like _nXXYYZZ.r.example.org_ based
 upon a ULA that contains *fdXX:YYZZ:*
@@ -262,5 +293,86 @@ To use an sqlite3 database, located on a persistant mount at /app/database:
      database: /app/database/production.sqlite3
      pool: 5
      timeout: 5000
+
+
+### config/environments/production.rb
+
+Take this file from the example.
+Please adjust the SMTP server information to something that works, and please
+set the destination address for information emails.
+
+There are very few things you want to tweak, but at the bottom are several
+important settings:
+
+    $TOFU_DEVICE_REGISTER = true
+    $REVISION= "docker"
+
+    $INTERNAL_CA_SHG_DEVICE=false
+    $LETSENCRYPT_CA_SHG_DEVICE=true
+
+If you want to use LetsEncrypt as your CA, then select true, and make sure
+that acme.yml is setup.  If an internal CA suits you (more control over the
+IDevID), then select that.
+
+One can use [LetsEncrypt](doc/ACME-HACKS.md) to setup the
+
+The Revision variable can be set to any useful value, if not set there is a
+value in the environment which is incremented on each release.
+
+The above settings should probably become SystemVariables, to live in the
+database rather than as configuration values.
+
+#### TOFU DEVICE REGISTER
+
+The TOFU\_DEVICE\_REGISTER setting controls if unknown new SHG routers will
+be accepted.
+If so, then the device information is collected, but will be marked
+"obsolete" until an administrator enables it.
+This is not always what people think of as TOFU, but it is how SSH works.
+The device may have to be rebooted after it is authorized so that it will
+try again, if a long time has passed since it tried the first time.
+
+If this is not set, then unknown devices get a 404 and no information is
+collected, which makes it hard to enable them.
+
+To enable the device, use the "eeylops.sh" (or your equivalent) script, and run:
+
+    ./eeylops.sh bundle exec rake shg:valid PRODUCTID=aa:bb:cc:dd:ee:ff
+
+To get a list of devices, do:
+
+    ./eeylops.sh bundle exec rake highway:list_dev
+
+### public/index.html
+
+This file may contain any useful information.
+It will be displayed to curious visitors who hit the front of the URL used.
+It is suggested that it be used to point to project information.
+
+### turris_root
+
+This directory can contain any additional files or patches that should be
+returned to each SHG router that is provisioned.
+During the provisioning process, a tar file is created with the new device
+certificate, and the contents of this directory are added.
+The contents are extracted in the root directory, so some significant caution
+is waranteed.
+
+In the example provided, the file /root/.ssh/authorized_keys is installed
+with mcr@sandelman.ca's public key to enable remote login for debugging.
+
+There is a provided etc/shg/postinst.sh script which will look for files
+in etc/shg/extra, and if a file exists, will append that file to an existing
+file rather than append to it.   This is used in this example to enable SSH
+access to the Turris from Sandelman's test office network.
+
+The above two changes provide for being able to remote manage the device
+securely without any actions, and are probably inappropriate for many
+situations.  They do not represent a default password, and specifically avoid
+having a default maintenance password set!
+
+
+
+
 
 
