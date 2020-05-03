@@ -1,10 +1,16 @@
 class MudTelemetrySocket
-  cattr_accessor :sock_name
+  cattr_accessor :sock_name, :sock_dir
   cattr_accessor :tele_socket
   attr_accessor :cmd_count
   attr_accessor :end_eof
 
-  @@sock_name = File.join(ENV['HOME'], "mud_telemetry.sock")
+  def self.sock_dir
+    @@sock_dir ||= ENV['HOME']
+  end
+
+  def self.sock_name
+    @@sock_name ||= File.join(sock_dir, "mud_telemetry.sock")
+  end
 
   def self.socknew
     File.delete(sock_name) if File.exists?(sock_name)

@@ -41,6 +41,22 @@ RSpec.describe "Smarkaklink", type: :request do
       expect(vr.attributes['voucher-challenge-nonce']).to eq("abcd1234")
     end
 
+    it "should accept a /requestvoucherrequest from a smartphone having no EUI64 extension" do
+      # get the Base64 of the parboiled signed request
+      bodyjs = { "ietf:request-voucher-request" =>
+                   { "voucher-challenge-nonce" => IO::read("spec/files/smarkaklink_req-challenge-01.b64") }
+               }.to_json
+
+      do_rvr_post_1502(bodyjs)
+      expect(response).to have_http_status(200)
+      expect(response.content_type).to eq(CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE)
+
+      vr = Chariwt::VoucherRequest.from_pkcs7(response.body)
+      expect(vr).to_not be_nil
+      # nonce generated to be well-known, normally random
+      expect(vr.attributes['voucher-challenge-nonce']).to eq("abcd1234")
+    end
+
     it "should reject a /requestvoucherrequest with bad JSON top-level" do
       # get the Base64 of the parboiled signed request
       bodyjs = { "blah": "hello" }.to_json
