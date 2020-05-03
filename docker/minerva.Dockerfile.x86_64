@@ -11,7 +11,7 @@ RUN gem install -v1.10.9 nokogiri --source=http://rubygems.org && \
     gem install -v0.21.0 pg --source=http://rubygems.org && \
     gem install -v1.7.2 thin --source=http://rubygems.org && \
     gem install -v0.1.3  websocket-extensions --source=http://rubygems.org && \
-    gem install -v0.5.9.3 cbor --source=http://rubygems.org
-RUN gem install -v1.3.13 sqlite3 --source=http://rubygems.org
-RUN gem install -v2.2.1  sassc --source=http://rubygems.org
+    gem install -v0.5.9.6 cbor --source=http://rubygems.org && \
+    gem install -v1.3.13 sqlite3 --source=http://rubygems.org && \
+    gem install -v2.2.1  sassc --source=http://rubygems.org
 

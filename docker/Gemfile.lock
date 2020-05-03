@@ -112,7 +112,7 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
-    cbor (0.5.9.3)
+    cbor (0.5.9.6)
     celluloid (0.17.4)
       celluloid-essentials
       celluloid-extras
