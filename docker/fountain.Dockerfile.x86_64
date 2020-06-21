@@ -33,14 +33,21 @@ COPY --from=builder /bin/busybox  /bin/busybox
 COPY --from=builder /usr/bin/strace  /usr/bin/strace
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libssl.so* \
                     /usr/lib/x86_64-linux-gnu/libcrypto.so* \
+                    /usr/lib/x86_64-linux-gnu/libunwind*so.0* \
                     /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
 # can not do this, because distroless has no rm or mkdir -p
-#RUN ["rm","-rf","/app/highway"]
-#RUN ["mkdir", "-p", "/app/fountain" ]
 COPY . /app/fountain
+RUN ["busybox","rm", "-rf", "/app/fountain/run"]
+RUN ["busybox","rm", "-rf", "/app/fountain/spec"]
+RUN ["busybox","rm", "-rf", "/app/fountain/tmp"]
+RUN ["busybox","rm", "-rf", "/app/fountain/windex_cli"]
+RUN ["busybox","rm", "-rf", "/app/fountain/.git"]
+RUN ["busybox","sh", "-c", "busybox find /app -type d -name .git | busybox xargs busybox rm -rf"]
+RUN ["busybox","sh", "-c", "busybox find /app -type f -name '*~' | busybox xargs busybox rm"]
+
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 ENV GEM_HOME="/usr/local/bundle"
