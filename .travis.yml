@@ -1,0 +1,31 @@
+language: ruby
+rvm:
+  - 2.6.6
+dist: bionic
+cache:
+  directories:
+    - /home/travis/minerva/
+    - /home/travis/.rvm/
+services:
+  - postgresql
+before_install:
+  - PATH=$HOME/minerva/bin:$PATH export PATH
+  - ln -s $HOME/minerva ../minerva
+  - ruby -e 'require "openssl"; system(sprintf("lsof -p %d", Process.pid))'
+  - ./travis-install-openssl
+  - LD_PRELOAD=/home/travis/minerva/lib/libssl.so.1.1:/home/travis/minerva/lib/libcrypto.so.1.1 ruby -e 'require "openssl"; system(sprintf("lsof -p %d", Process.pid))'
+  - bundle config set deployment 'true'
+before_script:
+  - psql -c 'create database fountain_ci_test;' -U postgres
+  - cp config/database.yml.travis config/database.yml
+  - bundle install --jobs=3 --retry=3
+  - ls -l /home/travis/minerva/lib/libssl.so.1.1 /home/travis/minerva/lib/libcrypto.so.1.1
+  - LD_PRELOAD=/home/travis/minerva/lib/libssl.so.1.1:/home/travis/minerva/lib/libcrypto.so.1.1 bundle exec ruby -e 'require "openssl"; print OpenSSL::CMS; system(sprintf("lsof -p %d", Process.pid))'
+  - export LD_PRELOAD=/home/travis/minerva/lib/libssl.so.1.1:/home/travis/minerva/lib/libcrypto.so.1.1
+  - env
+  - bundle exec rake db:create
+  - bundle exec rake db:migrate RAILS_ENV=test
+  - bundle exec rake db:schema:load
+  - lsof -h
+script:
+  - bundle exec rake spec

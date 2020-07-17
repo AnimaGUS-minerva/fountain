@@ -1,0 +1,15 @@
+#!/bin/sh
+
+unset LD_PRELOAD
+file=$HOME/minerva/ruby-openssl/tmp/x86_64-linux/openssl/2.6.6/openssl.so
+if [ ! -x $file ] ; then
+   mkdir -p $HOME/minerva && cd $HOME/minerva && git clone -b dtls-listen-refactor-1.1.1c git://github.com/mcr/openssl.git
+   (cd ../minerva/openssl && ./Configure --prefix=$HOME/minerva no-idea no-mdc2 no-rc5 no-zlib no-ssl3 enable-unit-test linux-x86_64 && id && make && make install_sw )
+   cd ../minerva && git clone -b ies-cms-dtls git://github.com/mcr/ruby-openssl.git
+   gem install rake-compiler bundler
+   cd ruby-openssl && rake compile -- --with-openssl-dir=$HOME/minerva
+fi
+ls -l $file $HOME/.rvm/rubies/ruby-2.6.6/lib/ruby/2.6.0/x86_64-linux/openssl.so
+cp $file $HOME/.rvm/rubies/ruby-2.6.6/lib/ruby/2.6.0/x86_64-linux/openssl.so
+
+echo finished openssl.
