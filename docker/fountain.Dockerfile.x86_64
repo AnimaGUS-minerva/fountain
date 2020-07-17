@@ -19,6 +19,7 @@ RUN rm -f /app/fountain/tmp/pids/server.pid && \
 
 # debugging
 RUN apt-get -y install strace
+# RUN ls -l /usr/lib/x86_64-linux-gnu/libunwind*so*
 
 FROM mcr314/distroless-ruby:2.6.6-dnsutils
 
@@ -33,7 +34,8 @@ COPY --from=builder /bin/busybox  /bin/busybox
 COPY --from=builder /usr/bin/strace  /usr/bin/strace
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libssl.so* \
                     /usr/lib/x86_64-linux-gnu/libcrypto.so* \
-                    /usr/lib/x86_64-linux-gnu/libunwind*so.0* \
+                    /usr/lib/x86_64-linux-gnu/libpq.so* \
+                    /usr/lib/x86_64-linux-gnu/libunwind*so* \
                     /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
