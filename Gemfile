@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 5.2.2.1"
+gem 'rails', "~> 5.2.4.3"
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -24,7 +24,7 @@ gem 'jwt'
 gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
 gem 'jbuilder', '~> 2.0'
-gem 'rake'
+gem 'rake', ">= 12.3.3"
 
 gem 'sdoc', '~> 0.4.0'
 #gem 'uglifier'
@@ -32,10 +32,14 @@ gem 'tzinfo-data'
 
 gem 'mail'
 gem 'ffi', '~> 1.10.0'
-gem 'bundler', '2.0.1'
+gem 'bundler', '>= 2.0.1'
 
 # due to alerts
 gem "yard", ">= 0.9.20"
+gem "nokogiri", ">= 1.10.8"
+gem "websocket-extensions", ">= 0.1.5"
+gem "rack", ">= 2.1.4"
+gem "loofah", ">= 2.3.1"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
