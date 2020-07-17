@@ -1,0 +1,15 @@
+#!/bin/sh
+
+cd $(dirname $0)/..
+
+ver=mcr314/minera_fountain_gemlock
+# this is done when one wants to update the Gemfile
+docker build -t ${ver} -f docker/fountain_gemlocker.Dockerfile.x86_64 .
+
+cid=$(docker create ${ver})
+docker cp $cid:/app/fountain/Gemfile.lock docker/Gemfile.lock.new
+docker rm $cid
+
+
+
+
