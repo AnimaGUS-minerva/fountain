@@ -2,6 +2,6 @@
 
 set -e
 cd $(dirname $0)/..
-docker build -t mcr314/minerva_fountain:v202006 -f docker/fountain.Dockerfile.x86_64 .
-docker push mcr314/minerva_fountain:v202006
+docker build -t mcr314/minerva_fountain:v202007 -f docker/fountain.Dockerfile.x86_64 .
+docker push mcr314/minerva_fountain:v202007
 
