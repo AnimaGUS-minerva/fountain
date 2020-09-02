@@ -4,6 +4,9 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', "~> 5.2.4.3"
 
+# Use SCSS for stylesheets
+gem 'sassc'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
