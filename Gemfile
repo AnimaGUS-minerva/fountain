@@ -23,7 +23,6 @@ gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 gem 'jbuilder', '~> 2.0'
 gem 'rake', ">= 12.3.3"
 
-gem 'sdoc', '~> 0.4.0'
 #gem 'uglifier'
 gem 'tzinfo-data'
 
@@ -33,10 +32,12 @@ gem 'bundler', '>= 2.0.1'
 
 # due to alerts
 gem "yard", ">= 0.9.20"
-gem "nokogiri", ">= 1.10.8"
 gem "websocket-extensions", ">= 0.1.5"
 gem "rack", ">= 2.1.4"
 gem "loofah", ">= 2.3.1"
+gem "activerecord", ">= 5.2.4.5"
+gem "nokogiri", ">= 1.11.0"
+gem "json", ">= 2.3.0"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
@@ -68,7 +69,6 @@ gem 'ipaddress'
 
 # encode/decode cbor messages
 gem 'cbor'
-gem 'json'
 gem 'rabl'
 gem 'oj'
 
