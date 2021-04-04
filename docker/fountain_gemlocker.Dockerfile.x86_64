@@ -1,11 +1,12 @@
-FROM mcr314/minerva_builder:v202006 as builder
+FROM mcr314/minerva_builder:v202101 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 WORKDIR /app/fountain
 RUN bundle config setup system true
-RUN bundle install --no-deployment --gemfile=/app/fountain/Gemfile && \
+RUN bundle config set --local development 'false'
+RUN bundle update --gemfile=/app/fountain/Gemfile && \
     bundle check
 
 
