@@ -127,6 +127,7 @@ class Manufacturer < ApplicationRecord
     if SystemVariable.boolvalue?(:open_registrar)
       unless manu1
         manu1 = create(issuer_dn: cert.issuer.to_s, masa_url: masaurl)
+        logger.info "New Manufacturer (#{manu1.id}) stored into database for #{masaurl}"
         manu1.trust_firstused!
         manu1.name = sprintf("unknown manufacturer #%u", manu1.id)
         manu1.save!

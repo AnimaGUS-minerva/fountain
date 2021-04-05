@@ -137,16 +137,23 @@ class EstController < ApiController
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     clientcert_pem ||= request.env["rack.peer_cert"]
     unless clientcert_pem
+      logger.info "client from #{request.env["REMOTE_ADDR"]} was not trusted because TLS Client certificate could not be found"
       return false
     end
 
     cert = OpenSSL::X509::Certificate.new(clientcert_pem)
     @device = Device.find_or_make_by_certificate(cert)
+    unless @device
+      logger.info "client cert #{cert.issuer.to_s} => #{cert.subject.to_s}, was not trusted because an associated device was not found"
+    end
     return true if @device.try(:trusted?)
+
+    logger.info "client connected to device #{@device.try(:id)} was not considered to have become trusted"
 
     @administrator = Administrator.find_by_cert(cert)
     # it could also be trusted by being an administrator.
     return true if @administrator.try(:admin?)
+    logger.info "client connected to device #{@administrator.try(:id)} was not considered to be an admin"
 
     return false
   end
