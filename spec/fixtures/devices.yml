@@ -182,3 +182,15 @@ stove1wiredB:
   lan_enabled: true
   eui64: "a8:40:41:19:50:67"
 
+# certificate is in spec/files/product/00-D0-E5-03-00-24/device.crt
+# this is an RSA using device.
+# the private key can be found in the reach project
+bulb2:
+  id: 11
+  name: bulb vierundzwanzig
+  fqdn: twentyfour.bulbs.example.com
+  eui64: 00-d0-e5-03-00-24
+  device_type_id: 1
+  manufacturer_id: 2
+  created_at: 2017-01-01
+  updated_at: "2018-05-24 01:13:22"

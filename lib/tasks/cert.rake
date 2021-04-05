@@ -2,10 +2,10 @@
 
 namespace :fountain do
 
-  # really only used in testing: this should be corporate CA, or Verisign, etc.
+  # while originally only used in testing, the integral CA has become the main way to deploy
   desc "Create initial self-signed CA certificate for Registrar"
   task :s1_registrar_ca => :environment do
-    curve = FountainKeys.ca.curve
+    curve = FountainKeys.ca.domain_curve
 
     ownerprivkeyfile = FountainKeys.ca.certdir.join("ownerca_#{curve}.key")
     outfile       = FountainKeys.ca.certdir.join("ownerca_#{curve}.crt")

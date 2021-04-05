@@ -35,7 +35,7 @@ RSpec.describe VoucherRequest, type: :model do
       expect(Chariwt.cmp_pkcs_file(smime,
                                    "voucher_request-00-D0-E5-F2-00-02")).to be_truthy
 
-      expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=localhost")
+      expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=fountain-test.example.com")
       expect(vr1.masa_url).to eq("https://highway-test.example.com:9443/.well-known/est/")
     end
 

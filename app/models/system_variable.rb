@@ -31,6 +31,10 @@ class SystemVariable < ActiveRecord::Base
     v
   end
 
+  def self.findwithdefault(thing, defvalue)
+    (self.findormake(thing) { |v| v.value = defvalue }).value
+  end
+
   def self.boolvalue?(thing)
     v = self.lookup(thing)
     return false if v.nil?

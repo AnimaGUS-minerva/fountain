@@ -1,5 +1,7 @@
 class FountainKeys
-  attr_accessor :devdir, :certdir, :domain_curve
+  attr_accessor :devdir, :certdir, :domain_curve, :client_curve, :algo
+
+  class InvalidAlgoType < Exception; end
 
   def rootkey
     @rootkey ||= ca_load_pub_key
@@ -23,20 +25,24 @@ class FountainKeys
     @rootprivkey ||= jrc_priv_key
   end
 
-  def curve
-    'secp384r1'
+  def algo
+    @algo         ||= SystemVariable.findwithdefault('domain_algo','ecdsa')
   end
 
   def domain_curve
-    @domain_curve ||= 'secp384r1'
+    @domain_curve ||= SystemVariable.findwithdefault('domain_curve','secp384r1')
   end
 
   def digest
     OpenSSL::Digest::SHA384.new
   end
 
+  def client_algo
+    @client_algo  ||= SystemVariable.findwithdefault('client_algo','ecdsa')
+  end
+
   def client_curve
-    'prime256v1'
+    @client_curve ||= SystemVariable.findwithdefault('client_curve','prime256v1')
   end
 
   def serial
@@ -89,6 +95,33 @@ class FountainKeys
     }
   end
 
+  def gen_client_pkey
+    case client_algo
+    when 'ecdsa'
+      key = OpenSSL::PKey::EC.new(domain_curve)
+      key.generate_key
+      key
+    when 'rsa'
+      key = OpenSSL::PKey::RSA.new(client_curve.to_i)  # really, strength in bits
+      key
+    end
+  end
+
+  def gen_domain_pkey
+    case algo
+    when 'ecdsa'
+      key = OpenSSL::PKey::EC.new(domain_curve)
+      key.generate_key
+      key
+    when 'rsa'
+      # really, strength in bits
+      key = OpenSSL::PKey::RSA.new(domain_curve.to_i)
+      key
+    else
+      raise InvalidAlgoType;
+    end
+  end
+
   def sign_certificate(certname, issuer, privkeyfile, pubkeyfile, dnobj, duration=(2*365*24*60*60), &efblock)
     FileUtils.mkpath(certdir)
 
@@ -101,8 +134,7 @@ class FountainKeys
       key = OpenSSL::PKey.read(File.open(privkeyfile))
     else
       # the CA's public/private key - 3*1024 + 8
-      key = OpenSSL::PKey::EC.new(curve)
-      key.generate_key
+      key = gen_domain_pkey
       File.open(privkeyfile, "w", 0600) do |f| f.write key.to_pem end
     end
 
@@ -146,14 +178,14 @@ class FountainKeys
 
   protected
   def ca_load_priv_key
-    vendorprivkey=certdir.join("ownerca_#{curve}.key")
+    vendorprivkey=certdir.join("ownerca_#{domain_curve}.key")
     File.open(vendorprivkey) do |f|
       OpenSSL::PKey.read(f)
     end
   end
 
   def ca_load_pub_key
-    File.open(certdir.join("ownerca_#{curve}.crt"),'r') do |f|
+    File.open(certdir.join("ownerca_#{domain_curve}.crt"),'r') do |f|
       OpenSSL::X509::Certificate.new(f)
     end
   end

@@ -9,7 +9,7 @@ RSpec.describe Device, type: :model do
   before(:all) do
     FileUtils.mkdir_p("tmp")
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
-    FountainKeys.ca.domain_curve = "prime256v1"
+    #FountainKeys.ca.domain_curve = "prime256v1"
   end
 
   before(:each) do
@@ -250,6 +250,19 @@ RSpec.describe Device, type: :model do
     it "should generate an LDevID signed by domain authority" do
       b = devices(:bulb1)
       expect(b.ldevid).to be_blank
+
+      csrio = IO::read("spec/files/csr_bulb1.der")
+      csr   = OpenSSL::X509::Request.new(csrio)
+      b.create_ldevid_from_csr(csr)
+      expect(b.ldevid).to_not be_blank
+    end
+
+    it "should generate an RSA LDevID signed by domain authority RSA key" do
+      b = devices(:bulb1)
+      expect(b.ldevid).to be_blank
+
+      #FountainKeys.ca.domain_curve = "prime256v1"
+
 
       csrio = IO::read("spec/files/csr_bulb1.der")
       csr   = OpenSSL::X509::Request.new(csrio)

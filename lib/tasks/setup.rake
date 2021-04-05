@@ -22,11 +22,11 @@ namespace :fountain do
                                              SystemVariable.number(variable)))
   end
 
-  def prompt_variable_value(prompt, variable)
+  def prompt_variable_value(prompt, variable, default=nil)
     SystemVariable.setvalue(variable,
                             prompt_variable(prompt,
                                             variable,
-                                            SystemVariable.string(variable)))
+                                            SystemVariable.string(variable) || default))
   end
 
   def set_iauthority
@@ -73,6 +73,18 @@ namespace :fountain do
 
     prompt_variable_value("ACP domain for this registrar",
                           :acp_domain)
+
+    prompt_variable_value("Algorithm to use for Certification Authority ",
+                          :domain_algo, 'ecdsa')
+
+    prompt_variable_value("Curve/size to use for Certification Authority",
+                          :domain_curve, 'secp384r1')
+
+    prompt_variable_value("Algorithm to use for Registrar Key ",
+                          :client_algo, 'ecdsa')
+
+    prompt_variable_value("Curve/size to use for Registrar Key",
+                          :client_curve, 'prime256v1')
 
     SystemVariable.dump_vars
   end
