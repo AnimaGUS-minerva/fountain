@@ -102,4 +102,20 @@ highwaytest:
   trust: brski
   issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
 
+highwaytestrsa:
+  id: 8
+  name: highway-test-rsa
+  created_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: &1 2019-04-03 20:39:54.417055000 Z
+    zone: &2 !ruby/object:ActiveSupport::TimeZone
+      name: Etc/UTC
+    time: *1
+  updated_at: !ruby/object:ActiveSupport::TimeWithZone
+    utc: &3 2019-04-03 20:39:54.421921000 Z
+    zone: *2
+    time: *3
+  masa_url: https://highway-test.example.com:9443/.well-known/est/
+  trust: brski
+  issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
+
   
