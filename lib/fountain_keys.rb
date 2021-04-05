@@ -26,11 +26,11 @@ class FountainKeys
   end
 
   def algo
-    @algo         ||= SystemVariable.findwithdefault('domain_algo','ecdsa')
+    @algo         ||= SystemVariable.findwithdefault('domain_algo','ecdsa').chomp
   end
 
   def domain_curve
-    @domain_curve ||= SystemVariable.findwithdefault('domain_curve','secp384r1')
+    @domain_curve ||= SystemVariable.findwithdefault('domain_curve','secp384r1').chomp
   end
 
   def digest
@@ -38,11 +38,11 @@ class FountainKeys
   end
 
   def client_algo
-    @client_algo  ||= SystemVariable.findwithdefault('client_algo','ecdsa')
+    @client_algo  ||= SystemVariable.findwithdefault('client_algo','ecdsa').chomp
   end
 
   def client_curve
-    @client_curve ||= SystemVariable.findwithdefault('client_curve','prime256v1')
+    @client_curve ||= SystemVariable.findwithdefault('client_curve','prime256v1').chomp
   end
 
   def serial
