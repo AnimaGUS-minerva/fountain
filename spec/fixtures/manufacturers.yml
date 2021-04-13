@@ -3,7 +3,7 @@ widget1:
   name: sandelman
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://highway-test.example.com:9443/.well-known/est/
+  masa_url: https://highway-test.example.com:9443/.well-known/brski/
   issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
     ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
@@ -14,7 +14,7 @@ honeydukes:
   name: "HoneyDukes Store"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/est/
+  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/brski/
   issuer_dn: "/DC=ca/DC=sandelman/CN=Unstrung Highway CA"
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAESvRvRvzi3fxFKmc79Ubg2LvjS/s6FUplnQ3XDiTjNiUlB1nhDsrNYSmcjeo9QxA+Lnglu4c5+SMJhYxdCmKz4iaAXQI1oIOuxmpyPUlxWaeaYr51AaaqLfFSTHD4wzP7
@@ -24,7 +24,7 @@ honeybrokendukes:
   name: "HoneyDukes Store with broken public key"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/est/
+  masa_url: https://masa.honeydukes.sandelman.ca/.well-known/brski/
   issuer_dn: "/DC=ca/DC=sandelman/CN=Unstrung Highway CA"
   issuer_public_key: !binary |-
     ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
@@ -34,7 +34,7 @@ unknownManu:
   name: "Unknown Manufacturer"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/est/
+  masa_url: https://unknown.example.com/.well-known/brski/
   trust: "unknown"
   issuer_dn: "/C=CA/ST=Ontario/O=Fire Department/CN=Root CA"
   issuer_public_key: !binary |-
@@ -50,7 +50,7 @@ brskiManu:
   name: "BRSKI-trusted Manufacturer"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/est/
+  masa_url: https://unknown.example.com/.well-known/brski/
   trust: "brski"
   issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
@@ -64,7 +64,7 @@ brskiManuBroken:
   name: "BRSKI-trusted Manufacturer BROKEN"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/est/
+  masa_url: https://unknown.example.com/.well-known/brski/
   trust: "brski"
   issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
@@ -79,7 +79,7 @@ wheezes:
   name: "Wheezes Store -- pure-EST enrollment"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://masa.wheezes.sandelman.ca/.well-known/est/
+  masa_url: https://masa.wheezes.sandelman.ca/.well-known/brski/
   issuer_dn: "/C=Canada/ST=Ontario/CN=masa.wheezes.sandelman.ca/CN=masa.wheezes.sandelman.ca CA"
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE4NYKwLcAIKmHPet34Rv+Edrdk2JrjVGYzjAohw6pPdV24A6Dy9pV24ndBvqrxvYF6QKZ/OFtBxQpYtV7YYq2qq6sKHxY1NqOXDvBcwE0t/hCqeKQkTfD/KUTVtMxt8+/
@@ -96,7 +96,7 @@ highwaytest:
     utc: &3 2019-04-03 20:39:54.421921000 Z
     zone: *2
     time: *3
-  masa_url: https://highway-test.example.com:9443/.well-known/est/
+  masa_url: https://highway-test.example.com:9443/.well-known/brski/
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAELuf8pLSWxS4zAvO4e2/sk63hbhfBsHsChy+JktK9HVQELm6g1EHE6476V61wqU6I4iws4KfH85HFA5GfSw/zPdCw4qYizSDpD47hfEJKAG0/KTK2PNzEvMu+sGewGpTU
   trust: brski
@@ -114,7 +114,7 @@ highwaytestrsa:
     utc: &3 2019-04-03 20:39:54.421921000 Z
     zone: *2
     time: *3
-  masa_url: https://highway-test.example.com:9443/.well-known/est/
+  masa_url: https://highway-test.example.com:9443/.well-known/brski/
   trust: brski
   issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
 

@@ -36,7 +36,7 @@ RSpec.describe VoucherRequest, type: :model do
                                    "voucher_request-00-D0-E5-F2-00-02")).to be_truthy
 
       expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=fountain-test.example.com")
-      expect(vr1.masa_url).to eq("https://highway-test.example.com:9443/.well-known/est/")
+      expect(vr1.masa_url).to eq("https://highway-test.example.com:9443/.well-known/brski/")
     end
 
     it "should create a signed voucher request containing unsigned pledge_request" do
@@ -60,7 +60,7 @@ RSpec.describe VoucherRequest, type: :model do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
       allow(Time).to receive(:now).and_return(@time_now)
 
-      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/brski/requestvoucher").
         with(headers: {'Accept'=>['*/*', 'application/voucher-cms+json'],
                        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                        'Content-Type'=>'application/voucher-cms+json',
@@ -148,7 +148,7 @@ RSpec.describe VoucherRequest, type: :model do
         # enable to get voucher from live system
         WebMock.allow_net_connect!
       else
-        stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+        stub_request(:post, "https://highway-test.example.com:9443/.well-known/brski/requestvoucher").
         with(headers: {'Accept'=>['*/*', 'application/voucher-cms+json'],
                        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
                        'Content-Type'=>'application/voucher-cms+json',
@@ -171,7 +171,7 @@ RSpec.describe VoucherRequest, type: :model do
 
       voucherreq = VoucherRequest.from_pkcs7_withkey(body, clientcert)
       voucherreq.discover_manufacturer
-      expect(voucherreq.masa_url).to eq("https://highway-test.example.com:9443/.well-known/est/")
+      expect(voucherreq.masa_url).to eq("https://highway-test.example.com:9443/.well-known/brski/")
       voucher = voucherreq.get_voucher
       expect(voucher).to_not be_nil
     end

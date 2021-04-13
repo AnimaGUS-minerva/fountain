@@ -150,7 +150,7 @@ class Manufacturer < ApplicationRecord
   def self.canonicalize_masa_url(url)
     return nil unless url
     if !url.blank? and !url.include?("/")
-      url = "https://" + url + "/.well-known/est/"
+      url = "https://" + url + "/.well-known/brski/"
     end
     # always have a trailing /
     unless url[-1]=='/'

@@ -22,7 +22,7 @@ RSpec.describe "Est", type: :request do
       @time_now = Time.at(1507671037)  # Oct 10 17:30:44 EDT 2017
 
       allow(Time).to receive(:now).and_return(@time_now)
-      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/brski/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -44,7 +44,7 @@ RSpec.describe "Est", type: :request do
       env["SSL_CLIENT_CERT"] = clientcert
       env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       env["CONTENT_TYPE"] = "application/voucher-cms+json"
-      post '/.well-known/est/requestvoucher', :params => body, :headers => env
+      post '/.well-known/brski/requestvoucher', :params => body, :headers => env
 
       expect(response).to have_http_status(200)
 
@@ -74,7 +74,7 @@ RSpec.describe "Est", type: :request do
       allow(Time).to receive(:now).and_return(@time_now)
 
       StubIo.instance.peer_cert = highwaytest_masacert
-      stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+      stub_request(:post, "https://highway-test.example.com:9443/.well-known/brski/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -98,7 +98,7 @@ RSpec.describe "Est", type: :request do
       @env["SSL_CLIENT_CERT"] = highwaytest_clientcert
       @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       @env["CONTENT_TYPE"] = "application/voucher-cms+json"
-      post '/.well-known/est/requestvoucher', :params => body, :headers => @env
+      post '/.well-known/brski/requestvoucher', :params => body, :headers => @env
     end
 
     it "in CMS format, with known manufacturer should get HTTPS POSTed to requestvoucher" do
@@ -130,7 +130,7 @@ RSpec.describe "Est", type: :request do
       allow(Time).to receive(:now).and_return(@time_now)
 
       StubIo.instance.peer_cert = florean03_clientcert
-      stub_request(:post, "https://florean.sandelman.ca:9443/.well-known/est/requestvoucher").
+      stub_request(:post, "https://florean.sandelman.ca:9443/.well-known/brski/requestvoucher").
         with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -146,7 +146,7 @@ RSpec.describe "Est", type: :request do
                   })
 
       # mark manufacturer as BRSKI trusted.
-      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/est')
+      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/brski')
       manu.trust_brski!
       manu.save!
     end
@@ -159,13 +159,13 @@ RSpec.describe "Est", type: :request do
       @env["SSL_CLIENT_CERT"] = florean03_clientcert
       @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       @env["CONTENT_TYPE"] = "application/voucher-cms+json"
-      post '/.well-known/est/requestvoucher', :params => body, :headers => @env
+      post '/.well-known/brski/requestvoucher', :params => body, :headers => @env
     end
 
     it "post voucher-request 030003, but with the wrong client certificate, serial-number mismatch" do
       @voucher_request = nil
 
-      setup_cms_mock_03
+      setup_cms_mock_03  # intentional?
       posted_cms_04
 
       expect(response).to have_http_status(406)

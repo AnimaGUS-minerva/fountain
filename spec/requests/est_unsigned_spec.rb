@@ -30,7 +30,7 @@ RSpec.describe "Est", type: :request do
         }
       }
 
-      post "/.well-known/est/requestvoucher", params: voucherrequest.merge(format: 'json')
+      post "/.well-known/brski/requestvoucher", params: voucherrequest.merge(format: 'json')
       expect(response).to have_http_status(200)
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe "Est", type: :request do
         WebMock.allow_net_connect!
 
       else
-        stub_request(:post, "https://highway-test.example.com:9443/.well-known/est/requestvoucher").
+        stub_request(:post, "https://highway-test.example.com:9443/.well-known/brski/requestvoucher").
           with(headers:
                {'Accept'=>['*/*', 'application/voucher-cms+json'],
                 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -71,7 +71,7 @@ RSpec.describe "Est", type: :request do
       env["SSL_CLIENT_CERT"] = cbor_highwaytest_clientcert
       env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
       env["CONTENT_TYPE"] = "application/json"
-      post '/.well-known/est/requestvoucher', :params => body, :headers => env
+      post '/.well-known/brski/requestvoucher', :params => body, :headers => env
 
       # capture outgoing request for posterity
       if voucher_request

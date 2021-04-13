@@ -22,7 +22,7 @@ RSpec.describe "Smarkaklink", type: :request do
       @env["SSL_CLIENT_CERT"] = smarkaklink_client_1502
       @env["HTTP_ACCEPT"]  = CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE
       @env["CONTENT_TYPE"] = "application/json"
-      post '/.well-known/est/requestvoucherrequest', :params => json, :headers => @env
+      post '/.well-known/brski/requestvoucherrequest', :params => json, :headers => @env
     end
 
     it "should accept a /requestvoucherrequest from a smartphone" do
@@ -84,7 +84,7 @@ RSpec.describe "Smarkaklink", type: :request do
       @env["SSL_CLIENT_CERT"] = smarkaklink_client_1502
       @env["HTTP_ACCEPT"]  = "application/json"
       @env["CONTENT_TYPE"] = CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE
-      post '/.well-known/est/voucher', :params => body, :headers => @env
+      post '/.well-known/brski/voucher', :params => body, :headers => @env
     end
     it "should accept a voucher in Adolescent Registrar mode" do
       body = IO::read("spec/files/product/Smarkaklink-n3ce618/voucher_3c-97-0e-b9-cd-98.pkcs")

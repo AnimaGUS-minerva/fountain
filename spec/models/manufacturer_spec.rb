@@ -65,11 +65,11 @@ RSpec.describe Manufacturer, type: :model do
   describe "masa url" do
     it "should canonicalize masa_url to always have https://" do
       um1 = Manufacturer.create(:masa_url => "example.com")
-      expect(um1.masa_url).to eq("https://example.com/.well-known/est/")
+      expect(um1.masa_url).to eq("https://example.com/.well-known/brski/")
     end
     it "should not canonicalize masa_url if it always has https://" do
-      um1 = Manufacturer.create(:masa_url => "https://example.com/.well-known/est")
-      expect(um1.masa_url).to eq("https://example.com/.well-known/est/")
+      um1 = Manufacturer.create(:masa_url => "https://example.com/.well-known/brski")
+      expect(um1.masa_url).to eq("https://example.com/.well-known/brski/")
     end
   end
 
