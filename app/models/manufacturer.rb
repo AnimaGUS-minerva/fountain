@@ -72,8 +72,13 @@ class Manufacturer < ApplicationRecord
       return false
 
     else
-      if cert.verify(manukey)
-        return true
+      begin
+        if cert.verify(manukey)
+          return true
+        end
+      rescue OpenSSL::X509::CertificateError
+        # means that key types do not match
+        return false
       end
     end
 
