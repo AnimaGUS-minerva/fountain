@@ -489,6 +489,10 @@ class VoucherRequest < ApplicationRecord
 
       logger.info "MASA at #{target_uri} says #{response.message}"
 
+    rescue SocketError
+      logger.error "Failed to connect to #{target_uri}"
+      raise VoucherRequest::BadMASA.new("DNS or connection error: #{$!}")
+
     rescue
       logger.error "Error #{$!} was raised"
       raise $!
