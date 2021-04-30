@@ -93,7 +93,7 @@ class Device < ActiveRecord::Base
   def rfc822Name_calc
     if acp_address
       sprintf("rfc%s+%s+%s@%s",
-              SystemVariable.string(:rfc_ACP) || "SELF",
+              SystemVariable.string(:rfc_ACP) || "8994",
               acp_address.to_hex,
               SystemVariable.acp_rsub,
               SystemVariable.acp_domain)
