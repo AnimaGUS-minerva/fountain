@@ -52,7 +52,7 @@ brskiManu:
   updated_at: 2017-08-27 02:11:06.468034653 Z
   masa_url: https://unknown.example.com/.well-known/brski/
   trust: "brski"
-  issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
+  issuer_dn: "/CN=highway-test.example.com CA"
   issuer_public_key: !binary |-
     LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUhZd0VBWUhLb1pJemowQ0FRWUZLNEVFQUNJRFln
     QUVMdWY4cExTV3hTNHpBdk80ZTIvc2s2M2hiaGZCc0hzQwpoeStKa3RLOUhWUUVMbTZnMUVIRTY0
@@ -100,7 +100,7 @@ highwaytest:
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAELuf8pLSWxS4zAvO4e2/sk63hbhfBsHsChy+JktK9HVQELm6g1EHE6476V61wqU6I4iws4KfH85HFA5GfSw/zPdCw4qYizSDpD47hfEJKAG0/KTK2PNzEvMu+sGewGpTU
   trust: brski
-  issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
+  issuer_dn: "/CN=highway-test.example.com CA"
 
 highwaytestrsa:
   id: 8
