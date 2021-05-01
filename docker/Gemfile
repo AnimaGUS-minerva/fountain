@@ -38,6 +38,7 @@ gem "loofah", ">= 2.3.1"
 gem "activerecord", ">= 5.2.4.5"
 gem "nokogiri", ">= 1.11.0"
 gem "json", ">= 2.3.0"
+gem "rexml", ">= 3.2.5"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
