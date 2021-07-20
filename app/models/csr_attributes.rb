@@ -21,9 +21,19 @@ class CSRAttributes
     1
   end
 
+  def self.otherNameNameChoice
+    1
+  end
+
   def self.rfc822Name(x)
     # a is rfc822Name CHOICE from RFC7030, and the result is a sequence of SANs
     v = OpenSSL::ASN1::UTF8String.new(x, rfc822NameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
+    return OpenSSL::ASN1::Sequence.new([v])
+  end
+
+  def self.otherNameName(x)
+    # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
+    v = OpenSSL::ASN1::UTF8String.new(x, otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
     return OpenSSL::ASN1::Sequence.new([v])
   end
 
