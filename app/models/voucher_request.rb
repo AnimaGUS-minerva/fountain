@@ -489,6 +489,10 @@ class VoucherRequest < ApplicationRecord
 
       logger.info "MASA at #{target_uri} says #{response.message}"
 
+    rescue OpenSSL::SSL::SSLError
+      logger.error "failed to negotiate with to #{target_uri} due to #{$!}"
+      raise VoucherRequest::BadMASA.new("TLS connection error: #{$!}")
+
     rescue SocketError
       logger.error "Failed to connect to #{target_uri}"
       raise VoucherRequest::BadMASA.new("DNS or connection error: #{$!}")
