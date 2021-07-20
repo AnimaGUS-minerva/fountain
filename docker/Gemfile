@@ -35,10 +35,12 @@ gem "yard", ">= 0.9.20"
 gem "websocket-extensions", ">= 0.1.5"
 gem "rack", ">= 2.1.4"
 gem "loofah", ">= 2.3.1"
+gem "actionpack", ">= 5.2.4.6"
 gem "activerecord", ">= 5.2.4.5"
-gem "nokogiri", ">= 1.11.0"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
+gem "addressable", ">= 2.8.0"
+gem "nokogiri", ">= 1.11.4"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
