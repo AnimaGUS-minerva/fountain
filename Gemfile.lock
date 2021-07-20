@@ -8,16 +8,6 @@ GIT
       ecdsa (~> 1.3.0)
 
 GIT
-  remote: https://github.com/AnimaGUS-minerva/celluloid-io.git
-  revision: 7bb34a71f245d6b7eed61f845c82b8a85fd8499e
-  submodules: true
-  specs:
-    celluloid-io (0.17.3)
-      celluloid (>= 0.17.2)
-      nio4r (>= 1.1)
-      timers (>= 4.1.1)
-
-GIT
   remote: https://github.com/AnimaGUS-minerva/coap.git
   revision: 7bb921cbea8411d8bed809dd74c3f3c39437b196
   branch: dtls-client
@@ -25,16 +15,6 @@ GIT
     coap (0.1.5.pre)
       celluloid-io (~> 0.17.3)
       resolv-ipv6favor (~> 0)
-
-GIT
-  remote: https://github.com/AnimaGUS-minerva/david.git
-  revision: 1ba6f4cdf85d78eee409a5b1c9eb8d60755e7901
-  specs:
-    david (0.5.1.pre)
-      celluloid (~> 0.17.3)
-      celluloid-io (~> 0.17.3)
-      coap (~> 0.1)
-      rack (~> 2.0)
 
 GIT
   remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git

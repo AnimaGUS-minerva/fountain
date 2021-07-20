@@ -47,7 +47,7 @@ gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
 
 #gem 'openssl', "~> 2.1.0"
-gem 'openssl', :path => "../minerva/ruby-openssl"
+gem 'openssl', :path => "../minerva/ruby-openssl-upstreamed"
 #gem 'openssl', :path => '/gems/highway/ruby-openssl'
 #gem 'openssl', :git => 'https://github.com/CIRALabs/ruby-openssl.git', :branch => 'ies-cms-dtls'
 
@@ -55,11 +55,11 @@ gem 'openssl', :path => "../minerva/ruby-openssl"
 gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
 #gem 'coap',    :path => "../minerva/coap"
 
-gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true
-#gem 'celluloid-io', :path => "../minerva/celluloid-io"
+#gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true
+gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
-gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git'
-#gem 'david', :path => "../minerva/david"
+#gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git'
+gem 'david', :path => "../minerva/david"
 
 # use this to get full decoding of HTTP Accept: headers, to be able to
 # split off smime-type=voucher in pkcs7-mime, and other parameters
