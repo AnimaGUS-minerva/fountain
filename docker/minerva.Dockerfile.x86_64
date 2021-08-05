@@ -1,4 +1,4 @@
-FROM mcr314/minerva_ruby_openssl:v202004 as builder
+FROM mcr314/minerva_ruby_openssl:v202108 as builder
 
 WORKDIR /app
 RUN apt-get update
