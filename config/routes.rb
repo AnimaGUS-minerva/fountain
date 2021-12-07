@@ -24,8 +24,10 @@ Rails.application.routes.draw do
 
   if true # was $COAPSERVER, but it does not get set early enough.
     #get '/.well-known/core',   to: 'core#index'
-    post '/e/rv', to: 'est#cbor_rv', coap: true, rt: 'ace.est', short: '/e'
-    post '/e/vs', to: 'est#cbor_vs', coap: true, rt: 'ace.est', short: '/e'
+    post '/e/rv',                 to: 'est#cbor_rv', coap: true, rt: 'brski.est', short: '/e'
+    post '/.well-known/brski/rv', to: 'est#cbor_rv', coap: true, rt: 'brski.est'
+    post '/e/vs',                 to: 'est#cbor_vs', coap: true, rt: 'brski.est', short: '/e'
+    post '/.well-known/brski/vs', to: 'est#cbor_vs', coap: true, rt: 'brski.est'
 
     # get /cacerts
     get '/e/crts', to: 'est#cbor_crts', coap: true, rt: 'ace.est', short: '/e'
