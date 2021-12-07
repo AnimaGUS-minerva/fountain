@@ -15,7 +15,7 @@ RUN linux32 /usr/local/rvm/bin/rvm 2.6.3 do gem install -v1.8.6  json
 RUN linux32 /usr/local/rvm/bin/rvm 2.6.3 do gem install -v0.20.0 pg
 RUN linux32 /usr/local/rvm/bin/rvm 2.6.3 do gem install -v1.3.13 sqlite3
 RUN linux32 /usr/local/rvm/bin/rvm 2.6.3 do gem install -v1.7.2 thin
-RUN linux32 /usr/local/rvm/bin/rvm 2.6.3 do gem install -v1.10.2 nokogiri
+RUN linux32 /usr/local/rvm/bin/rvm 2.6.3 do gem install -v1.12.5 nokogiri
 RUN cd /app/minerva && git clone -b ecdsa_interface_openssl https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
 RUN cd /app/minerva && git clone -b v0.7.0 https://github.com/mcr/ChariWTs.git chariwt
 RUN cd /app/minerva && git clone -b master https://github.com/AnimaGUS-minerva/david.git

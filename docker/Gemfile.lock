@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: https://github.com/AnimaGUS-minerva/coap.git
-  revision: 7bb921cbea8411d8bed809dd74c3f3c39437b196
+  revision: 8767110ee3ce7842a192a312b70d61def600f57e
   branch: dtls-client
   specs:
     coap (0.1.5.pre)
@@ -43,7 +43,6 @@ PATH
   remote: /app/minerva/ruby-openssl
   specs:
     openssl (2.2.0.pre.mcr1)
-      ipaddr
 
 PATH
   remote: /app/minerva/ruby_ecdsa
@@ -134,26 +133,25 @@ GEM
       timers (>= 4.1.1)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
-    daemons (1.4.0)
+    daemons (1.4.1)
     erubi (1.10.0)
     eventmachine (1.2.7)
     ffi (1.10.0)
-    globalid (0.4.2)
-      activesupport (>= 4.2.0)
+    globalid (1.0.0)
+      activesupport (>= 5.0)
     http-accept (2.1.1)
-    i18n (1.8.10)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
-    ipaddr (1.2.2)
     ipaddress (0.8.3)
-    jbuilder (2.11.2)
+    jbuilder (2.11.3)
       activesupport (>= 5.0.0)
     jquery-rails (4.4.0)
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    json (2.5.1)
-    jwt (2.2.3)
-    loofah (2.10.0)
+    json (2.6.1)
+    jwt (2.3.0)
+    loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -164,22 +162,22 @@ GEM
     mimemagic (0.3.10)
       nokogiri (~> 1)
       rake
-    mini_mime (1.1.0)
-    mini_portile2 (2.5.3)
+    mini_mime (1.1.2)
+    mini_portile2 (2.6.1)
     minitest (5.14.4)
     net-scp (3.0.0)
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
-    nio4r (2.5.7)
-    nokogiri (1.11.7)
-      mini_portile2 (~> 2.5.0)
+    nio4r (2.5.8)
+    nokogiri (1.12.5)
+      mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
-    oj (3.12.1)
+    oj (3.13.9)
     pg (0.21.0)
     public_suffix (4.0.6)
     rabl (0.14.5)
       activesupport (>= 2.3.14)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -199,7 +197,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.3.0)
+    rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
     railties (5.2.4.6)
       actionpack (= 5.2.4.6)
@@ -214,9 +212,9 @@ GEM
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (3.2.2)
-      actionpack (>= 4.0)
-      activesupport (>= 4.0)
+    sprockets-rails (3.4.1)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     sqlite3 (1.3.13)
     sshkit (1.21.2)
@@ -236,12 +234,14 @@ GEM
     turbolinks-source (5.2.0)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    tzinfo-data (1.2021.1)
+    tzinfo-data (1.2021.5)
       tzinfo (>= 1.0.0)
+    webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    yard (0.9.26)
+    yard (0.9.27)
+      webrick (~> 1.7.0)
 
 PLATFORMS
   ruby
@@ -272,7 +272,7 @@ DEPENDENCIES
   jwt
   loofah (>= 2.3.1)
   mail
-  nokogiri (>= 1.11.4)
+  nokogiri (>= 1.12.5)
   oj
   openssl!
   pg (~> 0.21)
@@ -291,4 +291,4 @@ DEPENDENCIES
   yard (>= 0.9.20)
 
 BUNDLED WITH
-   2.2.4
+   2.2.25

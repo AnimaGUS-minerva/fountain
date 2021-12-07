@@ -43,7 +43,7 @@ gem "activerecord", ">= 5.2.4.5"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
 gem "addressable", ">= 2.8.0"
-gem "nokogiri", ">= 1.11.4"
+gem "nokogiri", ">= 1.12.5"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
@@ -108,6 +108,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'webmock'
+  gem 'looksee'
 
   gem 'sprockets', "~> 3.7.2"
 

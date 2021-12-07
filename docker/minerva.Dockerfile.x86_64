@@ -4,7 +4,7 @@ WORKDIR /app
 RUN apt-get update
 
 # install gems with extensions explicitely so that layers are cached.
-RUN gem install -v1.11.4 nokogiri --source=http://rubygems.org && \
+RUN gem install -v1.12.5 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7 eventmachine --source=http://rubygems.org && \
     gem install -v2.5.7 nio4r --source=http://rubygems.org && \
     gem install -v3.1.13 bcrypt --source=http://rubygems.org && \
