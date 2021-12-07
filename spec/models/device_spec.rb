@@ -160,7 +160,7 @@ RSpec.describe Device, type: :model do
       expect(d2.trusted?).to be true
     end
 
-    it "occurs when device has an LDevID" do
+    it "occurs when device has an LDevID signed by us" do
       pending "no ldevid examples yet"
       d2 = devices(:n31)
       expect(d2.trusted?).to be true
