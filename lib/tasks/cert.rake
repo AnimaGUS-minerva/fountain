@@ -17,8 +17,8 @@ namespace :fountain do
     FountainKeys.ca.sign_certificate("CA", dnobj,
                                     ownerprivkeyfile,
                                     outfile, dnobj) { |cert, ef|
-      cert.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
       cert.add_extension(ef.create_extension("keyUsage","keyCertSign, cRLSign", true))
+      cert.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
       cert.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
       cert.add_extension(ef.create_extension("authorityKeyIdentifier","keyid:always",false))
     }
@@ -47,13 +47,10 @@ namespace :fountain do
                                      jrcprivkeyfile,
                                      outfile, dnobj, lifetime) { |cert, ef|
       begin
-        n = ef.create_extension("extendedKeyUsage","cmcRA", true)
+        # must be done in a single extension
+        n = ef.create_extension("extendedKeyUsage","cmcRA,clientAuth,serverAuth", true)
         cert.add_extension(n)
         n = ef.create_extension("keyUsage","digitalSignature", true)
-        cert.add_extension(n)
-        n = ef.create_extension("extendedKeyUsage","clientAuth", true)
-        cert.add_extension(n)
-        n = ef.create_extension("extendedKeyUsage","serverAuth", true)
         cert.add_extension(n)
       rescue OpenSSL::X509::ExtensionError
         puts "Can not setup cmcRA extension, as openssl not patched, continuing anyway..."
