@@ -26,7 +26,10 @@ class Manufacturer < ApplicationRecord
     # look for a device with the same public key.
     return nil unless cert
 
-    find_manufacturer_by(cert).first
+    # extract the MASA extension from the certificate.
+    url = extract_masa_url_from_cert(cert)
+
+    find_manufacturer_by(cert, url).first
   end
 
   # this finds a manufacturer object by the manufacturer's signing certificate.
