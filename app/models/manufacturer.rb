@@ -113,7 +113,7 @@ class Manufacturer < ApplicationRecord
 
       # keep at least one of these.
       manu1 = manu
-
+      #byebug
       if manu.validates_cert?(cert)
         return [manu,manu]
       end
