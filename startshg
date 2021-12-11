@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# this start up script uses certificates and private key from the Smarkkaklink test
+# environment.
+
+export CERTDIR=`pwd`/spec/files/product/Smarkaklink-n3ce618
+export SERVCERT=${CERTDIR}/jrc_prime256v1.crt
+export SERVKEY=${CERTDIR}/jrc_prime256v1.key
+
+RAILS_ENV=${RAILS_ENV-production}
+export RAILS_ENV
+
+touch log/${RAILS_ENV}.log
+tail -f log/${RAILS_ENV}.log &
+TAIL_PID=$!
+echo TAIL is PID $TAIL_PID
+trap "kill $TAIL_PID; exit 0" 1 2 3 15
+
+bundle exec thin start --ssl \
+  --address ::2  \
+  --port    8443  \
+  --ssl-cert-file ${SERVCERT} \
+  --ssl-key-file  ${SERVKEY} $@
+
+kill $TAIL_PID
+echo DONE
+
+

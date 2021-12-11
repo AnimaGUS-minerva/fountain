@@ -43,6 +43,7 @@ RSpec.describe "Smarkaklink", type: :request do
 
     it "should accept a /requestvoucherrequest from a smartphone having no EUI64 extension" do
       # get the Base64 of the parboiled signed request
+      # this file is updated by reach/sk/step01.sh
       bodyjs = { "ietf:request-voucher-request" =>
                    { "voucher-challenge-nonce" => IO::read("spec/files/smarkaklink_req-challenge-01.b64") }
                }.to_json

@@ -19,8 +19,8 @@ Rails.application.routes.draw do
   post '/.well-known/est/simpleenroll',   to: 'est#simpleenroll'
 
   # these are part of Smartkaklink
-  post '/.well-known/est/requestvoucherrequest', to: 'smarkaklink#rvr'
-  post '/.well-known/est/voucher',        to: 'smarkaklink#voucher'
+  post '/.well-known/brski/requestvoucherrequest', to: 'smarkaklink#rvr'
+  post '/.well-known/brski/voucher',        to: 'smarkaklink#voucher'
 
   if true # was $COAPSERVER, but it does not get set early enough.
     #get '/.well-known/core',   to: 'core#index'
