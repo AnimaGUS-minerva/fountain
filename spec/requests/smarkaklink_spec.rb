@@ -38,7 +38,7 @@ RSpec.describe "Smarkaklink", type: :request do
       vr = Chariwt::VoucherRequest.from_pkcs7(response.body)
       expect(vr).to_not be_nil
       # nonce generated to be well-known, normally random
-      expect(vr.attributes['voucher-challenge-nonce']).to eq("abcd1234")
+      expect(vr.attributes['voucher-challenge-nonce']).to eq("LqKws2sZXfFcMWHYbcTCuA==")
     end
 
     it "should accept a /requestvoucherrequest from a smartphone having no EUI64 extension" do
@@ -55,7 +55,7 @@ RSpec.describe "Smarkaklink", type: :request do
       vr = Chariwt::VoucherRequest.from_pkcs7(response.body)
       expect(vr).to_not be_nil
       # nonce generated to be well-known, normally random
-      expect(vr.attributes['voucher-challenge-nonce']).to eq("abcd1234")
+      expect(vr.attributes['voucher-challenge-nonce']).to eq("LqKws2sZXfFcMWHYbcTCuA==")
     end
 
     it "should reject a /requestvoucherrequest with bad JSON top-level" do
