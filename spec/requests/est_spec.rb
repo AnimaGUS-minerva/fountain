@@ -146,7 +146,8 @@ RSpec.describe "Est", type: :request do
                   })
 
       # mark manufacturer as BRSKI trusted.
-      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/brski')
+      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/brski',
+                                 issuer_dn: "/DC=ca/DC=sandelman/CN=florean.sandelman.ca")
       manu.trust_brski!
       manu.save!
     end
@@ -189,6 +190,7 @@ RSpec.describe "Est", type: :request do
 
       expect(assigns(:device)).to_not be_nil
       expect(assigns(:device).manufacturer).to_not be_nil
+      expect(assigns(:device).manufacturer).to be_trust_brski
       expect(assigns(:device)).to be_trusted
 
       expect(response).to have_http_status(200)
