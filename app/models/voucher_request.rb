@@ -305,10 +305,11 @@ class VoucherRequest < ApplicationRecord
 
     populate_explicit_fields
 
+    # XXX move this info manufacturer.rb?
     # use MASA_URL to find a valid item.
     # note that a manufacturer might have many keys, and might also have
     # different URLs, so both need to match.
-    if @masa_url and !self.manufacturer
+    if @masa_url and !self.device.manufacturer
       manu1 = nil
       Manufacturer.where(masa_url: @masa_url, issuer_dn: issuer_dn).each { |manu|
         #puts "found matching manufacturer #{manu.name} by URL"

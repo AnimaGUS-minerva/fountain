@@ -146,9 +146,11 @@ RSpec.describe "Est", type: :request do
                   })
 
       # mark manufacturer as BRSKI trusted.
-      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/brski',
-                                 issuer_dn: "/DC=ca/DC=sandelman/CN=florean.sandelman.ca")
+      manu = Manufacturer.create(masa_url: 'https://florean.sandelman.ca:9443/.well-known/brski/',
+                                 issuer_dn: "/DC=ca/DC=sandelman/CN=florean.sandelman.ca",
+                                 name: "Florean Maker")
       manu.trust_brski!
+      manu.masa_url     # canonicalize it for good luck
       manu.save!
     end
 
