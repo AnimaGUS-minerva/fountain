@@ -67,6 +67,19 @@ class FountainKeys
                    Rails.root.join('db').join('cert')
                  end
   end
+  def certdir=(x)
+    @certdir = x
+
+    # now reset all the cached CA.
+    @jrc_pub_key = nil
+    @jrc_priv_key= nil
+    @registarkey = nil
+    @domain_pub_key = nil
+    @domain_priv_key = nil
+    @rootkey = nil
+    @rootprivkey = nil
+  end
+
 
   def self.ca
     @ca ||= self.new
