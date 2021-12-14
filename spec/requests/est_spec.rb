@@ -12,6 +12,7 @@ RSpec.describe "Est", type: :request do
   before(:each) do
     SystemVariable.setbool(:open_registrar, false)
     FountainKeys.ca.certdir = Rails.root.join('spec','files','cert')
+    @env = nil
   end
 
   describe "signed pledge voucher request" do
@@ -94,10 +95,10 @@ RSpec.describe "Est", type: :request do
       # decode the Base64 of the pledge signed request
       body = Base64.decode64(IO.read("spec/files/vr-00-D0-E5-F2-00-03.b64"))
 
-      @env = Hash.new
-      @env["SSL_CLIENT_CERT"] = highwaytest_clientcert
-      @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
-      @env["CONTENT_TYPE"] = "application/voucher-cms+json"
+      @env ||= Hash.new
+      @env["SSL_CLIENT_CERT"] ||= highwaytest_clientcert
+      @env["HTTP_ACCEPT"]     ||= "application/voucher-cms+json"
+      @env["CONTENT_TYPE"]    ||= "application/voucher-cms+json"
       post '/.well-known/brski/requestvoucher', :params => body, :headers => @env
     end
 
@@ -158,17 +159,19 @@ RSpec.describe "Est", type: :request do
       # decode the Base64 of the pledge signed request
       body = Base64.decode64(IO.read("spec/files/vr_00-D0-E5-03-00-03.b64"))
 
-      @env = Hash.new
-      @env["SSL_CLIENT_CERT"] = florean03_clientcert
-      @env["HTTP_ACCEPT"]  = "application/voucher-cms+json"
-      @env["CONTENT_TYPE"] = "application/voucher-cms+json"
+      @env ||= Hash.new
+      @env["SSL_CLIENT_CERT"] ||= florean03_clientcert
+      @env["HTTP_ACCEPT"]     ||= "application/voucher-cms+json"
+      @env["CONTENT_TYPE"]    ||= "application/voucher-cms+json"
       post '/.well-known/brski/requestvoucher', :params => body, :headers => @env
     end
 
     it "post voucher-request 030003, but with the wrong client certificate, serial-number mismatch" do
       @voucher_request = nil
 
-      setup_cms_mock_03  # intentional?
+      setup_cms_mock_04
+      @env = Hash.new
+      @env["SSL_CLIENT_CERT"] = highwaytest_clientcert  # intentionally wrong client cert
       posted_cms_04
 
       expect(response).to have_http_status(406)
