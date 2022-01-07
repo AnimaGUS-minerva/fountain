@@ -256,6 +256,8 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.10.3)
+    sassc (2.4.0)
+      ffi (~> 1.9)
     spring (3.1.1)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
@@ -345,6 +347,7 @@ DEPENDENCIES
   rb-readline
   rexml (>= 3.2.5)
   rspec-rails
+  sassc
   spring
   sprockets (~> 3.7.2)
   sqlite3 (~> 1.3.6)
