@@ -1,6 +1,40 @@
 require 'mud_socket'
 require 'securerandom'
 
+# schema
+#   t.text "name"
+#
+# RFC8995 items
+#   t.text "fqdn"
+#   t.text "eui64"
+#   t.integer "manufacturer_id"
+#   t.text "idevid"
+#   t.text "acp_prefix"
+#   t.text "idevid_hash"
+#   t.text "ldevid"
+#   t.text "ldevid_hash"
+#   t.text "device_state"
+#   t.boolean "deleted"
+#
+
+# MUD things
+#   t.integer "device_type_id" -> IsA DeviceType
+#   t.json "traffic_counts"
+#   t.text "mud_url"
+#   t.text "current_vlan"
+#   t.boolean "wan_enabled"
+#   t.boolean "lan_enabled"
+#   t.json "firewall_rules"
+#   t.json "firewall_rule_names"
+#   t.boolean "quaranteed"
+#   t.boolean "device_enabled"
+#
+#   t.integer "profile_id"
+#   t.json "failure_details"
+#   t.text "ipv4"
+#   t.text "ipv6"
+#   t.text "wpa_key"
+#
 class Device < ActiveRecord::Base
   belongs_to :manufacturer
   belongs_to :device_type
