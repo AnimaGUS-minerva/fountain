@@ -74,6 +74,10 @@ class Device < ActiveRecord::Base
     # exactly, as long as the public key matches.
     hash = hash_of_key(cert)
     return nil if hash.blank?
+    find_by_pubkey_hash(hash)
+  end
+
+  def self.find_by_pubkey_hash(hash)
     where(idevid_hash: hash).take || where(ldevid_hash: hash).take
   end
 
