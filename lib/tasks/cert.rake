@@ -93,5 +93,34 @@ namespace :fountain do
     puts manu.to_yaml(:root => "manu")
   end
 
+  desc "Read a CSR from CSR= and sign it as if it came in via EST, LIFETIME=5years OUTFILE=foo.crt"
+  task :sign_csr => :environment do
+
+    lifetime      = nil  # accept default
+    outfile       = ENV['OUTFILE'] || "device.crt"
+    if ENV['LIFETIME']
+      lifetime = ENV['LIFETIME'].to_f * (60*60*24*365)
+    end
+
+    filename= ENV['CSR']
+    input = File.read(filename)
+    unless input
+      puts "No such file #{filename}"
+      exit 1
+    end
+    csrobj = OpenSSL::X509::Request.new(input)
+    unless csrobj
+      puts "Can not process #{filename} into CSR object"
+      exit 2
+    end
+    dev = Device.create_device_from_csr(csrobj)
+    # make sure it has an acp_address allocated
+    dev.acp_address_allocate!
+    dev.create_ldevid_from_csr(csrobj)
+
+    File.open(outfile, "wb") do |f| f.write dev.ldevid end
+    puts "New Certificate writtten to: #{outfile}"
+  end
+
 
 end

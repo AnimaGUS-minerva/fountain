@@ -91,6 +91,14 @@ class Device < ActiveRecord::Base
     dev
   end
 
+  # find-or-create a new device based upon the public key that is in
+  # the CSR that is being provided.
+  def self.create_device_from_csr(csrobj)
+    pubkey = csrobj.public_key
+    hash = Digest::SHA2.hexdigest(pubkey.to_der)
+    dev  = find_by_pubkey_hash(hash) || create(idevid_hash: hash)
+  end
+
   def idevid_cert=(x)
     @idevid_cert = x
     self.idevid = x.to_pem
