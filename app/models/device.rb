@@ -178,9 +178,11 @@ class Device < ActiveRecord::Base
 
     # not sure if this is an appropriate check.
     # it might be that we need to check the ldevid_cert too?
-    if csrobj.public_key.to_der != idevid_cert.public_key.to_der and
-      (ldevid_cert and csrobj.public_key.to_der != ldevid_cert.public_key.to_der)
-      raise CSRKeyNotMatched;
+    unless idevid_cert.blank?
+      if csrobj.public_key.to_der != idevid_cert.public_key.to_der and
+        (ldevid_cert and csrobj.public_key.to_der != ldevid_cert.public_key.to_der)
+        raise CSRKeyNotMatched;
+      end
     end
 
     # walk through the attributes and make a hash of them for below.
