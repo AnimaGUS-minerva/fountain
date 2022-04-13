@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 5.2.4.3"
+gem 'rails', "~> 5.2.6.2"
 
 # Use SCSS for stylesheets
 gem 'sassc'
@@ -38,12 +38,11 @@ gem "yard", ">= 0.9.20"
 gem "websocket-extensions", ">= 0.1.5"
 gem "rack", ">= 2.1.4"
 gem "loofah", ">= 2.3.1"
-gem "actionpack", ">= 5.2.4.6"
-gem "activerecord", ">= 5.2.4.5"
+gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
 gem "addressable", ">= 2.8.0"
-gem "nokogiri", ">= 1.12.5"
+gem "nokogiri", ">= 1.13.2"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development

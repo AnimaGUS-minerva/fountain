@@ -39,7 +39,7 @@ RUN cd /app/minerva/ruby-openssl && rake compile -- --with-openssl-dir=/src/open
 
 #RUN    git config --global http.sslVerify "false" && \
 
-RUN touch /app/v202108
+RUN touch /app/v202204
 
 WORKDIR /app
 
