@@ -3,6 +3,8 @@ FROM mcr314/minerva_ruby_openssl:v202204 as builder
 WORKDIR /app
 RUN apt-get update
 
+RUN apt-get install -y libpq-dev libsqlite3-dev
+
 # install gems with extensions explicitely so that layers are cached.
 RUN gem install -v1.13.4 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7 eventmachine --source=http://rubygems.org && \

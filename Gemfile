@@ -42,7 +42,7 @@ gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
 gem "addressable", ">= 2.8.0"
-gem "nokogiri", ">= 1.13.2"
+gem "nokogiri", ">= 1.13.4"
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
