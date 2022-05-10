@@ -229,7 +229,7 @@ RSpec.describe Device, type: :model do
       expect(b.acp_prefix).to be_blank
       b.acp_address_allocate!
       expect(b.acp_prefix).to eq("fd73:9fc2:3c34:4011:2233:4455:0000:0000/120")
-      expect(b.rfc822Name).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+      expect(b.rfc822Name).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
     end
 
     it "should generate an appropriate CSRattributes object with the rfc822Name" do
@@ -244,7 +244,7 @@ RSpec.describe Device, type: :model do
       #puts attr.unpack("H*")
       c0 = CSRAttributes.from_der(attr)
       expect(c0).to_not be_nil
-      expect(attr).to eq("0H0F\x06\x03U\x1D\x111?0=\xA1;\f9rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com".b)
+      expect(attr).to eq("0H0F\x06\x03U\x1D\x111?0=\xA1;\f9rfc8994+fd739fc23c3440112233445500000000+@acp.example.com".b)
     end
 
     it "should generate an LDevID signed by domain authority" do
@@ -273,7 +273,7 @@ RSpec.describe Device, type: :model do
     it "should generate an rfc822name extension" do
       b = devices(:bulb1)
       b.acp_address_allocate!
-      expect(b.rfc822Name).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+      expect(b.rfc822Name).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
       ef = OpenSSL::X509::ExtensionFactory.new
       rfcName=ef.create_extension("subjectAltName",
                                   sprintf("email:%s",
