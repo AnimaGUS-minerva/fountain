@@ -3,10 +3,8 @@ widget1:
   name: sandelman
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://highway-test.example.com:9443/.well-known/brski/
+  masa_url: https://bogus.example/.well-known/brski/
   issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
-  issuer_public_key: !binary |-
-    ME0xEjAQBgoJkiaJk/IsZAEZFgJjYTEZMBcGCgmSJomT8ixkARkWCXNhbmRlbG1hbjEcMBoGA1UEAwwTVW5zdHJ1bmcgSGlnaHdheSBDQQ==
 
 honeydukes:
   id: 2
@@ -45,9 +43,9 @@ unknownManu:
 
 # note that this manufacturer has an incorrect MASA_URL, so it really
 # can not match, it should match #7 instead.
-brskiManu:
+brskiManuBroken:
   id: 4
-  name: "BRSKI-trusted Manufacturer"
+  name: "BRSKI-trusted Manufacturer BROKEN"
   created_at: 2017-08-27 02:11:06.468034653 Z
   updated_at: 2017-08-27 02:11:06.468034653 Z
   masa_url: https://unknown.example.com/.well-known/brski/
@@ -58,20 +56,6 @@ brskiManu:
     QUVMdWY4cExTV3hTNHpBdk80ZTIvc2s2M2hiaGZCc0hzQwpoeStKa3RLOUhWUUVMbTZnMUVIRTY0
     NzZWNjF3cVU2STRpd3M0S2ZIODVIRkE1R2ZTdy96UGRDdzRxWWl6U0RwCkQ0N2hmRUpLQUcwL0tU
     SzJQTnpFdk11K3NHZXdHcFRVCi0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=
-
-brskiManuBroken:
-  id: 5
-  name: "BRSKI-trusted Manufacturer BROKEN"
-  created_at: 2017-08-27 02:11:06.468034653 Z
-  updated_at: 2017-08-27 02:11:06.468034653 Z
-  masa_url: https://unknown.example.com/.well-known/brski/
-  trust: "brski"
-  issuer_dn: "/DC=ca/DC=sandelman/CN=highway-test.example.com CA"
-  issuer_public_key: !binary |-
-    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFR
-    Y0RRZ0FFNW9RVWs1ajhVTUlzcmlBVmRUMDJTWXV5WGVROAozSGhvYzMyWXdQdER1RHhacjMyNER6
-    cHdPMmRqOTd4YktjczVOdHhzbngxeG9iMmJVTDV0UlZ6aFNnPT0KLS0tLS1FTkQgUFVCTElDIEtF
-    WS0tLS0tCg==
 
 wheezes:
   id: 6
@@ -84,7 +68,7 @@ wheezes:
   issuer_public_key: !binary |-
     MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE4NYKwLcAIKmHPet34Rv+Edrdk2JrjVGYzjAohw6pPdV24A6Dy9pV24ndBvqrxvYF6QKZ/OFtBxQpYtV7YYq2qq6sKHxY1NqOXDvBcwE0t/hCqeKQkTfD/KUTVtMxt8+/
 
-highwaytest:
+brskiManu:
   id: 7
   name: highway-test
   created_at: !ruby/object:ActiveSupport::TimeWithZone
@@ -96,11 +80,14 @@ highwaytest:
     utc: &3 2019-04-03 20:39:54.421921000 Z
     zone: *2
     time: *3
+  trust: "brski"
   masa_url: https://highway-test.example.com:9443/.well-known/brski/
   issuer_public_key: !binary |-
-    MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAELuf8pLSWxS4zAvO4e2/sk63hbhfBsHsChy+JktK9HVQELm6g1EHE6476V61wqU6I4iws4KfH85HFA5GfSw/zPdCw4qYizSDpD47hfEJKAG0/KTK2PNzEvMu+sGewGpTU
+    MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAELuf8pLSWxS4zAvO4e2/sk63hbhfBsHsC
+    hy+JktK9HVQELm6g1EHE6476V61wqU6I4iws4KfH85HFA5GfSw/zPdCw4qYizSDp
+    D47hfEJKAG0/KTK2PNzEvMu+sGewGpTU
   trust: brski
-  issuer_dn: "/CN=highway-test.example.com CA"
+  issuer_dn: "/C=Canada/ST=Ontario/OU=Sandelman/CN=highway-test.example.com CA"
 
 highwaytestrsa:
   id: 8
