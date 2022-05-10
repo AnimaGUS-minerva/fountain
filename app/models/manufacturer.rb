@@ -16,6 +16,7 @@ class Manufacturer < ApplicationRecord
 
   def self.trusted_client_by_pem(clientpem)
     # decode the clientpem into a certificate
+
     begin
       cert = OpenSSL::X509::Certificate.new(clientpem)
     rescue OpenSSL::X509::CertificateError
@@ -61,14 +62,20 @@ class Manufacturer < ApplicationRecord
   def validates_cert?(cert)
     return false if no_key?
 
-    #puts "Comparing #{manu.id} #{manu.issuer_dn} to #{issuer.to_s}"
-    #puts "pubkey: "+(manu.issuer_public_key.blank? ? "blank" : "available")
+    debugit=Rails.env.test? and !ENV['MANUFACTURER_DEBUG'].blank?
 
+    issuer = cert.issuer
+    puts "Comparing #{id} #{issuer_dn} " if debugit
+    puts "             to #{issuer.to_s}" if debugit
+    puts "pubkey: "+(issuer_public_key.blank? ? "blank" : "available") if debugit
+
+    #byebug
     # now verify that the public key validates the certificate given.
     begin
-      manukey = OpenSSL::PKey.read(issuer_public_key)
+      manukey = OpenSSL::PKey.read_derpub(issuer_public_key)
     rescue OpenSSL::PKey::PKeyError
       # parse error or blank
+      puts "Failed to parse public key from manufacturer id=\##{id}" if debugit
       return false
 
     else
@@ -76,8 +83,10 @@ class Manufacturer < ApplicationRecord
         if cert.verify(manukey)
           return true
         end
+        puts "Cert did not verify, manu id=\##{id}" if debugit
       rescue OpenSSL::X509::CertificateError
         # means that key types do not match
+        puts "Cert error, keys probably do not match id=\##{id}" if debugit
         return false
       end
     end
