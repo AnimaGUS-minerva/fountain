@@ -53,7 +53,7 @@ RSpec.describe Manufacturer, type: :model do
 
     it "should match manufacturer by masa_url, and signature" do
       m1 = Manufacturer.trusted_client_by_pem(highwaytest_clientcert_f20001)
-      expect(m1).to eq(manufacturers(:highwaytest))
+      expect(m1).to eq(manufacturers(:brskiManu))
       expect(m1).to be_trust_brski
     end
   end

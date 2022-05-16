@@ -69,7 +69,7 @@ RSpec.describe "Est", type: :request do
           expect(item[1]).to eq("00-D0-E5-03-00-03")
           cnt += 1
         when "emailAddress"
-          expect(item[1]).to eq("rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com")
+          expect(item[1]).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
           cnt += 1
         end
       }
