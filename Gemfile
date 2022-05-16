@@ -4,6 +4,9 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', "~> 5.2.7.1"
 
+# psych 4.0 does not load fixtures correctly yet.
+gem 'psych', '~> 3.3'
+
 # Use SCSS for stylesheets
 gem 'sassc'
 
