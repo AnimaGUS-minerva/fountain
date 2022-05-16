@@ -41,7 +41,7 @@ class EstController < ApiController
     return_voucher
   end
 
-  # POST /.well-known/est/requestvoucher
+  # POST /.well-known/brski/requestvoucher
   def requestvoucher
     media_types = HTTP::Accept::MediaTypes.parse(request.env['CONTENT_TYPE'])
     content_type=request.env['CONTENT_TYPE']
@@ -228,18 +228,6 @@ class EstController < ApiController
       head 500
     end
   end
-
-  def requestvoucher_unsigned
-    # would prefer to have ::Metal version, which does not parse application/json
-    # until params is called.  Poorly formatted JSON may blow up, which is
-    # why from_unsigned_json() does some tweaks first.
-    # But, at this point something needs ApplicationController.
-    @voucherreq = UnsignedVoucherRequest.from_unsigned_json(request.body.read)
-
-    return unless capture_client_info
-    return_voucher
-  end
-
 
   def requestvoucher_pkcs_signed
     token = request.body.read
