@@ -6,7 +6,7 @@ export DTLS=true
 export CERTDIR=`pwd`/spec/files/cert
 export SERVCERT=${CERTDIR}/jrc_prime256v1.crt
 export SERVKEY=${CERTDIR}/jrc_prime256v1.key
-#export CIPHER_LIST='ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES128-CCM8'
+export CIPHER_LIST='ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES128-CCM8'
 #                                             "ECDHE-ECDSA-AES128-CCM8"
 
 RAILS_ENV=${RAILS_ENV-production}
@@ -16,7 +16,9 @@ tail -f log/${RAILS_ENV}.log &
 TAIL_PID=$!
 trap "kill $TAIL_PID; exit 0" 1 2 3 15
 
-LD_PRELOAD=/ssw/projects/pandora/minerva/ruby-openssl-upstreamed/tmp/x86_64-linux/openssl/2.6.6/openssl.so bin/rails server david -b :: -p 5684 $*
+#LD_PRELOAD=/ssw/projects/pandora/minerva/ruby-openssl-upstreamed/tmp/x86_64-linux/openssl/2.6.6/openssl.so bin/rails server david -b :: -p 5684 $*
+LD_PRELOAD=/corp/projects/pandora/minerva/ruby-openssl-upstreamed/tmp/x86_64-linux/openssl/2.6.6/openssl.so bin/rails server david -b :: -p 5684 $*
+
 #LD_PRELOAD=/sandel/3rd/openssl-dtls-api/lib/libcrypto.so.1.1:/sandel/3rd/openssl-dtls-api/lib/libssl.so.1.1  bundle exec ruby bin/rails server david -b :: -p 5684
 
 
