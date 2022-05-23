@@ -18,9 +18,7 @@ class EstController < ApiController
     @voucherreq = nil
     begin
       # assumes *DTLS* version.
-      clientcert_pem = request.env["SSL_CLIENT_CERT"]
-      clientcert_pem ||= request.env["rack.peer_cert"]
-      clientcert =  OpenSSL::X509::Certificate.new(clientcert_pem)
+      clientcert =  decode_client_certificate
       @voucherreq = VoucherRequest.from_cose_cbor(request.body.read, clientcert)
       @voucherreq.tls_clientcert = clientcert
       @voucherreq.save!
@@ -134,14 +132,7 @@ class EstController < ApiController
   #
   # As a side effect, @device is setup.
   def trusted_client
-    clientcert_pem = request.env["SSL_CLIENT_CERT"]
-    clientcert_pem ||= request.env["rack.peer_cert"]
-    unless clientcert_pem
-      logger.info "client from #{request.env["REMOTE_ADDR"]} was not trusted because TLS Client certificate could not be found"
-      return false
-    end
-
-    cert = OpenSSL::X509::Certificate.new(clientcert_pem)
+    cert = decode_client_certificate
     @device = Device.find_or_make_by_certificate(cert)
     unless @device
       logger.info "client cert #{cert.issuer.to_s} => #{cert.subject.to_s}, was not trusted because an associated device was not found"
@@ -158,11 +149,21 @@ class EstController < ApiController
     return false
   end
 
-  def capture_client_certificate
+  def decode_client_certificate
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     clientcert_pem ||= request.env["rack.peer_cert"]
-    if clientcert_pem
-      @voucherreq.tls_clientcert = clientcert_pem
+
+    unless clientcert_pem.instance_of? OpenSSL::X509::Certificate
+      OpenSSL::X509::Certificate.new(clientcert_pem)
+    else
+      clientcert_pem
+    end
+  end
+
+  def capture_client_certificate
+    cert = decode_client_certificate
+    if cert
+      @voucherreq.tls_clientcert = cert.to_pem
     end
     @voucherreq.proxy_ip = request.env["REMOTE_ADDR"]
   end
