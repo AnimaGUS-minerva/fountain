@@ -1,4 +1,4 @@
-FROM mcr314/minerva_builder:v202204 as builder
+FROM mcr314/minerva_builder:v202205 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
