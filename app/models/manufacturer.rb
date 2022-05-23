@@ -65,7 +65,7 @@ class Manufacturer < ApplicationRecord
   def validates_cert?(cert)
     return false if no_key?
 
-    debugit=Rails.env.test? and !ENV['MANUFACTURER_DEBUG'].blank?
+    debugit=(Rails.env.test? and !ENV['MANUFACTURER_DEBUG'].blank?)
 
     issuer = cert.issuer
     puts "Comparing #{id} #{issuer_dn} " if debugit
