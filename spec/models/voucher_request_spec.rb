@@ -38,17 +38,6 @@ RSpec.describe VoucherRequest, type: :model do
       expect(vr1.signing_cert.subject.to_s).to eq("/DC=ca/DC=sandelman/CN=fountain-test.example.com")
       expect(vr1.masa_url).to eq("https://bogus.example/.well-known/brski/")
     end
-
-    it "should create a signed voucher request containing unsigned pledge_request" do
-      vr2=voucher_requests(:vr2)
-      expect(vr2).to be_unsigned_voucher_request
-
-      parboiled_voucher_request = vr2.registrar_voucher_request
-      expect(parboiled_voucher_request).to_not be_nil
-      File.open("tmp/parboiled_unsigned_00-D0-E5-F2-00-01.vrq", "wb") do |f|
-        f.syswrite parboiled_voucher_request
-      end
-    end
   end
 
   describe "sending requests" do
