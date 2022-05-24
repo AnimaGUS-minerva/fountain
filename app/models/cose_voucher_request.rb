@@ -25,49 +25,6 @@ class CoseVoucherRequest < VoucherRequest
     return token
   end
 
-  def details=(x)
-    n = Hash.new
-    x.each { |k,v|
-      case k
-      when "ietf-voucher-request:voucher"
-        nn = Hash.new
-        n[k] = nn
-        v.each { |kk,vv|
-          case kk
-          when "proximity-registrar-cert"
-            nn["base64_#{kk}"] = Base64.urlsafe_encode64(vv)
-          else
-            nn[kk] = vv
-          end
-        }
-      end
-    }
-    self[:details] = n
-  end
-  def decode_details
-    n = Hash.new
-    self[:details].each { |k,v|
-      case k
-      when "ietf-voucher-request:voucher"
-        nn = Hash.new
-        n[k] = nn
-
-        v.each { |kk,vv|
-          case kk
-          when "base64_proximity-registrar-cert"
-            nn["proximity-registrar-cert"] = Base64.urlsafe_decode64(vv)
-          else
-            nn[kk] = vv
-          end
-        }
-      end
-    }
-    n
-  end
-  def details
-    @details ||= decode_details
-  end
-
   def registrar_voucher_request
     @cose_voucher ||= calc_registrar_voucher_request_cose
   end

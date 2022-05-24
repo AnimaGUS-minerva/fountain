@@ -95,11 +95,10 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.integer "device_id"
     t.integer "manufacturer_id"
     t.text "device_identifier"
-    t.text "requesting_ip"
-    t.text "proxy_ip"
+    t.inet "requesting_ip"
+    t.inet "proxy_ip"
     t.text "nonce"
     t.binary "idevid"
-    t.json "details"
     t.boolean "signed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -108,6 +107,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.string "type", default: "CmsVoucherRequest"
     t.json "status"
     t.binary "registrar_request"
+    t.binary "encoded_details"
   end
 
   create_table "vouchers", id: :serial, force: :cascade do |t|
@@ -117,11 +117,11 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.integer "device_id"
     t.text "device_identifier"
     t.date "expires_at"
-    t.json "details"
     t.binary "signed_voucher"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type", default: "CmsVoucher"
+    t.binary "encoded_details"
   end
 
 end

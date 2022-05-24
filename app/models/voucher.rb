@@ -2,6 +2,7 @@ class Voucher < ActiveRecord::Base
   belongs_to :manufacturer
   belongs_to :device
   belongs_to :voucher_request
+  before_save :encode_details
 
   class VoucherFormatError < Exception
   end
@@ -65,6 +66,27 @@ class Voucher < ActiveRecord::Base
     from_parts(voucherreq, voucher_mime.parts)
   end
 
+  def encode_details
+    self.encoded_details = details.to_cbor
+  end
+
+  def decode_details
+    thing = nil
+    unless encoded_details.blank?
+      unpacker = CBOR::Unpacker.new(StringIO.new(self.encoded_details))
+      unpacker.each { |things|
+        thing = things
+      }
+    end
+    thing
+  end
+
+  def details
+    @details ||= decode_details || Hash.new
+  end
+  def details=(x)
+    @details = x
+  end
 
   def serial_number
     details['serial-number']

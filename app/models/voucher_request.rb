@@ -28,7 +28,8 @@ class VoucherRequest < ApplicationRecord
   has_many   :vouchers
 
   attr_accessor :certificate, :issuer_pki, :request
-  attr_accessor :error_report
+  attr_accessor :error_report, :details
+  before_save :encode_details
 
   class InvalidVoucherRequest < Exception; end
   class MissingPublicKey < Exception; end
@@ -137,13 +138,35 @@ class VoucherRequest < ApplicationRecord
     nil
   end
 
+  def encode_details
+    self.encoded_details = details.to_cbor
+  end
+
+  def decode_details
+    thing = nil
+    unless encoded_details.blank?
+      unpacker = CBOR::Unpacker.new(StringIO.new(self.encoded_details))
+      unpacker.each { |things|
+        thing = things
+      }
+    end
+    thing
+  end
+
+  def details
+    @details ||= decode_details || Hash.new
+  end
+  def details=(x)
+    @details = x
+  end
+
   def vdetails=(x)
     @vdetails = x
   end
 
   def vdetails
     unless @vdetails
-      return nil unless details
+      return nil if details.blank?   # if nothing saved, it is okay
       raise VoucherRequest::InvalidVoucherRequest unless details["ietf-voucher-request:voucher"]
       @vdetails = details["ietf-voucher-request:voucher"]
     end

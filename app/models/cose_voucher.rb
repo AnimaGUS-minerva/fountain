@@ -1,5 +1,7 @@
 # this is a STI subclass of Voucher
 class CoseVoucher < Voucher
+  attr_accessor :cvoucher
+
   def details_from_cose(pubkey = nil)
     begin
       @cvoucher = Chariwt::Voucher.from_cbor_cose(signed_voucher, pubkey)
@@ -16,8 +18,12 @@ class CoseVoucher < Voucher
     self.details           = @cvoucher.attributes
     self.device_identifier = @cvoucher.serialNumber
     self.expires_at        = @cvoucher.expiresOn
-    self.device            = Device.find_or_make_by_number(device_identifier)
-    self.manufacturer      = device.manufacturer
+    unless device_identifier.blank?
+      self.device            = Device.find_or_make_by_number(device_identifier)
+    end
+    if self.device
+      self.manufacturer      = self.device.manufacturer
+    end
     save!
   end
 
