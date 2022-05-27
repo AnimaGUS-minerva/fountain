@@ -39,7 +39,7 @@ gem 'bundler', '>= 2.0.1'
 # due to alerts
 gem "yard", ">= 0.9.20"
 gem "websocket-extensions", ">= 0.1.5"
-gem "rack", ">= 2.1.4"
+gem "rack", ">= 2.2.3.1"
 gem "loofah", ">= 2.3.1"
 gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
