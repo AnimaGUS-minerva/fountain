@@ -40,9 +40,10 @@ RSpec.describe Voucher, type: :model do
     end
 
     it "should load a constrained voucher representation, and create a database object for it" do
-      voucher_binary = IO::read(File.join("spec","files","voucher_jada123456789.vch"))
-      v1 = CoseVoucher.from_voucher(nil, :cose, voucher_binary)
-      expect(v1.device).to eq(devices(:jada1))
+      voucher_binary = IO::read(File.join("spec","files","voucher_00-D0-E5-F2-00-02.vch"))
+      masa_pubkey    = IO::read(File.join("spec","files", ""))
+      v1 = CoseVoucher.from_voucher(nil, :cose, voucher_binary, nil)
+      expect(v1.device).to eq(devices(:f20))
     end
 
     it "should get a voucher format error on empty voucher object" do
