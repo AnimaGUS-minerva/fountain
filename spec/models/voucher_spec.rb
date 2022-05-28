@@ -36,7 +36,7 @@ RSpec.describe Voucher, type: :model do
 
     it "should find a constrained voucher in the specification" do
       cv2 = vouchers(:cv2)
-      expect(cv2.device).to eq(devices(:jada1))
+      expect(cv2.device).to eq(devices(:jadaf20002))
     end
 
     it "should load a constrained voucher representation, and create a database object for it" do
