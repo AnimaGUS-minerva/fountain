@@ -5,7 +5,6 @@ voucher1:
   voucher_request_id: 1
   device_identifier: "JADA123456789"
   nonce: "abcd1234"
-  details: { "some": "stuff"}
   signed_voucher: ""
   type: "CmsVoucher"
 
@@ -16,7 +15,6 @@ voucher2:
   voucher_request_id: 1
   device_identifier: "JADA123457689"
   nonce: "abcd1243"
-  details: { "some": "stuff"}
   signed_voucher: ""
   type: "CmsVoucher"
 
@@ -28,13 +26,6 @@ cv2:
   device_id: 3
   device_identifier: "JADA123456789"
   expires_at: "2017-09-30"
-  details:
-    assertion: "proximity"
-    created-on: "2016-10-07T15:31:42.000-04:00"
-    expires-on: "2017-09-30T20:00:00.000-04:00"
-    serial-number: "JADA123456789"
-    nonce: "abcd12345"
-    pinned-domain-subject-public-key-info: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENWQOzcNMUjP0NrtfeBc0DJLWfeMGgCFdIv6FUz4DifM1ujMBec/g6W/P6boTmyTGdFOh/8HwKUerL5bpneK8sg=="
   signed_voucher: "҄A\xA0\xA1\u0019\xEB\x8BXA\u0004\xBAű\u001C\xAD\x8F\x99\xF9\xC7+\u0005\xCFK\x9E&\xD2D\xDC\u0018\x9FtR(%Z!\x9A\x86֠\x9E\xFF \u0013\x8B\xF8-\xC1\xB6\xD5b\xBE..."
   created_at: "2018-05-24 01:13:22"
   updated_at: "2018-05-24 01:13:22"

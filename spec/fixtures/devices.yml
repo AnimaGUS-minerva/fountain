@@ -53,15 +53,15 @@ jadaf20001:
     +3mXfyIGi9Yzea59XdAOT51lGTfFAsAPKaMDeSkjYoytbB9eLOmgIQU/
     -----END CERTIFICATE-----
 
-jada1:
+jadaf20002:
   id: 3
-  name: constrained 1
+  name: bulb f2-00-02
   fqdn:
-  eui64: "JADA123456789"
+  eui64: "00-d0-e5-f2-00-02"
   device_type_id:
-  manufacturer_id:
+  manufacturer_id: 7
   created_at: "2018-05-24 01:13:22"
-  updated_at: "2018-05-24 01:13:22"
+  updated_at: "2022-05-24 01:13:22"
 
 n31:
   id: 31
