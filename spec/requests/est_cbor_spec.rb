@@ -125,6 +125,7 @@ RSpec.describe "Est", type: :request do
       ct2= resultio.gets
       result=resultio.read
       voucher_request = nil
+      myrequest = nil
 
       if true
         stub_request(:post, "https://highway-test.example.com:9443/.well-known/brski/requestvoucher").
@@ -135,7 +136,7 @@ RSpec.describe "Est", type: :request do
                  'Host'=>'highway-test.example.com:9443',
                }).
           to_return(status: 200, body: lambda { |request|
-
+                      myrequest = request
                       voucher_request = request.body
                       result},
                     headers: {
