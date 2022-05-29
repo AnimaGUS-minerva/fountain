@@ -19,3 +19,4 @@ RUN gem install -v1.13.5 nokogiri --source=http://rubygems.org && \
     gem install -v1.4.2  sqlite3 --source=http://rubygems.org && \
     gem install -v2.3.0  sassc --source=http://rubygems.org
 
+RUN apt-get install -y busybox

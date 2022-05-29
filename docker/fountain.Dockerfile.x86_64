@@ -1,4 +1,4 @@
-FROM mcr314/minerva_builder:v202204 as builder
+FROM mcr314/minerva_builder:v202205 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
@@ -9,7 +9,7 @@ RUN bundle install --no-deployment --gemfile=/app/fountain/Gemfile && \
     bundle check
 
 # install items for use in debugging
-RUN apt-get install -y strace
+RUN apt-get install -y strace busybox
 
 # clean up just to be sure.
 RUN rm -f /app/fountain/tmp/pids/server.pid && \
