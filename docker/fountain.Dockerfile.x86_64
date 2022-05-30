@@ -7,7 +7,7 @@ WORKDIR /app/fountain
 RUN git config --global pull.ff only
 RUN bundle config setup system true
 RUN bundle config set --local deployment false
-RUN bundle install --gemfile=/app/fountain/Gemfile && \
+RUN  bundle install --gemfile=/app/fountain/Gemfile && \
     bundle check
 
 # install items for use in debugging
@@ -25,6 +25,10 @@ RUN apt-get -y install strace
 
 RUN ls -l /usr/local/bundle/gems/ffi-1.14.2/lib
 
+ENV GEM_HOME="/usr/local/bundle"
+WORKDIR /app/fountain
+#RUN ["bundle","show" ]
+
 FROM mcr314/distroless-ruby:2.7.6-dnsutils
 
 # includes /app/minerva, where the gems were installed.
@@ -39,11 +43,16 @@ COPY --from=builder /usr/bin/strace  /usr/bin/strace
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libpq.so* \
                     /usr/lib/x86_64-linux-gnu/libffi.so* \
                     /lib/x86_64-linux-gnu/libcrypt.so* \
+                    /lib/x86_64-linux-gnu/libidn.so*  \
+                    /usr/lib/x86_64-linux-gnu/libidn2.so*  \
+                    /usr/lib/x86_64-linux-gnu/libunistring.so* \
                     /usr/lib/x86_64-linux-gnu/libunwind*so* \
                     /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
 
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
+ENV GEM_HOME="/usr/local/bundle"
+WORKDIR /app/fountain
 
 # annoying to copy just what we need, so clean up afterwards
 COPY . /app/fountain
@@ -57,11 +66,8 @@ RUN ["busybox","sh", "-c", "busybox find /app -type f -name '*~' | busybox xargs
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
-ENV GEM_HOME="/usr/local/bundle"
 
-RUN ["busybox", "ls", "-l", "/usr/local/bundle/gems/ffi-1.14.2/lib"]
-
-WORKDIR /app/fountain
+#RUN ["busybox", "ls", "-l", "/usr/local/bundle/gems/ffi-1.14.2/lib"]
 
 RUN ["bundle","show" ]
 RUN ["bundle","exec","rake","-T" ]

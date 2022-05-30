@@ -1,4 +1,4 @@
-FROM ruby:2.6.10-slim-bullseye as builder
+FROM ruby:2.7.6-slim-bullseye as builder
 
 RUN apt-get update -qq && apt-get install -y postgresql-client libgmp10-dev libgmp10 sash dnsutils zip dnsutils && \
     apt-get remove -y git libssl-dev &&  \
