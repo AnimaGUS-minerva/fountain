@@ -4,6 +4,7 @@ ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 WORKDIR /app/fountain
+RUN git config --global pull.ff only
 RUN bundle config setup system true
 RUN bundle config set --local development 'false'
 RUN bundle update --gemfile=/app/fountain/Gemfile && \

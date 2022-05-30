@@ -4,8 +4,10 @@ ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 WORKDIR /app/fountain
+RUN git config --global pull.ff only
 RUN bundle config setup system true
-RUN bundle install --no-deployment --gemfile=/app/fountain/Gemfile && \
+RUN bundle config set --local deployment false
+RUN bundle install --gemfile=/app/fountain/Gemfile && \
     bundle check
 
 # install items for use in debugging
@@ -21,7 +23,9 @@ RUN rm -f /app/fountain/tmp/pids/server.pid && \
 RUN apt-get -y install strace
 # RUN ls -l /usr/lib/x86_64-linux-gnu/libunwind*so*
 
-FROM mcr314/distroless-ruby:2.6.6-dnsutils
+RUN ls -l /usr/local/bundle/gems/ffi-1.14.2/lib
+
+FROM mcr314/distroless-ruby:2.7.6-dnsutils
 
 # includes /app/minerva, where the gems were installed.
 COPY --from=builder /app /app
@@ -32,15 +36,16 @@ COPY --from=builder /bin/sash     /bin/sash
 COPY --from=builder /usr/bin/env  /usr/bin/env
 COPY --from=builder /bin/busybox  /bin/busybox
 COPY --from=builder /usr/bin/strace  /usr/bin/strace
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libssl.so* \
-                    /usr/lib/x86_64-linux-gnu/libcrypto.so* \
-                    /usr/lib/x86_64-linux-gnu/libpq.so* \
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libpq.so* \
+                    /usr/lib/x86_64-linux-gnu/libffi.so* \
+                    /lib/x86_64-linux-gnu/libcrypt.so* \
                     /usr/lib/x86_64-linux-gnu/libunwind*so* \
                     /usr/lib/x86_64-linux-gnu/libsqlite3.so* /usr/lib/x86_64-linux-gnu/
 
+
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 
-# can not do this, because distroless has no rm or mkdir -p
+# annoying to copy just what we need, so clean up afterwards
 COPY . /app/fountain
 RUN ["busybox","rm", "-rf", "/app/fountain/run"]
 RUN ["busybox","rm", "-rf", "/app/fountain/spec"]
@@ -54,7 +59,12 @@ ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 ENV GEM_HOME="/usr/local/bundle"
 
+RUN ["busybox", "ls", "-l", "/usr/local/bundle/gems/ffi-1.14.2/lib"]
+
 WORKDIR /app/fountain
+
+RUN ["bundle","show" ]
+RUN ["bundle","exec","rake","-T" ]
 
 EXPOSE 8443
 

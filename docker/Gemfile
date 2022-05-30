@@ -27,8 +27,8 @@ gem 'rake'
 gem 'tzinfo-data'
 
 gem 'mail'
-gem 'ffi', '~> 1.10.0'
-gem 'bundler'
+gem 'ffi', '~> 1.14.2'
+gem 'bundler', "~> 2.3.11"
 
 # due to alerts
 gem "yard", ">= 0.9.20"
@@ -74,7 +74,7 @@ gem 'cbor'
 gem 'rabl'
 gem 'oj'
 
-gem 'sqlite3', "~> 1.3.6"
+gem 'sqlite3', "~> 1.4.2"
 gem 'pg', '~> 0.21'
 
 # used in production on SecureHomeGateway
