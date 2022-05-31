@@ -19,8 +19,9 @@ gem "turbolinks"
 #gem 'ecdsa',   :path => '../minerva/ruby_ecdsa'
 gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
-gem 'chariwt', :path => '../chariwt'
-#gem 'chariwt', :git => 'https://github.com/AnimaGUS-minerva/ChariWTs.git', :branch => 'v0.8.0'
+#gem 'chariwt', :path => '../chariwt'
+# need version 0.9.2
+gem 'chariwt', :git => 'https://github.com/AnimaGUS-minerva/ChariWTs.git', :branch => 'v0.9.0'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
@@ -54,6 +55,7 @@ gem 'capistrano-rails',  group: :development
 gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
 
+# needs special build instructions, and special openssl.
 #gem 'openssl', "~> 2.1.0"
 gem 'openssl', :path => "../minerva/ruby-openssl-upstreamed"
 #gem 'openssl', :path => '/gems/highway/ruby-openssl'
@@ -66,8 +68,8 @@ gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch =
 #gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true
 gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
-#gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git'
-gem 'david', :path => "../minerva/david"
+gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
+#gem 'david', :path => "../minerva/david"
 
 # use this to get full decoding of HTTP Accept: headers, to be able to
 # split off smime-type=voucher in pkcs7-mime, and other parameters

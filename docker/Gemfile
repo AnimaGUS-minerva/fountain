@@ -11,11 +11,11 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem "turbolinks"
 
-gem 'ecdsa',   :path => '/app/minerva/ruby_ecdsa'
-#gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
+#gem 'ecdsa',   :path => '/app/minerva/ruby_ecdsa'
+gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
-gem 'chariwt', :path => '/app/minerva/chariwt'
-#gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git', :branch => 'v0.7.0'
+#gem 'chariwt', :path => '/app/minerva/chariwt'
+gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git', :branch => 'v0.9.0'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
@@ -48,6 +48,7 @@ gem 'capistrano-rails',  group: :development
 gem 'capistrano-rvm',    group: :development
 gem 'capistrano-bundler',group: :development
 
+# needs special build instructions, and special openssl.
 #gem 'openssl', "~> 2.1.0"
 gem 'openssl', :path => '/app/minerva/ruby-openssl'
 #gem 'openssl', :path => "../minerva/ruby-openssl"
@@ -60,7 +61,7 @@ gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.gi
 #gem 'celluloid-io', :path => "/app/minerva/celluloid-io"
 
 #gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git'
-gem 'david', :path => "/app/minerva/david"
+gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
 
 # use this to get full decoding of HTTP Accept: headers, to be able to
 # split off smime-type=voucher in pkcs7-mime, and other parameters
