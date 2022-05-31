@@ -52,6 +52,7 @@ COPY --from=builder /usr/lib/x86_64-linux-gnu/libpq.so* \
 
 ENV PATH="/usr/local/bundle/bin:${PATH}"
 ENV GEM_HOME="/usr/local/bundle"
+ENV RAILS_ENV=production
 WORKDIR /app/fountain
 
 # annoying to copy just what we need, so clean up afterwards
@@ -71,6 +72,7 @@ ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 RUN ["bundle","show" ]
 RUN ["bundle","exec","rake","-T" ]
+RUN ["bundle","exec","rake","assets:precompile" ]
 
 EXPOSE 8443
 
