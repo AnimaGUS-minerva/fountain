@@ -1,9 +1,9 @@
-FROM mcr314/minerva_ruby_openssl:v202205 as builder
+FROM mcr314/minerva_ruby_openssl:v202206 as builder
 
 WORKDIR /app
 RUN apt-get update
 
-RUN apt-get install -y libpq-dev libsqlite3-dev
+RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev
 
 # install gems with extensions explicitely so that layers are cached.
 RUN gem install -v1.13.5 nokogiri --source=http://rubygems.org && \

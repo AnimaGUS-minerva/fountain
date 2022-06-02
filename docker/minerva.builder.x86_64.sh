@@ -2,5 +2,5 @@
 
 set -e
 cd $(dirname $0)/..
-docker build -t mcr314/minerva_builder:v202205 -f docker/minerva.Dockerfile.x86_64 .
-docker push mcr314/minerva_builder:v202205
+docker build -t mcr314/minerva_builder:v202206 -f docker/minerva.Dockerfile.x86_64 .
+docker push mcr314/minerva_builder:v202206
