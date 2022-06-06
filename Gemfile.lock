@@ -17,6 +17,17 @@ GIT
       resolv-ipv6favor (~> 0)
 
 GIT
+  remote: https://github.com/AnimaGUS-minerva/david.git
+  revision: a4bbc028ee2d4c86dacf7ca574ff081879d62475
+  branch: dtls-david
+  specs:
+    david (0.5.1.pre)
+      celluloid (~> 0.17.3)
+      celluloid-io (~> 0.17.3)
+      coap (~> 0.1)
+      rack (~> 2.0)
+
+GIT
   remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
   revision: 64eb588befbf65fe58209d20d5a12da646077c5b
   branch: ecdsa_interface_openssl
@@ -34,15 +45,6 @@ PATH
   specs:
     celluloid-io (0.17.3)
       nio4r (>= 1.1)
-
-PATH
-  remote: ../minerva/david
-  specs:
-    david (0.5.1.pre)
-      celluloid (~> 0.17.3)
-      celluloid-io (~> 0.17.3)
-      coap (~> 0.1)
-      rack (~> 2.0)
 
 PATH
   remote: ../minerva/ruby-openssl-upstreamed
