@@ -210,7 +210,7 @@ class Device < ActiveRecord::Base
     ldevid.public_key = csrobj.public_key
 
     # 12 is about the encoding, representing UTF8String, (I think)
-    unless SystemVariable.boolvalue?(:anima_acp)
+    unless manufacturer.anima_acp?
       ldevid.subject    = csrobj.subject
     else
 

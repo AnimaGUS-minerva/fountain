@@ -5,6 +5,7 @@ class Manufacturer < ApplicationRecord
   has_many :voucher_requests
   has_many :device_types
 
+  # creates trust_brski!, and trust_brski?, etc.
   enum trust: {
          unknown: "unknown",     # a new manufacturer, unknown trust.
          firstused: "firstused", # a new manufacturer, first time encountered.
@@ -56,6 +57,10 @@ class Manufacturer < ApplicationRecord
       }
     end
     return canonicalize_masa_url(masa_url)
+  end
+
+  def anima_acp?
+    SystemVariable.boolvalue?(:anima_acp)
   end
 
   def no_key?
