@@ -97,4 +97,35 @@ RSpec.describe "Est", type: :request do
     end
   end
 
+  describe "constrained sen" do
+    # csr_f20002 is from ../reach/spec/files/product/00-D0-E5-F2-00-02
+    it "should accept a CSR file from an IDevID from a EST trusted manufacturer" do
+      # get the Base64 of the incoming signed request
+      body = IO.read("spec/files/csr_f20002.csr")
+
+      env = Hash.new
+      env["SSL_CLIENT_CERT"] = cbor_clientcert_02
+
+      # screw with settings so that it is trusted now.
+      cert = OpenSSL::X509::Certificate.new(cbor_clientcert_02)
+      @device = Device.find_or_make_by_certificate(cert)
+      @device.manufacturer.trust_admin!
+
+      env["HTTP_ACCEPT"]  = "application/pkix"
+      env["CONTENT_TYPE"] = "application/pkcs10"
+
+      $FAKED_TEMPORARY_KEY = temporary_key
+      post '/.well-known/est/sen', :params => body, :headers => env
+
+      expect(response).to have_http_status(200)
+      expect(response.body).to_not be_nil
+      File.open("tmp/csr_f20002.crt", "wb") {|f| f.syswrite response.body }
+      cert = OpenSSL::X509::Certificate.new(response.body)
+      byebug
+      expect(cert).to_not be_nil
+      expect(cert.subject).to eq("00-D0-E5-F2-00-02")
+    end
+  end
+
+
 end

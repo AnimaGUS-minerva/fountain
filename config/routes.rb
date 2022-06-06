@@ -37,8 +37,8 @@ Rails.application.routes.draw do
     get '/e/att',  to: 'est#cbor_crts', coap: true, rt: 'ace.est', short: '/e'
 
     # get /sen -- simpleenroll
-    get  '/.well-known/brski/sen', to: 'est#simpleenroll', coap: true, rt: 'ace.est', short: '/e'
-    get '/e/sen',                  to: 'est#simpleenroll', coap: true, rt: 'ace.est', short: '/e'
+    post  '/.well-known/est/sen',  to: 'est#simpleenroll', coap: true, rt: 'ace.est', short: '/e'
+    post  '/e/sen',                to: 'est#simpleenroll', coap: true, rt: 'ace.est', short: '/e'
   end
 
   resources :status,  :only => [:index ]
