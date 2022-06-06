@@ -80,6 +80,7 @@ brskiManu:
     utc: &3 2019-04-03 20:39:54.421921000 Z
     zone: *2
     time: *3
+  certtype: "acp"
   trust: "brski"
   masa_url: https://highway-test.example.com:9443/.well-known/brski/
   issuer_public_key: !binary |-

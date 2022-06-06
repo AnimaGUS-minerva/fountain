@@ -111,6 +111,9 @@ RSpec.describe "Est", type: :request do
       @device = Device.find_or_make_by_certificate(cert)
       @device.manufacturer.trust_admin!
 
+      # ignore the ACP name, and take the SubjectAltName from CSR for this manufacturer.
+      @device.manufacturer.certtype_iot!
+
       env["HTTP_ACCEPT"]  = "application/pkix"
       env["CONTENT_TYPE"] = "application/pkcs10"
 
@@ -121,9 +124,8 @@ RSpec.describe "Est", type: :request do
       expect(response.body).to_not be_nil
       File.open("tmp/csr_f20002.crt", "wb") {|f| f.syswrite response.body }
       cert = OpenSSL::X509::Certificate.new(response.body)
-      byebug
       expect(cert).to_not be_nil
-      expect(cert.subject).to eq("00-D0-E5-F2-00-02")
+      expect(cert.subject.to_s).to eq("/serialNumber=00-D0-E5-F2-00-02")
     end
   end
 

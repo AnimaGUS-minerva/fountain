@@ -41,6 +41,44 @@ RSpec.describe Manufacturer, type: :model do
     end
   end
 
+  describe "manufacturer based certificate properties" do
+    it "should have a certtype field" do
+      um1 = manufacturers(:brskiManu)
+      expect(um1).to be_certtype_acp
+    end
+
+    it "should support certtype acp" do
+      m = Manufacturer.new
+      m.certtype_acp!
+      expect(m).to be_certtype_acp
+    end
+
+    it "should follow System variable false, if certtype blank" do
+      SystemVariable.setbool(:anima_acp, false)
+      m = Manufacturer.new
+      expect(m).to_not be_anima_acp
+    end
+
+    it "should follow System variable false, if certtype blank" do
+      SystemVariable.setbool(:anima_acp, true)
+      m = Manufacturer.new
+      expect(m).to be_anima_acp
+    end
+
+    it "should follow if certtype, if certtype not blank" do
+      SystemVariable.setbool(:anima_acp, false)
+      m = Manufacturer.new
+      m.certtype_acp!
+      expect(m).to be_anima_acp
+    end
+
+    it "should support certtype iot" do
+      m = Manufacturer.new
+      m.certtype_iot!
+      expect(m).to be_certtype_iot
+    end
+  end
+
   describe "picking a manufacturer" do
     it "should not find a mis-matched issuer" do
       # this file was created with the identical DN as highwaytest, being:

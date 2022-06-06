@@ -15,6 +15,12 @@ class Manufacturer < ApplicationRecord
 
        },  _prefix: :trust
 
+  # creates certtype_acp!, or certtype_iot!
+  enum certtype: {
+         acp: "acp",
+         iot: "iot"
+       },  _prefix: :certtype
+
   def self.trusted_client_by_pem(clientpem)
     # decode the clientpem into a certificate
 
@@ -60,7 +66,10 @@ class Manufacturer < ApplicationRecord
   end
 
   def anima_acp?
-    SystemVariable.boolvalue?(:anima_acp)
+    if certtype.blank?
+      return SystemVariable.boolvalue?(:anima_acp)
+    end
+    return certtype_acp?
   end
 
   def no_key?

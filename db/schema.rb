@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.binary "issuer_public_key"
     t.string "trust", default: "unknown"
     t.text "issuer_dn"
+    t.string "certtype"
     t.index ["trust"], name: "index_manufacturers_on_trust"
   end
 
