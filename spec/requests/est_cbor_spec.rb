@@ -194,8 +194,8 @@ RSpec.describe "Est", type: :request do
           f.syswrite voucher_request
         end
       end
-
       expect(response).to have_http_status(200)
+      expect(response.header['Text']).to be_blank
       validate_coaps_posted_name(voucher_request, "02")
     end
 
