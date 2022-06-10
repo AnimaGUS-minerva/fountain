@@ -269,7 +269,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.3.13)
+    sqlite3 (1.4.2)
     sshkit (1.21.2)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
@@ -354,7 +354,7 @@ DEPENDENCIES
   sassc
   spring
   sprockets (~> 3.7.2)
-  sqlite3 (~> 1.3.6)
+  sqlite3 (~> 1.4.0)
   sucker_punch
   therubyracer
   thin
