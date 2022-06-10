@@ -65,8 +65,8 @@ gem 'openssl', :path => "../minerva/ruby-openssl-upstreamed"
 gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
 #gem 'coap',    :path => "../minerva/coap"
 
-#gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true
-gem 'celluloid-io', :path => "../minerva/celluloid-io"
+gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true, :branch => '0.17-dtls'
+#gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
 gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
 #gem 'david', :path => "../minerva/david"
