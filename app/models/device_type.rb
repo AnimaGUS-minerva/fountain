@@ -44,7 +44,7 @@ class DeviceType < ActiveRecord::Base
     end
 
     begin
-      open(mud_url_sig) { |f|
+      URI.open(mud_url_sig) { |f|
         signature = f.read
       }
     rescue Errno::ENOENT
@@ -86,7 +86,7 @@ class DeviceType < ActiveRecord::Base
   def mud_json
     unless @mud_json.kind_of? Hash
       begin
-        open(mud_url) {|f|
+        URI.open(mud_url) {|f|
           @raw_json = f.read
           self.mud_json = JSON::parse(@raw_json)
         }
