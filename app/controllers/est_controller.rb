@@ -133,6 +133,7 @@ class EstController < ApiController
   # As a side effect, @device is setup.
   def trusted_client
     cert = decode_client_certificate
+    return false unless cert
     @device = Device.find_or_make_by_certificate(cert)
     unless @device
       logger.info "client cert #{cert.issuer.to_s} => #{cert.subject.to_s}, was not trusted because an associated device was not found"
@@ -153,6 +154,7 @@ class EstController < ApiController
     clientcert_pem = request.env["SSL_CLIENT_CERT"]
     clientcert_pem ||= request.env["rack.peer_cert"]
 
+    return nil if clientcert_pem.blank?
     unless clientcert_pem.instance_of? OpenSSL::X509::Certificate
       OpenSSL::X509::Certificate.new(clientcert_pem)
     else
