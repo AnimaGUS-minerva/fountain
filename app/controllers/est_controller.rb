@@ -216,6 +216,8 @@ class EstController < ApiController
       return
     end
 
+    #byebug
+
     if @voucher
       render :body => @voucher.signed_voucher,
              :content_type => @voucher.content_type,
