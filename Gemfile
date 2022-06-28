@@ -20,8 +20,8 @@ gem "turbolinks"
 gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
 #gem 'chariwt', :path => '../chariwt'
-# need version 0.9.2
-gem 'chariwt', :git => 'https://github.com/AnimaGUS-minerva/ChariWTs.git', :branch => 'v0.9.0'
+# need version 0.11.0 to get correct date and nonce types
+gem 'chariwt', :git => 'https://github.com/AnimaGUS-minerva/ChariWTs.git', :branch => 'v0.11.0'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
