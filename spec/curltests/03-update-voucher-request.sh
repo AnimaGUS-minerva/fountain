@@ -12,7 +12,7 @@
 # to regenegate voucher requests used in tests.
 
 here=$(pwd)
-serialNumber=00-D0-E5-F2-00-01
+serialNumber=00-D0-E5-F2-00-02
 
 # first copy over any new IDevID from highway test environment.
 mkdir -p spec/files/product/${serialNumber}
@@ -20,7 +20,7 @@ cp -Lr ../highway/spec/files/product/${serialNumber}/. spec/files/product/${seri
 
 rm -f ../reach/tmp/vr_${serialNumber}.pkcs
 
-(cd ../reach && rake reach:send_voucher_request PRODUCTID=${here}/spec/files/product/${serialNumber}  JRC=https://fountain-test.example.com:8443/ )
+(cd ../reach && rake reach:enroll_http_pledge PRODUCTID=${here}/spec/files/product/${serialNumber}  JRC=https://fountain-test.example.com:8443/ )
 
 cp ../reach/tmp/vr_${serialNumber}.pkcs spec/files/voucher_request-${serialNumber}.pkcs
 
