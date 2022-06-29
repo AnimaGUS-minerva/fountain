@@ -12,7 +12,7 @@
 # to regenegate voucher requests used in tests.
 
 here=$(pwd)
-serialNumber=00-D0-E5-F2-00-01
+serialNumber=00-D0-E5-F2-00-02
 
 # first copy over any new IDevID from highway test environment.
 mkdir -p spec/files/product/${serialNumber}
