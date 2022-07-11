@@ -232,7 +232,7 @@ RSpec.describe Device, type: :model do
       expect(b.rfc822Name).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
     end
 
-    it "should generate an appropriate CSRattributes object with the rfc822Name" do
+    it "should generate an appropriate CSRattributes object with the otherName" do
       b = devices(:bulb1)
       b.acp_address_allocate!
 
