@@ -158,7 +158,8 @@ class Device < ActiveRecord::Base
   # generate CSR attributes for the ACP address provided.
   def csr_attributes
     ca = CSRAttributes.new
-    ca.add_attr("subjectAltName", CSRAttributes.rfc822Name(rfc822Name))
+    # the otherName is the same as the rfc822Name!
+    ca.add_attr("subjectAltName", CSRAttributes.otherName(rfc822Name))
     save!
     return ca
   end

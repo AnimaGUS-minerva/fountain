@@ -15,14 +15,14 @@ class CSRAttributes
   # SubjectAltName ::= GeneralNames
   # GeneralNames ::= SEQUENCE SIZE (1..MAX) OF GeneralName
   # GeneralName ::= CHOICE {
-  #        otherName                       [0]     OtherName,
-  #        rfc822Name                      [1]     IA5String,   <-- this one
+  #        otherName                       [0]     OtherName,   <-- this one,
+  #        rfc822Name                      [1]     IA5String,
   def self.rfc822NameChoice
     1
   end
 
-  def self.otherNameNameChoice
-    1
+  def self.otherNameChoice
+    0
   end
 
   def self.rfc822Name(x)
@@ -31,7 +31,7 @@ class CSRAttributes
     return OpenSSL::ASN1::Sequence.new([v])
   end
 
-  def self.otherNameName(x)
+  def self.otherName(x)
     # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
     v = OpenSSL::ASN1::UTF8String.new(x, otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
     return OpenSSL::ASN1::Sequence.new([v])
