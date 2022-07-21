@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 5.2.7.1"
+gem 'rails', "~> 5.2.8.1"
 
 # psych 4.0 does not load fixtures correctly yet.
 gem 'psych', '~> 3.3'
@@ -47,7 +47,8 @@ gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
 gem "addressable", ">= 2.8.0"
 gem "nokogiri", ">= 1.13.4"
-gem "actionview", ">= 5.2.7.1"
+gem "rails-html-sanitizer", ">= 1.4.3"
+
 
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
