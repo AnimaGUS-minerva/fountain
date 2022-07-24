@@ -84,6 +84,7 @@ RSpec.describe "Est", type: :request do
                value[0].value[2].value[0].tag).to eq(CSRAttributes.otherNameChoice)
       expect(asn1.value[0].value[1].
                value[0].value[2].value[0].value[0].value).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
+      File.open("tmp/jadaf20001.csrattr.der","wb") { |f| f.write response.body }
     end
 
     it "should fail to be returned with acertificate with untrusted connection" do

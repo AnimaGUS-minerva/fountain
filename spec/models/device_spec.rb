@@ -238,13 +238,13 @@ RSpec.describe Device, type: :model do
 
       attr = b.csr_attributes.to_der
 
-      File.open("tmp/csr_bulb1.der", "wb") do |f|
+      File.open("tmp/csr_bulb1.csrattr.der", "wb") do |f|
         f.write attr
       end
       #puts attr.unpack("H*")
       c0 = CSRAttributes.from_der(attr)
       expect(c0).to_not be_nil
-      expect(attr).to eq("0T0R\x06\x03U\x1D\x111K0I\x06\x03U\x1D\x11\xA0\x03\x01\x01\xFF0=\xA0;\f9rfc8994+fd739fc23c3440112233445500000000+@acp.example.com".b)
+      expect(attr).to eq("0Z0X\x06\t*\x86H\x86\xF7\r\x01\t\x0E1K0I\x06\x03U\x1D\x11\xA0\x03\x01\x01\xFF0=\xA0;\f9rfc8994+fd739fc23c3440112233445500000000+@acp.example.com".b)
     end
 
     it "should generate an LDevID signed by domain authority" do
