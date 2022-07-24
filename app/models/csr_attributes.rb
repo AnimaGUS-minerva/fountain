@@ -75,8 +75,9 @@ class CSRAttributes
     @attributes << make_attr_pair(x,y)
   end
 
+  # extReq/extensionRequest (1.2.840.113549.1.9.14).
   def add_attr_value(x, y)
-    @attributes << make_attr_pair(x, make_attr_extension(x, true, y))
+    @attributes << make_attr_pair("extReq", make_attr_extension(x, true, y))
   end
 
   def find_attr(x)
