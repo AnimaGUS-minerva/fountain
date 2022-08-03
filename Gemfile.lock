@@ -360,6 +360,7 @@ DEPENDENCIES
   therubyracer
   thin
   turbolinks
+  tzinfo (>= 1.2.10)
   tzinfo-data
   webmock
   websocket-extensions (>= 0.1.5)
