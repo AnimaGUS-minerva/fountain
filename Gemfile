@@ -69,7 +69,7 @@ gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch =
 gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true, :branch => '0.17-dtls'
 #gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
-gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
+#gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
 #gem 'david', :path => "../minerva/david"
 
 # use this to get full decoding of HTTP Accept: headers, to be able to
