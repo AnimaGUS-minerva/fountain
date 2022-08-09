@@ -36,11 +36,13 @@ namespace :fountain do
       lifetime = ENV['LIFETIME'].to_f * (60*60*24*365)
     end
     dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
+    hostname = SystemVariable.string(:hostname)
     unless SystemVariable.string(:hostname)
       puts "Hostname must be set before generating registrar CA"
       exit 1
     end
-    dn = sprintf("%s/CN=%s", dnprefix, SystemVariable.string(:hostname).chomp)
+    hostname.chomp!
+    dn = sprintf("%s/CN=%s", dnprefix, hostname)
     dnobj = OpenSSL::X509::Name.parse dn
 
     FountainKeys.ca.sign_certificate("Registar", nil,
@@ -52,6 +54,9 @@ namespace :fountain do
         cert.add_extension(n)
         n = ef.create_extension("keyUsage","digitalSignature", true)
         cert.add_extension(n)
+        cert.add_extension(ef.create_extension("subjectAltName",
+                                               sprintf("DNS:%s", hostname),
+                                               false))
       rescue OpenSSL::X509::ExtensionError
         puts "Can not setup cmcRA extension, as openssl not patched, continuing anyway..."
       end
@@ -67,13 +72,17 @@ namespace :fountain do
     outfile      =FountainKeys.ca.certdir.join("domain_#{curve}.crt")
 
     dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
-    dn = sprintf("%s/CN=%s domain authority", dnprefix, SystemVariable.string(:hostname).chomp)
+    hostname = SystemVariable.string(:hostname).chomp
+    dn = sprintf("%s/CN=%s domain authority", dnprefix, hostname)
     dnobj = OpenSSL::X509::Name.parse dn
 
     FountainKeys.ca.sign_certificate("domain authority", nil,
                                      domainprivkeyfile,
                                      outfile, dnobj) { |cert, ef|
       cert.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
+      cert.add_extension(ef.create_extension("subjectAltName",
+                                             sprintf("DNS:%s", hostname),
+                                             false))
     }
     puts "Domain Authority certificate authority written to: #{outfile}"
   end
