@@ -96,6 +96,9 @@ gem 'byebug'
 gem 'sucker_punch'
 gem 'rb-readline'
 
+# version 6.0.x is just the latest.
+gem 'passenger'
+
 group :development, :test do
   gem 'therubyracer', platforms: :ruby
   gem 'pry'

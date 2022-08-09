@@ -84,6 +84,9 @@ gem 'pg', '~> 0.21'
 gem 'thin'
 gem 'byebug'
 
+# when passenger is used, it helps to have it built for this very of ruby
+gem 'passenger'
+
 # use for background processing of mud files, and interaction with
 # mud-controller.
 gem 'sucker_punch'
