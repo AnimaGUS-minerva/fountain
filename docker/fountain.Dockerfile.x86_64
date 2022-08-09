@@ -7,11 +7,18 @@ WORKDIR /app/fountain
 RUN git config --global pull.ff only
 RUN bundle config setup system true
 RUN bundle config set --local deployment false
-RUN  bundle install --gemfile=/app/fountain/Gemfile && \
+RUN bundle install --gemfile=/app/fountain/Gemfile && \
     bundle check
 
+RUN echo "deb http://cacher.sandelman.ca:3142/deb.debian.org/debian bullseye main contrib non-free" >/etc/apt/sources.list.d/cacher.list
+
 # install items for use in debugging
-RUN apt-get install -y strace busybox
+RUN apt-get update && apt-get install -y strace busybox
+
+RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev
+
+RUN /usr/local/bundle/gems/passenger-6.0.14/bin/passenger-install-apache2-module
+RUN passenger-config build-native-support
 
 # clean up just to be sure.
 RUN rm -f /app/fountain/tmp/pids/server.pid && \
@@ -23,7 +30,7 @@ RUN rm -f /app/fountain/tmp/pids/server.pid && \
 RUN apt-get -y install strace
 # RUN ls -l /usr/lib/x86_64-linux-gnu/libunwind*so*
 
-RUN ls -l /usr/local/bundle/gems/ffi-1.14.2/lib
+# RUN ls -l /usr/local/bundle/gems/ffi-1.14.2/lib
 
 ENV GEM_HOME="/usr/local/bundle"
 WORKDIR /app/fountain
