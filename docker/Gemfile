@@ -63,7 +63,7 @@ gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.gi
 #gem 'celluloid-io', :path => "/app/minerva/celluloid-io"
 
 #gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git'
-gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
+#gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
 
 # use this to get full decoding of HTTP Accept: headers, to be able to
 # split off smime-type=voucher in pkcs7-mime, and other parameters

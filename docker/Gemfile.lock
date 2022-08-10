@@ -19,17 +19,6 @@ GIT
       resolv-ipv6favor (~> 0)
 
 GIT
-  remote: https://github.com/AnimaGUS-minerva/david.git
-  revision: a4bbc028ee2d4c86dacf7ca574ff081879d62475
-  branch: dtls-david
-  specs:
-    david (0.5.1.pre)
-      celluloid (~> 0.17.3)
-      celluloid-io (~> 0.17.3)
-      coap (~> 0.1)
-      rack (~> 2.0)
-
-GIT
   remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
   revision: 64eb588befbf65fe58209d20d5a12da646077c5b
   branch: ecdsa_interface_openssl
@@ -169,8 +158,8 @@ GEM
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
     minitest (5.16.2)
-    net-scp (4.0.0.rc1)
-      net-ssh (>= 2.6.5, < 8.0.0)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
     net-ssh (7.0.1)
     nio4r (2.5.8)
     nokogiri (1.13.8)
@@ -267,7 +256,6 @@ DEPENDENCIES
   celluloid-io!
   chariwt!
   coap!
-  david!
   ecdsa!
   ffi (~> 1.14.2)
   fixture_save!
