@@ -25,13 +25,6 @@ RUN ls -l /src/openssl/lib
 RUN mkdir -p /app/minerva && cd /app/minerva && \
     gem install rake-compiler --source=http://rubygems.org
 
-RUN mkdir -p /app/minerva && cd /app/minerva && \
-    git clone --single-branch --branch binary_http_multipart https://github.com/AnimaGUS-minerva/multipart_body.git && \
-    git clone --single-branch --branch ecdsa_interface_openssl https://github.com/AnimaGUS-minerva/ruby_ecdsa.git && \
-    git clone --single-branch --branch v0.8.0 https://github.com/mcr/ChariWTs.git chariwt && \
-    git clone --single-branch --branch master https://github.com/AnimaGUS-minerva/david.git && \
-    git clone --single-branch --branch aaaa_rr https://github.com/CIRALabs/dns-update.git
-
 RUN mkdir -p /sandel/3rd && ln -s /src/openssl /sandel/3rd/openssl-dtls-api
 RUN cd /app/minerva && git clone --single-branch --branch dtls-1.1.1k https://github.com/mcr/ruby-openssl.git
 
