@@ -41,17 +41,6 @@ RSpec.describe Device, type: :model do
     end
   end
 
-  describe "GRASP queries" do
-    it "should parse a GRASP message into a series of objects" do
-      File.open(Rails.root.join("spec","fixtures","files","43-6join-grasp.dump"),"rb") do |infile|
-        File.open(Rails.root.join("tmp","out1.dump"), "wb") do |out|
-          gs = GraspServer.new(infile, out)
-          gs.process
-        end
-      end
-    end
-  end
-
   describe "traffic counts" do
     it "should permit incrementing traffic counts" do
       t1 = devices(:thing1)
