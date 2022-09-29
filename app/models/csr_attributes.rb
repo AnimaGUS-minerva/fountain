@@ -83,10 +83,11 @@ class CSRAttributes
   end
 
   def make_attr_extension(extnID, critical, extnValue)
-    critvalue = OpenSSL::ASN1::Boolean.new(critical, 0, :EXPLICIT, :CONTEXT_SPECIFIC)
+    critvalue = critvalue = OpenSSL::ASN1::Boolean.new(critical)
+    extnValueDER = extnValue.to_der
     OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(extnID),
                                  critvalue,
-                                 extnValue])
+                                 OpenSSL::ASN1::OctetString.new(extnValueDER)])
   end
 
   def add_attr(x, y)
