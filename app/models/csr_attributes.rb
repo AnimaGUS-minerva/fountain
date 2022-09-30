@@ -77,17 +77,17 @@ class CSRAttributes
 
     # loop through each each, looking for rfc822Name or otherNameChoice
     names = san_list.value.select { |san|
-      (san.tag == CSRAttributes.otherNameChoice ||
-        san.tag == CSRAttributes.rfc822NameChoice)
+      san.value.length >= 2 &&
+        san.value[0].value == CSRAttributes.acpNodeNameOID.value
     }
 
     return nil if(names.length < 1)
-    return nil if(names[0].value.length < 1)
+    return nil if(names[0].value.length < 2)
 
     # names contains an arrays of SubjectAltNames that are rfc822Names.
     # As there is a SET of possible values, the second array exists.
     # Within that group is a SEQ of GENERAL names.
-    name = names[0].value[0].value
+    name = names[0].value[1].value
     return name
   end
 
