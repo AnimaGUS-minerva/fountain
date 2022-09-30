@@ -80,10 +80,13 @@ RSpec.describe "Est", type: :request do
 
       asn1 = OpenSSL::ASN1.decode(response.body)
       expect(asn1.value[0].value[0].value).to eq("extReq")
-      expect(asn1.value[0].value[1].
-               value[0].value[2].value[0].tag).to eq(CSRAttributes.otherNameChoice)
-      expect(asn1.value[0].value[1].
-               value[0].value[2].value[0].value[0].value).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
+
+      # what we find is OCTETSTRING encoded again
+      os   = asn1.value[0].value[1].value[0].value[2].value
+      expect(os).to_not be_nil
+      san  = OpenSSL::ASN1.decode(os)
+      expect(san.value[0].value[0].value).to eq(CSRAttributes.acpNodeNameOID.value)
+      expect(san.value[0].value[1].value).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
       File.open("tmp/jadaf20001.csrattr.der","wb") { |f| f.write response.body }
     end
 

@@ -25,6 +25,10 @@ class CSRAttributes
     0
   end
 
+  def self.acpNodeNameOID
+    @acpoid ||= OpenSSL::ASN1::ObjectId.new("1.3.6.1.5.5.7.8.10")
+  end
+
   def self.rfc822Name(x)
     # a is rfc822Name CHOICE from RFC7030, and the result is a sequence of SANs
     v = OpenSSL::ASN1::UTF8String.new(x, rfc822NameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
@@ -33,8 +37,8 @@ class CSRAttributes
 
   def self.otherName(x)
     # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
-    v = OpenSSL::ASN1::UTF8String.new(x, otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
-    return OpenSSL::ASN1::Sequence.new([v])
+    v = OpenSSL::ASN1::UTF8String.new(x)
+    return OpenSSL::ASN1::Sequence.new([acpNodeNameOID,v], otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
   end
 
   def initialize
@@ -97,7 +101,7 @@ class CSRAttributes
   end
 
   def make_attr_extension(extnID, critical, extnValue)
-    critvalue = critvalue = OpenSSL::ASN1::Boolean.new(critical)
+    critvalue = OpenSSL::ASN1::Boolean.new(critical)
     extnValueDER = extnValue.to_der
     OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(extnID),
                                  critvalue,
@@ -111,6 +115,10 @@ class CSRAttributes
   # extReq/extensionRequest (1.2.840.113549.1.9.14).
   def add_attr_value(x, y)
     @attributes << make_attr_pair("extReq", make_attr_extension(x, true, y))
+  end
+
+  def add_otherNameSAN(san)
+    add_attr_value("subjectAltName", CSRAttributes.otherName(san))
   end
 
   def find_attr(x)

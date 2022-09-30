@@ -159,7 +159,7 @@ class Device < ActiveRecord::Base
   def csr_attributes
     ca = CSRAttributes.new
     # the otherName is the same as the rfc822Name!
-    ca.add_attr_value("subjectAltName", CSRAttributes.otherName(rfc822Name))
+    ca.add_otherNameSAN(rfc822Name)
     save!
     return ca
   end
