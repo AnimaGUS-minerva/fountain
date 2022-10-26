@@ -13,7 +13,7 @@ RUN gem install bundler --source=http://rubygems.org
 RUN rm -rf /usr/include/x86_64-linux-gnu/openssl && \
     mkdir -p /src/minerva && mkdir -p /src/openssl/lib && \
     cd /src/minerva && \
-    git clone -b dtls-listen-refactor-1.1.1k https://github.com/mcr/openssl.git && \
+    git clone -b dtls-listen-refactor-1.1.1r https://github.com/mcr/openssl.git && \
     cd /src/minerva/openssl && \
     ./Configure --prefix=/src/openssl no-idea no-mdc2 no-rc5 no-zlib no-ssl3 no-tests no-shared linux-x86_64 && \
     id && make
@@ -26,14 +26,14 @@ RUN mkdir -p /app/minerva && cd /app/minerva && \
     gem install rake-compiler --source=http://rubygems.org
 
 RUN mkdir -p /sandel/3rd && ln -s /src/openssl /sandel/3rd/openssl-dtls-api
-RUN cd /app/minerva && git clone --single-branch --branch dtls-1.1.1k https://github.com/mcr/ruby-openssl.git
+RUN cd /app/minerva && git clone --single-branch --branch dtls-1.1.1r https://github.com/mcr/ruby-openssl.git
 
 #RUN apt-get install -y vim
 RUN cd /app/minerva/ruby-openssl && rake compile -- --with-openssl-dir=/src/openssl
 
 #RUN    git config --global http.sslVerify "false" && \
 
-RUN touch /app/v202208
+RUN touch /app/v202210
 
 WORKDIR /app
 
