@@ -18,7 +18,7 @@ RUN gem install -v1.13.8 nokogiri --source=http://rubygems.org && \
     gem install -v0.5.9.6 cbor --source=http://rubygems.org && \
     gem install -v1.4.4  sqlite3 --source=http://rubygems.org && \
     gem install -v2.6.2  json --source=http://rubygems.org && \
-    gem install -v5.0.30 passenger --source=http://rubygems.org
+    gem install -v6.0.14 passenger --source=http://rubygems.org
 
 
 RUN apt-get install -y busybox
