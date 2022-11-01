@@ -2,6 +2,6 @@
 
 set -e
 cd $(dirname $0)/..
-docker build -t mcr314/minerva_ruby_openssl:v202210 -f docker/ruby-openssl.Dockerfile .
-docker push mcr314/minerva_ruby_openssl:v202210
+docker build -t mcr314/minerva_ruby_openssl:v202211 -f docker/ruby-openssl.Dockerfile .
+docker push mcr314/minerva_ruby_openssl:v202211
 
