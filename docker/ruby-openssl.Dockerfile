@@ -25,7 +25,7 @@ RUN ls -l /src/openssl/lib
 RUN mkdir -p /app/minerva && cd /app/minerva && \
     gem install rake-compiler --source=http://rubygems.org
 
-RUN cd /app/minerva && git clone --single-branch --branch dtls-1.1.1r https://github.com/mcr/ruby-openssl.git
+RUN cd /app/minerva && git clone --single-branch  --branch dtls-1.1.1r https://github.com/mcr/ruby-openssl.git
 
 #RUN apt-get install -y vim
 RUN cd /app/minerva/ruby-openssl && rake compile -- --with-openssl-dir=/src/openssl

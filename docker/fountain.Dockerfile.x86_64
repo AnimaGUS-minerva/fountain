@@ -1,4 +1,4 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202210 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202211 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
@@ -10,10 +10,11 @@ RUN bundle config set --local deployment false
 RUN bundle install --gemfile=/app/fountain/Gemfile && \
     bundle check
 
-RUN echo "deb http://cacher.sandelman.ca:3142/deb.debian.org/debian bullseye main contrib non-free" >/etc/apt/sources.list.d/cacher.list
+# use istari, because it has an IPv4, which docker, stupidly, needs
+#RUN echo "deb http://istari.sandelman.ca:3142/deb.debian.org/debian bullseye main contrib non-free" >/etc/apt/sources.list.d/cacher.list
 
 # install items for use in debugging
-RUN apt-get update && apt-get install -y strace busybox
+RUN apt-get update && apt-get  install -y strace busybox
 
 RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev
 
