@@ -1,4 +1,4 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202211 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202212 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
@@ -15,11 +15,6 @@ RUN bundle install --gemfile=/app/fountain/Gemfile && \
 
 # install items for use in debugging
 RUN apt-get update && apt-get  install -y strace busybox
-
-RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev
-
-RUN /usr/local/bundle/gems/passenger-6.0.14/bin/passenger-install-apache2-module
-RUN passenger-config build-native-support
 
 # clean up just to be sure.
 RUN rm -f /app/fountain/tmp/pids/server.pid && \
