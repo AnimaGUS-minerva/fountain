@@ -339,7 +339,7 @@ DEPENDENCIES
   jquery-rails
   json (>= 2.3.0)
   jwt
-  loofah (>= 2.3.1)
+  loofah (>= 2.19.1)
   looksee
   mail
   nokogiri (>= 1.13.10)
