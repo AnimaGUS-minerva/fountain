@@ -6,7 +6,7 @@ Rails.application.config.active_record.sqlite3.represent_boolean_as_integer = tr
 # Initialize the Rails application.
 Rails.application.initialize!
 
-$VERSION = "0.9"
+$VERSION = "0.93"
 $ADMININTERFACE = false
 
 # gets overritten by config/initializers/revision.rb by capistrano
