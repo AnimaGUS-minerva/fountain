@@ -30,7 +30,7 @@ RUN cd /app/minerva && git clone --single-branch  --branch dtls-1.1.1r https://g
 #RUN apt-get install -y vim
 RUN cd /app/minerva/ruby-openssl && rake compile -- --with-openssl-dir=/src/openssl
 
-RUN touch /app/v202211
+RUN touch /app/v202301
 
 WORKDIR /app
 

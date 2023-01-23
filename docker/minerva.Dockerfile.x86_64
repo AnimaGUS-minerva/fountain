@@ -1,4 +1,4 @@
-FROM mcr314/minerva_ruby_openssl:v202211 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_ruby_openssl:v202301 as builder
 
 WORKDIR /app
 

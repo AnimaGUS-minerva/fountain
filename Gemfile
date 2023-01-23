@@ -35,7 +35,7 @@ gem 'tzinfo-data'
 
 gem 'mail'
 gem 'ffi', '~> 1.12.0'
-gem 'bundler', '>= 2.0.1'
+gem 'bundler', '>= 2.4.1"
 
 # due to alerts
 gem "yard", ">= 0.9.20"
