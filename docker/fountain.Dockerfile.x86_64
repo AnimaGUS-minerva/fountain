@@ -1,4 +1,4 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202301 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202304 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock

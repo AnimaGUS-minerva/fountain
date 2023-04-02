@@ -35,13 +35,14 @@ gem 'tzinfo-data'
 
 gem 'mail'
 gem 'ffi', '~> 1.12.0'
-gem 'bundler', '>= 2.4.1"
+gem 'bundler', '>= 2.4.1'
 
 # due to alerts
 gem "yard", ">= 0.9.20"
 gem "websocket-extensions", ">= 0.1.5"
-gem "rack", ">= 2.2.6.1"
+gem "rack", ">= 2.2.6.4"
 gem "loofah", ">= 2.19.1"
+gem "activerecord", ">= 5.2.8.1"
 gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"

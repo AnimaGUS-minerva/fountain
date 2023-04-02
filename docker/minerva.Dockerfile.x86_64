@@ -1,4 +1,4 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_ruby_openssl:v202301 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_ruby_openssl:v202304 as builder
 
 WORKDIR /app
 
@@ -13,19 +13,19 @@ RUN gem install -v1.13.10 nokogiri --source=http://rubygems.org && \
     gem install -v2.5.8  nio4r --source=http://rubygems.org && \
     gem install -v1.14.2 ffi --source=http://rubygems.org && \
     gem install -v0.21.0 pg --source=http://rubygems.org && \
-    gem install -v1.8.1  thin --source=http://rubygems.org && \
+    gem install -v1.8.2  thin --source=http://rubygems.org && \
     gem install -v0.1.5  websocket-extensions --source=http://rubygems.org && \
     gem install -v0.7.5  websocket-driver     --source=http://rubygems.org && \
     gem install -v0.5.9.6 cbor --source=http://rubygems.org && \
     gem install -v1.4.4  sqlite3 --source=http://rubygems.org && \
     gem install -v2.6.3  json --source=http://rubygems.org && \
-    gem install -v6.0.16 passenger --source=http://rubygems.org
+    gem install -v6.0.17 passenger --source=http://rubygems.org
 
 
 RUN apt-get install -y busybox
 
 RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev
 
-RUN /usr/local/bundle/gems/passenger-6.0.16/bin/passenger-install-apache2-module
+RUN /usr/local/bundle/gems/passenger-6.0.17/bin/passenger-install-apache2-module
 RUN passenger-config build-native-support
 
