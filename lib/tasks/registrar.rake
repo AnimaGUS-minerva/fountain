@@ -10,6 +10,7 @@ M_FLOOD = 9
 O_IPv6_LOCATOR = 103
 IPPROTO_TCP = 6
 IPPROTO_UDP = 17
+HTTPS_PORT  = ENV['HTTPS_PORT'] || 8443
 
 def create_socket(multicast_addr, multicast_port, ifindex)
   # Create, bind, and return a UDP multicast socket
@@ -66,14 +67,13 @@ namespace :fountain do
         sessionid = prng.rand(4000000000)
         ip6 = IPAddress(ifn.addr.ip_address)
         myhostaddress = ip6.data
-        mytcpport = 8443   # should be passed in, extracted from configuration
         brski_method = ""  # "BRSKI_JP"
         ttl = 180000       # ttl is in milliseconds, 180s => 2.5 minutes.
 
         flood = [M_FLOOD, sessionid, myhostaddress, ttl,
                  [["AN_join_registrar", 4, 255, brski_method],
                   [O_IPv6_LOCATOR,
-                   myhostaddress, IPPROTO_TCP, mytcpport]]]
+                   myhostaddress, IPPROTO_TCP, HTTPS_PORT]]]
 
         mfloodcbor = flood.to_cbor
 
