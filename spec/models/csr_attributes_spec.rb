@@ -29,6 +29,13 @@ RSpec.describe CSRAttributes do
     expect(attr2.first.value).to eq("1.3.6.1.1.1.1.22")
   end
 
+  it "should process CSR attributes from LAMPS email" do
+    der = File.read("spec/files/csrattr_example02.der")
+    asn1 = OpenSSL::ASN1.decode(der)
+    expect(asn1).to be_a OpenSSL::ASN1::Sequence
+    expect(asn1.value.length).to eq(1)
+  end
+
   it "should create a CSR attribute file" do
     c1 = CSRAttributes.new
     c1.add_oid("challengePassword")
