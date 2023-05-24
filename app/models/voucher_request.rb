@@ -1,4 +1,5 @@
 require 'net/http'
+require 'mail/parsers/content_type_parser'
 
 # There are a multiciplicity of subclasses, each to deal with different cases
 #
