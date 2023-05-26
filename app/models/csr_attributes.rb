@@ -3,11 +3,12 @@
 #
 class CSRAttributes
   attr_accessor :attributes
+  attr_accessor :rawentities
 
   def self.from_der(x)
-    @attributes = OpenSSL::ASN1.decode(x)
+    rawentities = OpenSSL::ASN1.decode(x)
     ca = new
-    ca.attributes = @attributes.value
+    ca.rawentities = rawentities.value
     ca
   end
 
@@ -42,31 +43,38 @@ class CSRAttributes
   end
 
   def initialize
-    self.attributes = []
+    self.attributes = Hash.new
+    self.rawentities = []
   end
 
   def to_der
     # this implements the part:
     #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
     #
-    n = OpenSSL::ASN1::Sequence.new(@attributes)
+    n = OpenSSL::ASN1::Sequence.new(@rawentities)
     n.to_der
   end
 
   # return the sequence of subjectAltNames that have been requested
   # (usually just one item, but actually a sequence of CHOICE)
-  def find_reqExt
-    find_attr(OpenSSL::ASN1::ObjectId.new("extReq"))
+  def find_extReq
+    attribute_by_oid("extReq")
   end
 
   # return the sequence of subjectAltNames that have been requested
   # (usually just one item, but actually a sequence of CHOICE)
   def find_subjectAltName
-    extReq = find_reqExt
+    extReq = find_extReq
     return nil unless extReq
 
     san_array = find_attr_in_list(extReq, OpenSSL::ASN1::ObjectId.new("subjectAltName"))
-    san_array.value[2]
+
+    if san_array.is_a? OpenSSL::ASN1::Sequence and san_array.value.length > 2
+      # the value is in the third entry of the SEQ
+      san_array.value[2]
+    else
+      nil
+    end
   end
   def find_rfc822Name
     os_san_list = find_subjectAltName
@@ -92,7 +100,9 @@ class CSRAttributes
   end
 
   def add_oid(x)
-    @attributes << OpenSSL::ASN1::ObjectId.new(x)
+    oid = OpenSSL::ASN1::ObjectId.new(x)
+    @rawentities << oid
+    oid
   end
 
   def make_attr_pair(x,y)
@@ -109,12 +119,12 @@ class CSRAttributes
   end
 
   def add_attr(x, y)
-    @attributes << make_attr_pair(x,y)
+    @rawentities << make_attr_pair(x,y)
   end
 
   # extReq/extensionRequest (1.2.840.113549.1.9.14).
   def add_attr_value(x, y)
-    @attributes << make_attr_pair("extReq", make_attr_extension(x, true, y))
+    @rawentities << make_attr_pair("extReq", make_attr_extension(x, true, y))
   end
 
   def add_otherNameSAN(san)
@@ -122,22 +132,58 @@ class CSRAttributes
   end
 
   def find_attr(x)
-    t = find_attr_in_list(@attributes, x)
-    s = t.value[1]
-    return s.value
+    t = find_attr_in_list(@rawentites, x)
   end
 
   def find_attr_in_list(attributes, x)
-    things = attributes.select { |attr|
-      attr.is_a? OpenSSL::ASN1::Sequence and
-        attr.value[0].is_a? OpenSSL::ASN1::ObjectId and
-        attr.value[0].oid == x.oid
+    thing = nil
+    return nil if attributes.nil?
+    attributes.each { |attr|
+      if attr.is_a? OpenSSL::ASN1::Sequence
+        if attr.value[0].is_a? OpenSSL::ASN1::Sequence or
+          attr.value[0].is_a? OpenSSL::ASN1::Set
+          attr.value.each { |attr2|
+            if attr2.is_a? OpenSSL::ASN1::Sequence and
+              attr2.value[0].is_a? OpenSSL::ASN1::ObjectId and
+              attr2.value[0].oid == x.oid
+              thing = attr2
+            end
+          }
+        else
+          if attr.value[0].is_a? OpenSSL::ASN1::ObjectId and
+            attr.value[0].oid == x.oid
+            thing = attr.value[1]
+          end
+        end
+      end
     }
-    if things.first
-      t = things.first
-      return t
+    return thing
+  end
+
+  def attribute_by_oid(oidthing)
+    unless oidthing.is_a? OpenSSL::ASN1::ObjectId
+      oidthing = OpenSSL::ASN1::ObjectId.new(oidthing)
     end
-    return []
+    @attributes[oidthing.oid]
+  end
+
+  # this walks through the SEQ of attributes that is the CSR attributes, and for each
+  # one, puts it into a hash based upon the OID.
+  def process_attributes!
+    @rawentities.each { |attr|
+      case
+      when (attr.is_a? OpenSSL::ASN1::ObjectId)
+        oid = attr.oid
+        @attributes[oid] = attr.value
+      when (attr.is_a? OpenSSL::ASN1::Sequence)
+        oid = attr.value[0].oid
+        @attributes[oid] = attr.value[1]
+      else
+        # not sure what to do with something else.
+        return false
+      end
+    }
+    return true
   end
 
 end
