@@ -47,113 +47,125 @@ class CSRAttributes
     self.rawentities = []
   end
 
-  def to_der
-    # this implements the part:
-    #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
-    #
-    n = OpenSSL::ASN1::Sequence.new(@rawentities)
-    n.to_der
-  end
-
   # return the sequence of subjectAltNames that have been requested
   # (usually just one item, but actually a sequence of CHOICE)
   def find_extReq
+
     attribute_by_oid("extReq")
   end
 
   # return the sequence of subjectAltNames that have been requested
-  # (usually just one item, but actually a sequence of CHOICE)
   def find_subjectAltName
     extReq = find_extReq
-    return nil unless extReq
+    return [] unless extReq
+    return [] unless extReq.is_a? OpenSSL::ASN1::Constructive # Set/Sequence
 
-    san_array = find_attr_in_list(extReq, OpenSSL::ASN1::ObjectId.new("subjectAltName"))
+    san_list = []
+    # this could get refactored when another thing needs to search for extensions
+    extReq.value.each { |exten|
+      if exten.is_a? OpenSSL::ASN1::Sequence
+        if exten.value[0].is_a? OpenSSL::ASN1::ObjectId and
+          exten.value[0].oid == subjectAltNameOid.oid
 
-    if san_array.is_a? OpenSSL::ASN1::Sequence and san_array.value.length > 2
-      # the value is in the third entry of the SEQ
-      san_array.value[2]
-    else
-      nil
-    end
+          # found it, return entire structure
+          san_list << exten
+        end
+      end
+    }
+    return san_list
   end
+
   def find_rfc822Name
     os_san_list = find_subjectAltName
 
-    # The SAN inside the extReq is an OCTETSTRING, which needs to be der decoded in
-    # order to look into it.
-    san_list = OpenSSL::ASN1.decode(os_san_list.value)
+    return nil unless os_san_list.length > 0
 
     # loop through each each, looking for rfc822Name or otherNameChoice
-    names = san_list.value.select { |san|
-      san.value.length >= 2 &&
-        san.value[0].value == CSRAttributes.acpNodeNameOID.value
+    names = os_san_list.each { |san|
+      if san.value.length >= 2 && san.value[2].is_a?(OpenSSL::ASN1::OctetString)
+        # third item is an OCTET street, which needs to be decoded.
+        san = OpenSSL::ASN1.decode(san.value[2].value)
+
+        san.value.each { |name|
+          next unless name.is_a? OpenSSL::ASN1::Constructive
+          next unless name.value.length >= 2
+          if name.value[0].oid == CSRAttributes.acpNodeNameOID.oid
+            return name.value[1].value
+          end
+        }
+      end
     }
 
-    return nil if(names.length < 1)
-    return nil if(names[0].value.length < 2)
+    return nil
+  end
 
-    # names contains an arrays of SubjectAltNames that are rfc822Names.
-    # As there is a SET of possible values, the second array exists.
-    # Within that group is a SEQ of GENERAL names.
-    name = names[0].value[1].value
-    return name
+  def to_der
+    # this implements the part:
+    #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
+
+    list = []
+    @attributes.each { |k,v|
+      # value for OID only attributes will be true, just insert OID, no SEQ
+      # cannot use v==true, because ObjectId has conversions that break this.
+      # could also use, if v.is_a? TrueClass, but "true==v" seems to work.
+      if true == v
+        list << k
+      else
+        list << OpenSSL::ASN1::Sequence.new([k,v])
+      end
+    }
+
+    n = OpenSSL::ASN1::Sequence.new(list)
+    n.to_der
   end
 
   def add_oid(x)
     oid = OpenSSL::ASN1::ObjectId.new(x)
-    @rawentities << oid
+    @attributes[oid] = true
     oid
-  end
-
-  def make_attr_pair(x,y)
-    OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(x),
-                                 OpenSSL::ASN1::Set.new([y])])
   end
 
   def make_attr_extension(extnID, critical, extnValue)
     critvalue = OpenSSL::ASN1::Boolean.new(critical)
-    extnValueDER = extnValue.to_der
+    unless extnValue.is_a? String
+      extnValue = extnValue.to_der
+    end
     OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::ObjectId.new(extnID),
                                  critvalue,
-                                 OpenSSL::ASN1::OctetString.new(extnValueDER)])
-  end
-
-  def add_attr(x, y)
-    @rawentities << make_attr_pair(x,y)
+                                 OpenSSL::ASN1::OctetString.new(extnValue)])
   end
 
   # extReq/extensionRequest (1.2.840.113549.1.9.14).
-  def add_attr_value(x, y)
-    @rawentities << make_attr_pair("extReq", make_attr_extension(x, true, y))
+  def add_ext_value(x, y)
+    add_attr(OpenSSL::ASN1::ObjectId.new("extReq"), make_attr_extension(x, true, y))
+  end
+
+  # other values which are not extension Requests, such as key type
+  def add_simple_value(x, y)
+    add_attr(OpenSSL::ASN1::ObjectId.new(x), y)
   end
 
   def add_otherNameSAN(san)
-    add_attr_value("subjectAltName", CSRAttributes.otherName(san))
-  end
-
-  def find_attr(x)
-    t = find_attr_in_list(@rawentites, x)
+    add_ext_value("subjectAltName", CSRAttributes.otherName(san))
   end
 
   def find_attr_in_list(attributes, x)
     thing = nil
     return nil if attributes.nil?
     attributes.each { |attr|
-      if attr.is_a? OpenSSL::ASN1::Sequence
-        if attr.value[0].is_a? OpenSSL::ASN1::Sequence or
-          attr.value[0].is_a? OpenSSL::ASN1::Set
-          attr.value.each { |attr2|
-            if attr2.is_a? OpenSSL::ASN1::Sequence and
-              attr2.value[0].is_a? OpenSSL::ASN1::ObjectId and
-              attr2.value[0].oid == x.oid
-              thing = attr2
-            end
-          }
-        else
-          if attr.value[0].is_a? OpenSSL::ASN1::ObjectId and
-            attr.value[0].oid == x.oid
-            thing = attr.value[1]
+      if attr.value[0].is_a? OpenSSL::ASN1::Sequence or
+        attr.value[0].is_a? OpenSSL::ASN1::Set
+        attr.value.each { |attr2|
+          if attr2.is_a? OpenSSL::ASN1::Sequence and
+            attr2.value[0].is_a? OpenSSL::ASN1::ObjectId and
+            attr2.value[0].oid == x.oid
+            thing = attr2
           end
+        }
+      else
+        if attr.value[0].is_a? OpenSSL::ASN1::ObjectId and
+          attr.value[0].oid == x.oid
+          thing = attr.value[1]
         end
       end
     }
@@ -184,6 +196,30 @@ class CSRAttributes
       end
     }
     return true
+  end
+
+  def extReqOid
+    @extReqOid ||= OpenSSL::ASN1::ObjectId.new("extReq")
+  end
+
+  def subjectAltNameOid
+    @subjectAltNameOid ||= OpenSSL::ASN1::ObjectId.new("subjectAltName")
+  end
+
+  private
+
+  # if the type is Set or Sequence, then extend the value.
+  # if the item is nil, then use a Set by default
+  def add_attr(x, y)
+    if @attributes[x].nil?
+      @attributes[x] = OpenSSL::ASN1::Set.new([])
+    end
+    if @attributes[x].is_a? OpenSSL::ASN1::Constructive
+      @attributes[x].value << y
+    else
+      # not constructive, so just replace value
+      @attributes[x] = y
+    end
   end
 
 end

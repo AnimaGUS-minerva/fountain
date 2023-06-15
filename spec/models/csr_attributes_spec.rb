@@ -6,24 +6,39 @@ require 'support/pem_data'
 RSpec.describe CSRAttributes do
 
   def test_der
-    "\x30\x41\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x09\x07\x30\x12\x06\x07\x2a\x86\x48\xce\x3d" \
-               "\x02\x01\x31\x07\x06\x05\x2b\x81\x04\x00\x22\x30\x16\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01" \
-               "\x09\x0e\x31\x09\x06\x07\x2b\x06\x01\x01\x01\x01\x16\x06\x08\x2a\x86\x48\xce\x3d\x04\x03" \
-               "\x03".b
+    # from tmp/generatedCSRattr.der
+    Base64.decode64("MEoGCSqGSIb3DQEJBwYFK4EEACIwLAYDVR0RAQH/BCKgIDAeBggrBgEFBQcICgwScG90YXRvQGV4"+
+                    "YW1wbGUuY29tBggqhkjOPQQDAw==")
+  end
+
+  def test_potato_example
+    # from tmp/generatedCSRattr.der
+    Base64.decode64("MGIGCSqGSIb3DQEJBzAQBgcqhkjOPQIBBgUrgQQAIjA5BgkqhkiG9w0BCQ4wLAYDVR0RAQH/BCKg"+
+                    "IDAeBggrBgEFBQcICgwScG90YXRvQGV4YW1wbGUuY29tBggqhkjOPQQDAw==")
+  end
+
+  def test_rfc7030_01
+    # section 4.5.2 from RFC7030.
+    Base64.decode64("MEEGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAiMBYGCSqGSIb3DQEJDjEJ"+
+                    "BgcrBgEBAQEWBggqhkjOPQQDAw==")
+  end
+
+  def ecPublicKey_oid
+    @ecPublicKey ||= OpenSSL::ASN1::ObjectId.new("id-ecPublicKey").oid
   end
 
   it "should process CSR attributes from RFC7030" do
-    asn1 = OpenSSL::ASN1.decode(test_der)
+    asn1 = OpenSSL::ASN1.decode(test_rfc7030_01)
     expect(asn1).to be_a OpenSSL::ASN1::Sequence
     expect(asn1.value.length).to eq(4)
 
-    c1 = CSRAttributes.from_der(test_der)
+    c1 = CSRAttributes.from_der(test_rfc7030_01)
     c1.process_attributes!
-    a1 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
+    a1 = ecPublicKey_oid
     attr1=c1.attribute_by_oid(a1)
     expect(attr1).to_not be_nil
     expect(attr1.value.length).to eq(1)
-    expect(attr1.first.sn).to eq("secp384r1")
+    expect(attr1.value.first.sn).to eq("secp384r1")
 
     attr2=c1.find_extReq
     expect(attr2.value.length).to eq(1)
@@ -37,16 +52,17 @@ RSpec.describe CSRAttributes do
     expect(asn1.value.length).to eq(1)
   end
 
-  it "should create a CSR attribute file" do
+  it "should create a CSR attribute file with SAN potato@example.com" do
     c1 = CSRAttributes.new
     o1 = c1.add_oid("challengePassword")
-    o2 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
-    c1.add_attr("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp384r1"))
-    c1.add_attr("extReq",         OpenSSL::ASN1::ObjectId.new("1.3.6.1.1.1.1.22"))
+    o2 = ecPublicKey_oid
+    c1.add_simple_value(o2, OpenSSL::ASN1::ObjectId.new("secp384r1"))
+    c1.add_otherNameSAN("potato@example.com")
     o3 = c1.add_oid("ecdsa-with-SHA384")
 
     new_der = c1.to_der
-    expect(new_der).to eq(test_der)
+    File.open("tmp/generatedCSRattr.der", "wb") { |f| f.syswrite new_der }
+    expect(new_der).to eq(test_potato_example)
 
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
@@ -57,27 +73,16 @@ RSpec.describe CSRAttributes do
 
   it "should keep last attribute, when repeated" do
     c1 = CSRAttributes.new
-    o2 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
-    c1.add_attr("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp384r1"))
-    c1.add_attr("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp256k1"))
+    o2 = ecPublicKey_oid
+    c1.add_simple_value(o2, OpenSSL::ASN1::ObjectId.new("secp384r1"))
+    c1.add_simple_value(o2, OpenSSL::ASN1::ObjectId.new("secp256k1"))
 
     new_der = c1.to_der
 
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
     expect(c0.attribute_by_oid(o2)).to_not be_nil
-    expect(c0.attribute_by_oid(o2).value[0].oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
-  end
-
-  it "should create a CSR attribute with a subjectAltName rfc822Name" do
-    c1 = CSRAttributes.new
-    c1.add_attr("subjectAltName",
-                CSRAttributes.rfc822Name("hello@example.com"))
-
-    der=c1.to_der
-    #puts der.unpack("H*")
-    File.open("tmp/hellobulb0.der", "wb") { |f| f.syswrite der }
-    expect(c1.to_der).to eq("0 0\x1E\x06\x03U\x1D\x111\x170\x15\xA1\x13\f\x11hello@example.com".b)
+    expect(c0.attribute_by_oid(o2).oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
   end
 
   it "should validate encoding/decoding of CSR attributes" do
@@ -124,15 +129,17 @@ RSpec.describe CSRAttributes do
 
   it "should create a CSR attribute with a realistic subjectAltName" do
     c1 = CSRAttributes.new
-    c1.add_attr("subjectAltName",
-                CSRAttributes.rfc822Name(realistic_rfc822Name))
+    c1.add_otherNameSAN(realistic_rfc822Name)
 
     der=c1.to_der
     #puts der.unpack("H*")
     File.open("tmp/hellobulb3.der", "wb") { |f| f.syswrite der }
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-    expect(der).to eq("0H0F\x06\x03U\x1D\x111?0=\xA1;\f9rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com".b)
+    expect(der).to eq(Base64.decode64("MGIwYAYJKoZIhvcNAQkOMFMGA1UdEQEB/wRJoEcwR"+
+                                      "QYIKwYBBQUHCAoMOXJmY1NFTEYrZmQ3Mzlm"+
+                                      "YzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDA"+
+                                      "rQGFjcC5leGFtcGxlLmNvbQ=="))
   end
 
   it "should process CSR attributes from LAMPS email" do
