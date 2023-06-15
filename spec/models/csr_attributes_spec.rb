@@ -13,8 +13,8 @@ RSpec.describe CSRAttributes do
 
   def test_potato_example
     # from tmp/generatedCSRattr.der
-    Base64.decode64("MGIGCSqGSIb3DQEJBzAQBgcqhkjOPQIBBgUrgQQAIjA5BgkqhkiG9w0BCQ4wLAYDVR0RAQH/BCKg"+
-                    "IDAeBggrBgEFBQcICgwScG90YXRvQGV4YW1wbGUuY29tBggqhkjOPQQDAw==")
+    Base64.decode64("MGYGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAiMDsGCSqGSIb3DQEJDjEuMCwGA1UdEQEB"+
+                    "/wQioCAwHgYIKwYBBQUHCAoMEnBvdGF0b0BleGFtcGxlLmNvbQYIKoZIzj0EAwM=")
   end
 
   def test_rfc7030_01
@@ -61,7 +61,7 @@ RSpec.describe CSRAttributes do
     o3 = c1.add_oid("ecdsa-with-SHA384")
 
     new_der = c1.to_der
-    File.open("tmp/generatedCSRattr.der", "wb") { |f| f.syswrite new_der }
+    File.open("tmp/potato-csr.der", "wb") { |f| f.syswrite new_der }
     expect(new_der).to eq(test_potato_example)
 
     c0 = CSRAttributes.from_der(new_der)
@@ -79,10 +79,15 @@ RSpec.describe CSRAttributes do
 
     new_der = c1.to_der
 
+    File.open("tmp/repeated-attr-csr.der", "wb") { |f| f.syswrite new_der }
+
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
-    expect(c0.attribute_by_oid(o2)).to_not be_nil
-    expect(c0.attribute_by_oid(o2).oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
+    n2 = c0.attribute_by_oid(o2)
+    expect(n2).to_not be_nil
+    expect(n2).to be_a(OpenSSL::ASN1::Constructive)
+    expect(n2.value.length).to eq(1)
+    expect(n2.value[0].oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
   end
 
   it "should validate encoding/decoding of CSR attributes" do
@@ -109,7 +114,7 @@ RSpec.describe CSRAttributes do
   end
 
   def realistic_rfc822Name
-    "rfcSELF+fd739fc23c3440112233445500000000+@acp.example.com"
+    "rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"
   end
 
   it "should validate encoding/decoding of CSR rfc822name" do
@@ -133,13 +138,11 @@ RSpec.describe CSRAttributes do
 
     der=c1.to_der
     #puts der.unpack("H*")
-    File.open("tmp/hellobulb3.der", "wb") { |f| f.syswrite der }
+    File.open("tmp/realisticACP.der", "wb") { |f| f.syswrite der }
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-    expect(der).to eq(Base64.decode64("MGIwYAYJKoZIhvcNAQkOMFMGA1UdEQEB/wRJoEcwR"+
-                                      "QYIKwYBBQUHCAoMOXJmY1NFTEYrZmQ3Mzlm"+
-                                      "YzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDA"+
-                                      "rQGFjcC5leGFtcGxlLmNvbQ=="))
+    expect(der).to eq(Base64.decode64("MGQwYgYJKoZIhvcNAQkOMVUwUwYDVR0RAQH/BEmgRzBFBggrBgEFBQcICgw5cmZjODk5NCtmZDcz"+
+                                      "OWZjMjNjMzQ0MDExMjIzMzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUuY29t"))
   end
 
   it "should process CSR attributes from LAMPS email" do
