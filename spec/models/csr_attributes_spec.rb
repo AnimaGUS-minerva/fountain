@@ -37,8 +37,8 @@ RSpec.describe CSRAttributes do
     a1 = ecPublicKey_oid
     attr1=c1.attribute_by_oid(a1)
     expect(attr1).to_not be_nil
-    expect(attr1.value.length).to eq(1)
-    expect(attr1.value.first.sn).to eq("secp384r1")
+    expect(attr1.length).to eq(1)
+    expect(attr1.first.sn).to eq("secp384r1")
 
     attr2=c1.find_extReq
     expect(attr2.value.length).to eq(1)
@@ -55,14 +55,14 @@ RSpec.describe CSRAttributes do
   it "should create a CSR attribute file with SAN potato@example.com" do
     c1 = CSRAttributes.new
     o1 = c1.add_oid("challengePassword")
-    o2 = ecPublicKey_oid
-    c1.add_simple_value(o2, OpenSSL::ASN1::ObjectId.new("secp384r1"))
+    o2 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
+    c1.add_simple_value("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp384r1"))
     c1.add_otherNameSAN("potato@example.com")
     o3 = c1.add_oid("ecdsa-with-SHA384")
 
     new_der = c1.to_der
-    File.open("tmp/potato-csr.der", "wb") { |f| f.syswrite new_der }
-    expect(new_der).to eq(test_potato_example)
+    File.open("tmp/generatedCSRattr.der", "wb") { |f| f.syswrite new_der }
+    expect(new_der).to eq(test_der)
 
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
@@ -73,9 +73,9 @@ RSpec.describe CSRAttributes do
 
   it "should keep last attribute, when repeated" do
     c1 = CSRAttributes.new
-    o2 = ecPublicKey_oid
-    c1.add_simple_value(o2, OpenSSL::ASN1::ObjectId.new("secp384r1"))
-    c1.add_simple_value(o2, OpenSSL::ASN1::ObjectId.new("secp256k1"))
+    o2 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
+    c1.add_simple_value("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp384r1"))
+    c1.add_simple_value("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp256k1"))
 
     new_der = c1.to_der
 
@@ -83,11 +83,8 @@ RSpec.describe CSRAttributes do
 
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
-    n2 = c0.attribute_by_oid(o2)
-    expect(n2).to_not be_nil
-    expect(n2).to be_a(OpenSSL::ASN1::Constructive)
-    expect(n2.value.length).to eq(1)
-    expect(n2.value[0].oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
+    expect(c0.attribute_by_oid(o2)).to_not be_nil
+    expect(c0.attribute_by_oid(o2).value[0].oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
   end
 
   it "should validate encoding/decoding of CSR attributes" do
@@ -141,8 +138,8 @@ RSpec.describe CSRAttributes do
     File.open("tmp/realisticACP.der", "wb") { |f| f.syswrite der }
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-    expect(der).to eq(Base64.decode64("MGQwYgYJKoZIhvcNAQkOMVUwUwYDVR0RAQH/BEmgRzBFBggrBgEFBQcICgw5cmZjODk5NCtmZDcz"+
-                                      "OWZjMjNjMzQ0MDExMjIzMzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUuY29t"))
+    expect(der).to eq(Base64.decode64("MFUwUwYDVR0RAQH/BEmgRzBFBggrBgEFBQcICgw5cmZjU0VMRitmZDczOWZjMjNjMzQ0MDExMjIz" +
+                                      "MzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUuY29t"))
   end
 
   it "should process CSR attributes from LAMPS email" do

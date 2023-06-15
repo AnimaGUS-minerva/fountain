@@ -64,7 +64,7 @@ class CSRAttributes
   end
 
   def initialize
-    self.attributes = Hash.new
+    self.attributes = Hash.new([])
     self.rawentities = []
   end
 
@@ -146,6 +146,25 @@ class CSRAttributes
     oid
   end
 
+  def to_der
+    # this implements the part:
+    #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
+
+    list = []
+    @attributes.each { |k,v|
+      list << OpenSSL::ASN1::Sequence.new([k,v])
+    }
+
+    n = OpenSSL::ASN1::Sequence.new(list)
+    n.to_der
+  end
+
+  def add_oid(x)
+    oid = OpenSSL::ASN1::ObjectId.new(x)
+    @attributes[oid] = oid
+    oid
+  end
+
   def make_attr_extension(extnID, critical, extnValue)
     critvalue = OpenSSL::ASN1::Boolean.new(critical)
     unless extnValue.is_a? String
@@ -219,75 +238,6 @@ class CSRAttributes
     return true
   end
 
-  def find_attr(attr)
-    @attributes.each { |x|
-      # each one is a sequence, or a tag
-      case
-      when (x.is_sequence? and x.value.length == 2 and x.value[0].oid == attr.oid)
-        return x.value[1]
-
-      when x.is_set?
-        # search sequence of values
-        x.value.each { |y|
-          byebug
-          y.oid = attr.oid
-          return y
-        }
-      else
-        # what to do?
-        return nil
-      end
-    }
-
-    t = find_attr_in_list(@attributes, x)
-    if t.value.length > 0
-      s = t.value[1]
-    else
-      return nil
-    end
-    return s.value
-  end
-
-  # return the sequence (or set) of subjectAltNames that have been requested
-  # (usually just one item, but actually a sequence of CHOICE)
-  def find_reqExt
-    find_attr(extReqOid)
-  end
-
-  # return the sequence of subjectAltNames that have been requested
-  # (usually just one item, but actually a sequence of CHOICE)
-  def find_subjectAltName
-    extReq = find_reqExt
-    return nil unless extReq
-
-    byebug
-    san_array = find_attr_in_list(extReq, subjectAltNameOid)
-    san_array.value[2]
-  end
-
-  def old_find_rfc822Name
-    os_san_list = find_subjectAltName
-
-    # The SAN inside the extReq is an OCTETSTRING, which needs to be der decoded in
-    # order to look into it.
-    san_list = OpenSSL::ASN1.decode(os_san_list.value)
-
-    # loop through each each, looking for rfc822Name or otherNameChoice
-    names = san_list.value.select { |san|
-      san.value.length >= 2 &&
-        san.value[0].value == CSRAttributes.acpNodeNameOID.value
-    }
-
-    return nil if(names.length < 1)
-    return nil if(names[0].value.length < 2)
-
-    # names contains an arrays of SubjectAltNames that are rfc822Names.
-    # As there is a SET of possible values, the second array exists.
-    # Within that group is a SEQ of GENERAL names.
-    name = names[0].value[1].value
-    return name
-  end
-
   def extReqOid
     @extReqOid ||= OpenSSL::ASN1::ObjectId.new("extReq")
   end
@@ -320,45 +270,6 @@ class CSRAttributes
       # wrong top-level, return nil.
       return nil
     end
-
-    # now there is a set of sequences.  Each sequence is an AND situation.
-    # one of them ought have the extReq with a SAN in it.
-    @attributes.value.each { |attrset|
-      # this is a SET of items
-      unless attrset.is_sequence?
-        # wrong structure, return nil
-        return nil
-      end
-
-      # this is a sequence of attributes.
-      # the first item of the sequence is the attribute thing, like extReq
-      unless (attrset.value.length >= 2 and attrset.value[0] == extReqOid)
-        # wrong item, continue
-        next
-      end
-
-      attrvalue = attrset.value[1]
-
-      unless attrvalue.is_set?
-        return nil
-      end
-
-      attrvalue.value.each { |extAttrs|
-        # attrvalue is a SEQ of extensions, each of which is a SEQUENCE where the
-        # first element is the type.  The rest is extension specific.
-
-        extAttrs.value.each { |extAttr|
-          unless (extAttr.value.length >= 3 and extAttr.value[0] == subjectAltNameOid)
-            # wrong item, continue
-            next
-          end
-
-          # so name is value of third item, i.e. [2]
-          return extAttr.value[2].value
-        }
-      }
-    }
-    return nil
   end
 
 end
