@@ -85,31 +85,41 @@ class CSRAttributes
     san_list = []
     # this could get refactored when another thing needs to search for extensions
     extReq.value.each { |exten|
-      if exten.is_a? OpenSSL::ASN1::Sequence
-        if exten.value[0].is_a? OpenSSL::ASN1::ObjectId and
-          exten.value[0].oid == subjectAltNameOid.oid
+      if exten.is_a? OpenSSL::ASN1::Sequence and
+        exten.value.each { |exten2|
+           if exten2.is_a? OpenSSL::ASN1::Sequence and
+             exten2.value[0].is_a? OpenSSL::ASN1::ObjectId and
+             exten2.value[0].oid == subjectAltNameOid.oid  and
 
-          # found it, return entire structure
-          san_list << exten
-        end
+             san_list << exten2
+           end
+         }
+      elsif exten.value[0].is_a? OpenSSL::ASN1::ObjectId and
+           exten.value[0].oid == subjectAltNameOid.oid
+
+        # found it, return entire structure
+        san_list << exten
       end
     }
     return san_list
   end
 
+  # this function looks through the subjectAltNames, and returns the one which
+  # has an acpNodeNameOid.
   def find_rfc822NameOrOtherName
     os_san_list = find_subjectAltName
 
     return nil unless os_san_list.length > 0
 
     # loop through each each, looking for rfc822Name or otherNameChoice
-    names = os_san_list.each { |san|
-      if san.value.length >= 2 && san.value[2].is_a?(OpenSSL::ASN1::OctetString)
+    names = os_san_list.each { |sanitem|
+      if sanitem.value.length >= 2 && sanitem.value[2].is_a?(OpenSSL::ASN1::OctetString)
         # third item is an OCTET street, which needs to be decoded.
-        san = OpenSSL::ASN1.decode(san.value[2].value)
+        san = OpenSSL::ASN1.decode(sanitem.value[2].value)
 
         san.value.each { |name|
-          next unless name.is_a? OpenSSL::ASN1::Constructive
+          next unless (name.is_a? OpenSSL::ASN1::Constructive or
+                       name.is_a? OpenSSL::ASN1::ASN1Data)
           next unless name.value.length >= 2
           if name.value[0].oid == CSRAttributes.acpNodeNameOID.oid
             return name.value[1].value
