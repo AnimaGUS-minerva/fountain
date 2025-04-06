@@ -200,11 +200,44 @@ RSpec.describe CSRAttributes do
   end
 
   def harkins01_example
-    @example01 ||= from_file("harkins01.csrattr.b64")
+    @harkins01 ||= from_file("harkins01.csrattr.b64")
   end
 
   it "should process harkins01 from rfc7030-csrattr, finding no rfc822name" do
     c0 = CSRAttributes.from_der(harkins01_example)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to be_nil
+  end
+
+  def harkins02_example
+    @harkins02 ||= from_file("harkins02.csrattr.b64")
+  end
+
+  it "should process harkins02 from rfc7030-csrattr, finding no rfc822name" do
+    c0 = CSRAttributes.from_der(harkins02_example)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to be_nil
+  end
+
+  def harkins03_example
+    @harkins03 ||= from_file("harkins03.csrattr.b64")
+  end
+
+  it "should process harkins03 from rfc7030-csrattr, finding no rfc822name" do
+    c0 = CSRAttributes.from_der(harkins03_example)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to be_nil
+  end
+
+  def potato01_example
+    @potato01 ||= from_file("potato-example.csrattr.b64")
+  end
+
+  it "should process potato-example rfc7030-csrattr, finding no rfc822name" do
+    c0 = CSRAttributes.from_der(potato01_example)
     expect(c0).to_not be_nil
     name = c0.find_rfc822NameOrOtherName
     expect(name).to be_nil
