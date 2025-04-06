@@ -28,9 +28,10 @@ class CSRAttributes
 
   def self.from_der(x)
     rawentities = OpenSSL::ASN1.decode(x)
-    ca = new
-    ca.rawentities = rawentities.value
-    ca
+    csr = new
+    csr.rawentities = rawentities.value
+    csr.process_attributes!
+    csr
   end
 
   # https://tools.ietf.org/html/rfc5280#section-4.2.1.6 defines subjectAltName:
@@ -96,7 +97,7 @@ class CSRAttributes
     return san_list
   end
 
-  def find_rfc822Name
+  def find_rfc822NameOrOtherName
     os_san_list = find_subjectAltName
 
     return nil unless os_san_list.length > 0
@@ -259,16 +260,6 @@ class CSRAttributes
     else
       # not constructive, so just replace value
       @attributes[x] = y
-    end
-  end
-
-  # this function processes the attributes in a CSRAttributes to find the
-  # otherName SAN attribute, or if that isn't found, the rfc822Name SAN.
-  def find_rfc822OrOtherName
-    # the top-level is a SET of attributes.
-    unless @attributes.is_set?
-      # wrong top-level, return nil.
-      return nil
     end
   end
 
