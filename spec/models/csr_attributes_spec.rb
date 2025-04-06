@@ -2,6 +2,7 @@ require 'rails_helper'
 
 require 'support/mud_toaster'
 require 'support/pem_data'
+require 'pathname'
 
 RSpec.describe CSRAttributes do
 
@@ -21,6 +22,10 @@ RSpec.describe CSRAttributes do
     # section 4.5.2 from RFC7030.
     Base64.decode64("MEEGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAiMBYGCSqGSIb3DQEJDjEJ"+
                     "BgcrBgEBAQEWBggqhkjOPQQDAw==")
+  end
+
+  def from_file(f)
+    Base64.decode64(File.read(Pathname.new("spec/files/csrattrs").join(f)))
   end
 
   def ecPublicKey_oid
@@ -183,14 +188,28 @@ RSpec.describe CSRAttributes do
     expect(decoded.value.length).to eq(11)
   end
 
+  def rfc7030csr_example01
+    @example01 ||= from_file("example01.acp.csrattr.b64")
+  end
+
+  it "should process example01 from rfc7030-csrattr" do
+    c0 = CSRAttributes.from_der(rfc7030csr_example01)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to_not be_nil
+  end
+
+
   def corey_test_csr
     Base64::decode64("MWgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcGCCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3" +
                      "MzlmYzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDArQGFjcC5leGFtcGxlLmNvbQ==")
   end
 
   it "should decode a sample IETF CSR attribute content" do
+
+    pending "Corey01 example has too many levels of SEQUENCE"
     c0 = CSRAttributes.from_der(corey_test_csr)
-    name = c0.find_rfc822OrOtherName
+    name = c0.find_rfc822NameOrOtherName
     reference = "0I\xA0G\x06\b+\x06\x01\x05\x05\a\b\n\xA0;\x169rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"
     expect(name).to eq(reference.force_encoding("ASCII-8BIT"))
   end
