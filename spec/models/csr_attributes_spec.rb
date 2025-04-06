@@ -199,6 +199,17 @@ RSpec.describe CSRAttributes do
     expect(name).to_not be_nil
   end
 
+  def harkins01_example
+    @example01 ||= from_file("harkins01.csrattr.b64")
+  end
+
+  it "should process harkins01 from rfc7030-csrattr, finding no rfc822name" do
+    c0 = CSRAttributes.from_der(harkins01_example)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to be_nil
+  end
+
 
   def corey_test_csr
     Base64::decode64("MWgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcGCCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3" +
