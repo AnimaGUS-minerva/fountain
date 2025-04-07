@@ -32,24 +32,6 @@ RSpec.describe CSRAttributes do
     @ecPublicKey ||= OpenSSL::ASN1::ObjectId.new("id-ecPublicKey").oid
   end
 
-  it "should process CSR attributes from RFC7030" do
-    asn1 = OpenSSL::ASN1.decode(test_rfc7030_01)
-    expect(asn1).to be_a OpenSSL::ASN1::Sequence
-    expect(asn1.value.length).to eq(4)
-
-    c1 = CSRAttributes.from_der(test_rfc7030_01)
-    c1.process_attributes!
-    a1 = ecPublicKey_oid
-    attr1=c1.attribute_by_oid(a1)
-    expect(attr1).to_not be_nil
-    expect(attr1.length).to eq(1)
-    expect(attr1.first.sn).to eq("secp384r1")
-
-    attr2=c1.find_extReq
-    expect(attr2.value.length).to eq(1)
-    expect(attr2.first.value).to eq("1.3.6.1.1.1.1.22")
-  end
-
   it "should process CSR attributes from LAMPS email" do
     der = File.read("spec/files/csrattr_example02.der")
     asn1 = OpenSSL::ASN1.decode(der)
@@ -188,6 +170,7 @@ RSpec.describe CSRAttributes do
     expect(decoded.value.length).to eq(11)
   end
 
+  # this is the non-extReq version of SAN setting from RFC7030.
   def rfc7030csr_example01
     @example01 ||= from_file("example01.acp.csrattr.b64")
   end
@@ -282,28 +265,20 @@ RSpec.describe CSRAttributes do
   end
 
   it "should process example01 from original RFC7030" do
-    c0 = CSRAttributes.from_der(rfc7030_example01)
-    expect(c0).to_not be_nil
-    name = c0.find_rfc822NameOrOtherName
+    c1 = CSRAttributes.from_der(rfc7030_example01)
+    expect(c1).to_not be_nil
+    name = c1.find_rfc822NameOrOtherName
     expect(name).to be_nil
+
+    a1 = ecPublicKey_oid
+    attr1=c1.attribute_by_oid(a1)
+    expect(attr1).to_not be_nil
+    expect(attr1.value.length).to eq(1)
+    expect(attr1.value.first.sn).to eq("secp384r1")
+
+    attr2=c1.find_extReq
+    expect(attr2.length).to eq(0)
   end
-
-
-  def corey_test_csr
-    Base64::decode64("MWgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcGCCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3" +
-                     "MzlmYzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDArQGFjcC5leGFtcGxlLmNvbQ==")
-  end
-
-  it "should decode a sample IETF CSR attribute content" do
-
-    pending "Corey01 example has too many levels of SEQUENCE"
-    c0 = CSRAttributes.from_der(corey_test_csr)
-    name = c0.find_rfc822NameOrOtherName
-    reference = "0I\xA0G\x06\b+\x06\x01\x05\x05\a\b\n\xA0;\x169rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"
-    expect(name).to eq(reference.force_encoding("ASCII-8BIT"))
-  end
-
-
 
 end
 

@@ -82,23 +82,26 @@ class CSRAttributes
     return [] unless extReq
     return [] unless extReq.is_a? OpenSSL::ASN1::Constructive # Set/Sequence
 
+    #byebug
     san_list = []
     # this could get refactored when another thing needs to search for extensions
     extReq.value.each { |exten|
-      if exten.is_a? OpenSSL::ASN1::Sequence and
-        exten.value.each { |exten2|
-           if exten2.is_a? OpenSSL::ASN1::Sequence and
-             exten2.value[0].is_a? OpenSSL::ASN1::ObjectId and
-             exten2.value[0].oid == subjectAltNameOid.oid  and
-
-             san_list << exten2
-           end
-         }
-      elsif exten.value[0].is_a? OpenSSL::ASN1::ObjectId and
+      if exten.is_a? OpenSSL::ASN1::Sequence
+        if exten.value[0].is_a? OpenSSL::ASN1::ObjectId and
            exten.value[0].oid == subjectAltNameOid.oid
 
-        # found it, return entire structure
-        san_list << exten
+          # found it, return entire structure
+          san_list << exten
+        elsif exten.value[0].is_a? OpenSSL::ASN1::Sequence
+          exten.value.each { |exten2|
+            if exten2.is_a? OpenSSL::ASN1::Sequence and
+              exten2.value[0].is_a? OpenSSL::ASN1::ObjectId and
+              exten2.value[0].oid == subjectAltNameOid.oid  and
+
+              san_list << exten2
+            end
+          }
+        end
       end
     }
     return san_list
