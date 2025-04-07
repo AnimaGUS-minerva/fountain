@@ -105,6 +105,13 @@ RSpec.describe CSRAttributes do
     expect(c0).to_not be_nil
   end
 
+  def realistic_rfc822Name_reference
+    @realistic ||= Base64.decode64("MGIwYAYJKoZIhvcNAQkOMFMGA1UdEQEB/wRJoE"+
+                                   "cwRQYIKwYBBQUHCAoMOXJmYzg5OTQrZmQ3Mzlm"+
+                                   "YzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDArQG"+
+                                   "FjcC5leGFtcGxlLmNvbQ==")
+  end
+
   it "should create a CSR attribute with a realistic subjectAltName" do
     c1 = CSRAttributes.new
     c1.add_otherNameSAN(realistic_rfc822Name)
@@ -114,8 +121,7 @@ RSpec.describe CSRAttributes do
     File.open("tmp/realisticACP.der", "wb") { |f| f.syswrite der }
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-    expect(der).to eq(Base64.decode64("MFUwUwYDVR0RAQH/BEmgRzBFBggrBgEFBQcICgw5cmZjU0VMRitmZDczOWZjMjNjMzQ0MDExMjIz" +
-                                      "MzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUuY29t"))
+    expect(der).to eq(realistic_rfc822Name_reference)
   end
 
   it "should process CSR attributes from LAMPS email" do
