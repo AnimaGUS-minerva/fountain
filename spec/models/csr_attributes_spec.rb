@@ -265,6 +265,29 @@ RSpec.describe CSRAttributes do
     expect(name).to_not be_nil
   end
 
+  def realistic_acp_example
+    @acp01 ||= from_file("realistic-acp.csrattr.b64")
+  end
+
+  it "should process realistic-acp from rfc7030-csrattr, finding an rfc822name" do
+    c0 = CSRAttributes.from_der(realistic_acp_example)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to_not be_nil
+  end
+
+  # this is the example that was in RFC7030.
+  def rfc7030_example01
+    @rfc7030example01 ||= from_file("rfc7030-example01.csrattr.b64")
+  end
+
+  it "should process example01 from original RFC7030" do
+    c0 = CSRAttributes.from_der(rfc7030_example01)
+    expect(c0).to_not be_nil
+    name = c0.find_rfc822NameOrOtherName
+    expect(name).to be_nil
+  end
+
 
   def corey_test_csr
     Base64::decode64("MWgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcGCCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3" +
