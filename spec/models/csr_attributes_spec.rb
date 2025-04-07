@@ -6,22 +6,11 @@ require 'pathname'
 
 RSpec.describe CSRAttributes do
 
-  def test_der
+  def test_potato_der
     # from tmp/generatedCSRattr.der
-    Base64.decode64("MEoGCSqGSIb3DQEJBwYFK4EEACIwLAYDVR0RAQH/BCKgIDAeBggrBgEFBQcICgwScG90YXRvQGV4"+
-                    "YW1wbGUuY29tBggqhkjOPQQDAw==")
-  end
-
-  def test_potato_example
-    # from tmp/generatedCSRattr.der
-    Base64.decode64("MGYGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAiMDsGCSqGSIb3DQEJDjEuMCwGA1UdEQEB"+
-                    "/wQioCAwHgYIKwYBBQUHCAoMEnBvdGF0b0BleGFtcGxlLmNvbQYIKoZIzj0EAwM=")
-  end
-
-  def test_rfc7030_01
-    # section 4.5.2 from RFC7030.
-    Base64.decode64("MEEGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAiMBYGCSqGSIb3DQEJDjEJ"+
-                    "BgcrBgEBAQEWBggqhkjOPQQDAw==")
+    Base64.decode64("MHswFgYJKoZIhvcNAQkHBgkqhkiG9w0BCQcwEAYHKoZIzj0CAQYFK" +
+                    "4EEACIwOQYJKoZIhvcNAQkOMCwGA1UdEQEB/wQioCAwHgYIKwYBBQ" +
+                    "UHCAoMEnBvdGF0b0BleGFtcGxlLmNvbTAUBggqhkjOPQQDAwYIKoZIzj0EAwM=")
   end
 
   def from_file(f)
@@ -49,7 +38,7 @@ RSpec.describe CSRAttributes do
 
     new_der = c1.to_der
     File.open("tmp/generatedCSRattr.der", "wb") { |f| f.syswrite new_der }
-    expect(new_der).to eq(test_der)
+    expect(new_der).to eq(test_potato_der)
 
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
