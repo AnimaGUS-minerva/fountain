@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'rails_helper'
 
 require 'support/mud_toaster'
@@ -26,6 +27,32 @@ RSpec.describe CSRAttributes do
     asn1 = OpenSSL::ASN1.decode(der)
     expect(asn1).to be_a OpenSSL::ASN1::Sequence
     expect(asn1.value.length).to eq(1)
+  end
+
+  it "should create an otherName SAN" do
+    c1 = CSRAttributes.new
+    ae = c1.make_attr_extension("subjectAltName", true, CSRAttributes.otherName("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"))
+    File.open("tmp/otherNameSAN.der", "wb") { |f| f.syswrite ae.to_der }
+    expect(ae).to_not be_nil
+  end
+
+  def realistic_rfc822Name
+    "rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"
+  end
+
+  it "should create an otherName IA5String directly" do
+    a = OpenSSL::ASN1::IA5String.new(realistic_rfc822Name)
+    ref01 = "FjlyZmM4OTk0K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1NTAwMDAwMDAwK0BhY3AuZXhhbXBsZS5jb20"
+    ader = a.to_der
+    #encodedb64=Base64.encode64(ader).encode("UTF-8")
+    expect(ader).to eq(Base64.decode64(ref01))
+  end
+
+  it "should create an otherName object" do
+    c1 = CSRAttributes.new
+    ae = CSRAttributes.otherName(realistic_rfc822Name)
+    File.open("tmp/otherName.der", "wb") { |f| f.syswrite ae.to_der }
+    expect(ae).to_not be_nil
   end
 
   it "should create a CSR attribute file with SAN potato@example.com" do
@@ -84,10 +111,6 @@ RSpec.describe CSRAttributes do
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
 
-  end
-
-  def realistic_rfc822Name
-    "rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"
   end
 
   it "should validate encoding/decoding of CSR rfc822name" do

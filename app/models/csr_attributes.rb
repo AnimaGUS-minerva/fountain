@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # a class for dealing with CSR Attributes as defined by RFC7030 section 4.5.2
 #
@@ -60,7 +61,7 @@ class CSRAttributes
 
   def self.otherName(x)
     # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
-    v = OpenSSL::ASN1::UTF8String.new(x)
+    v = OpenSSL::ASN1::IA5String.new(x)
     return OpenSSL::ASN1::Sequence.new([acpNodeNameOID,v], otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
   end
 
