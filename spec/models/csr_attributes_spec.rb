@@ -51,8 +51,10 @@ RSpec.describe CSRAttributes do
   it "should create an otherName object" do
     c1 = CSRAttributes.new
     ae = CSRAttributes.otherName(realistic_rfc822Name)
+    ref02 = "oEcwRQYIKwYBBQUHCAoWOXJmYzg5OTQrZmQ3MzlmYzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDAr"+
+            "QGFjcC5leGFtcGxlLmNvbQ=="
     File.open("tmp/otherName.der", "wb") { |f| f.syswrite ae.to_der }
-    expect(ae).to_not be_nil
+    expect(ae.to_der).to eq(Base64.decode64(ref02))
   end
 
   it "should create a CSR attribute file with SAN potato@example.com" do
