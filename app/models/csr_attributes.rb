@@ -62,7 +62,9 @@ class CSRAttributes
   def self.otherName(x)
     # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
     v = OpenSSL::ASN1::IA5String.new(x)
-    return OpenSSL::ASN1::Sequence.new([acpNodeNameOID,v], otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
+    seq1 = OpenSSL::ASN1::Sequence.new([acpNodeNameOID,v], otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
+    #return OpenSSL::ASN1::Sequence.new([seq1])
+    return seq1
   end
 
   def initialize
@@ -140,14 +142,20 @@ class CSRAttributes
     #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
 
     list = []
+    #byebug
     @attributes.each { |k,v|
       # value for OID only attributes will be true, just insert OID, no SEQ
       # cannot use v==true, because ObjectId has conversions that break this.
       # could also use, if v.is_a? TrueClass, but "true==v" seems to work.
+      #byebug
       if true == v
         list << k
       else
-        list << OpenSSL::ASN1::Sequence.new([k,v])
+        v0 = OpenSSL::ASN1::Set.new(
+          [
+            OpenSSL::ASN1::Sequence.new([v])
+          ])
+        list << OpenSSL::ASN1::Sequence.new([k,v0])
       end
     }
 
@@ -159,19 +167,6 @@ class CSRAttributes
     oid = OpenSSL::ASN1::ObjectId.new(x)
     @attributes[oid] = true
     oid
-  end
-
-  def to_der
-    # this implements the part:
-    #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
-
-    list = []
-    @attributes.each { |k,v|
-      list << OpenSSL::ASN1::Sequence.new([k,v])
-    }
-
-    n = OpenSSL::ASN1::Sequence.new(list)
-    n.to_der
   end
 
   def add_oid(x)

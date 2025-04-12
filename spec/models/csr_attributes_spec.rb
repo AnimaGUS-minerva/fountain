@@ -51,8 +51,27 @@ RSpec.describe CSRAttributes do
   it "should create an otherName object" do
     c1 = CSRAttributes.new
     ae = CSRAttributes.otherName(realistic_rfc822Name)
+    # 04 4B
+    #           30 49 A0 47 06 08 2B 06 01
+    # 05 05 07 08 0A A0 3B 16 39 72 66
+    # 63 38 39 39 34 2B 66 64 37 33 39
+    # 66 63 32 33 63 33 34 34 30 31 31
+    # 32 32 33 33 34 34 35 35 30 30 30
+    # 30 30 30 30 30 2B 40 61 63 70 2E
+    # 65 78 61 6D 70 6C 65 2E 63 6F 6D
+
+    #                30 49 A0 47 06 08 2B 06 01
+    #00000000  a0 47 30 45 06 08 2b 06  01 05 05 07 08 0a 16 39  |.G0E..+........9|
+    #00000010  72 66 63 38 39 39 34 2b  66 64 37 33 39 66 63 32  |rfc8994+fd739fc2|
+    #00000020  33 63 33 34 34 30 31 31  32 32 33 33 34 34 35 35  |3c34401122334455|
+    #00000030  30 30 30 30 30 30 30 30  2b 40 61 63 70 2e 65 78  |00000000+@acp.ex|
+    #00000040  61 6d 70 6c 65 2e 63 6f  6d                       |ample.com|
+
     ref02 = "oEcwRQYIKwYBBQUHCAoWOXJmYzg5OTQrZmQ3MzlmYzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDAr"+
             "QGFjcC5leGFtcGxlLmNvbQ=="
+
+    ref02 = "MEmgRwYIKwYBBQUHCAqgOxY5cmZjODk5NCtmZDczOWZjMjNjMzQ0MDExMjIzMzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUuY29t"
+
     File.open("tmp/otherName.der", "wb") { |f| f.syswrite ae.to_der }
     expect(ae.to_der).to eq(Base64.decode64(ref02))
   end
@@ -130,23 +149,37 @@ RSpec.describe CSRAttributes do
     expect(c0).to_not be_nil
   end
 
+  # these come from draft-ietf-lamps-rfc7030-csrattrs-18,
+  # examples/realistic-acp.csrattr
   def realistic_rfc822Name_reference
-    @realistic ||= Base64.decode64("MGIwYAYJKoZIhvcNAQkOMFMGA1UdEQEB/wRJoE"+
-                                   "cwRQYIKwYBBQUHCAoMOXJmYzg5OTQrZmQ3Mzlm"+
-                                   "YzIzYzM0NDAxMTIyMzM0NDU1MDAwMDAwMDArQG"+
-                                   "FjcC5leGFtcGxlLmNvbQ==")
+    @realistic ||= Base64.decode64("MGgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcG"+
+                                   "CCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3MzlmYzIzYzM0NDAx"+
+                                   "MTIyMzM0NDU1MDAwMDAwMDArQGFjcC5leGFtcGxlLmNvbQ==")
+  end
+
+  #
+  def realistic_otherName_reference
+    @realOtherName ||= Base64.decode64("BEswSaBHBggrBgEFBQcICqA7FjlyZmM4OTk"+
+                                       "0K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1NT"+
+                                       "AwMDAwMDAwK0BhY3AuZXhhbXBsZS5jb20")
   end
 
   it "should create a CSR attribute with a realistic subjectAltName" do
     c1 = CSRAttributes.new
     c1.add_otherNameSAN(realistic_rfc822Name)
+    #byebug
 
     der=c1.to_der
     #puts der.unpack("H*")
     File.open("tmp/realisticACP.der", "wb") { |f| f.syswrite der }
+    expect(der).to eq(realistic_rfc822Name_reference)
+
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-    expect(der).to eq(realistic_rfc822Name_reference)
+
+    san = c0.find_subjectAltName
+    expect(san).to eq(realistic_rfc822Name)
+
   end
 
   it "should process CSR attributes from LAMPS email" do
