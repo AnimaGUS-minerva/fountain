@@ -221,18 +221,23 @@ RSpec.describe Device, type: :model do
       expect(b.rfc822Name).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
     end
 
+    def bulb1_csrattr_acpNode
+      Base64.decode64("MGwwagYJKoZIhvcNAQkOMV0wWzFZMFcGA1UdEQEB"+
+                      "/wRNMEugSTBHBggrBgEFBQcICqA7FjlyZmM4OTk0"+
+                      "K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1NTAwMDAw"+
+                      "MDAwK0BhY3AuZXhhbXBsZS5jb20=")
+    end
+
     it "should generate an appropriate CSRattributes object with the otherName" do
       b = devices(:bulb1)
       b.acp_address_allocate!
 
       attr = b.csr_attributes.to_der
 
-      File.open("tmp/csr_bulb1.csrattr.der", "wb") do |f|
-        f.write attr
-      end
+      # save it for later examination
+      File.open("tmp/csr_bulb1.csrattr.der", "wb") { |f| f.write attr }
 
-      expect(attr).to eq(Base64.decode64("MGQwYgYJKoZIhvcNAQkOMVUwUwYDVR0RAQH/BEmgRzBFBggrBgEFBQcICgw5cmZjODk5NCtmZDcz"+
-                                         "OWZjMjNjMzQ0MDExMjIzMzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUuY29t"))
+      expect(attr).to eq(bulb1_csrattr_acpNode)
 
       # now round trip the result.
       c0 = CSRAttributes.from_der(attr)
@@ -240,7 +245,7 @@ RSpec.describe Device, type: :model do
       expect(c0).to_not be_nil
 
       # now decode it again to prove library can round trip things.
-      rfc822Name = c0.find_rfc822Name
+      rfc822Name = c0.find_rfc822NameOrOtherName
       expect(rfc822Name).to include("acp.example.com")
     end
 
