@@ -273,6 +273,12 @@ RSpec.describe CSRAttributes do
   it "should process example01 from original RFC7030" do
     c1 = CSRAttributes.from_der(rfc7030_example01)
     expect(c1).to_not be_nil
+
+    # should be no extension request in old-style item
+    attr2=c1.find_extReq
+    expect(attr2).to be_nil
+
+    # should be no RFC822 Name either.
     name = c1.find_rfc822NameOrOtherName
     expect(name).to be_nil
 
@@ -282,8 +288,6 @@ RSpec.describe CSRAttributes do
     expect(attr1.value.length).to eq(1)
     expect(attr1.value.first.sn).to eq("secp384r1")
 
-    attr2=c1.find_extReq
-    expect(attr2.length).to eq(0)
   end
 
 end
