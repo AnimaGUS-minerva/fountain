@@ -61,10 +61,12 @@ class CSRAttributes
 
   def self.otherName(x)
     # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
-    v = OpenSSL::ASN1::IA5String.new(x)
+    v = OpenSSL::ASN1::IA5String.new(x, 0, :EXPLICIT, :CONTEXT_SPECIFIC)
+
+    # this seq makes up the OtherName
     seq1 = OpenSSL::ASN1::Sequence.new([acpNodeNameOID,v], otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
-    #return OpenSSL::ASN1::Sequence.new([seq1])
-    return seq1
+    # this is the SubjectAltName contents.
+    return OpenSSL::ASN1::Sequence.new([seq1])
   end
 
   def initialize
@@ -122,13 +124,16 @@ class CSRAttributes
       if sanitem.value.length >= 2 && sanitem.value[2].is_a?(OpenSSL::ASN1::OctetString)
         # third item is an OCTET street, which needs to be decoded.
         san = OpenSSL::ASN1.decode(sanitem.value[2].value)
+        return nil unless (san and san.try(:value))
 
         san.value.each { |name|
-          next unless (name.is_a? OpenSSL::ASN1::Constructive or
-                       name.is_a? OpenSSL::ASN1::ASN1Data)
+          if name.is_a? OpenSSL::ASN1::ASN1Data
+            name = name.value[0]
+          end
+          next unless (name.is_a? OpenSSL::ASN1::Constructive)
           next unless name.value.length >= 2
           if name.value[0].oid == CSRAttributes.acpNodeNameOID.oid
-            return name.value[1].value
+            return name.value[1].value[0].value
           end
         }
       end
