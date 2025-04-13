@@ -25,6 +25,7 @@ end
 
 class CSRAttributes
   attr_accessor :attributes
+  attr_accessor :unstructured_attributes
   attr_accessor :rawentities
 
   def self.from_der(x)
@@ -70,7 +71,8 @@ class CSRAttributes
   end
 
   def initialize
-    self.attributes = Hash.new([])
+    self.unstructured_attributes = Hash.new
+    self.attributes = Hash.new
     self.rawentities = []
   end
 
@@ -147,21 +149,26 @@ class CSRAttributes
     #      CsrAttrs ::= SEQUENCE SIZE (0..MAX) OF AttrOrOID
 
     list = []
-    #byebug
-    @attributes.each { |k,v|
-      # value for OID only attributes will be true, just insert OID, no SEQ
-      # cannot use v==true, because ObjectId has conversions that break this.
-      # could also use, if v.is_a? TrueClass, but "true==v" seems to work.
-      #byebug
-      if true == v
-        list << k
-      else
-        v0 = OpenSSL::ASN1::Set.new(
-          [
-            OpenSSL::ASN1::Sequence.new([v])
-          ])
-        list << OpenSSL::ASN1::Sequence.new([k,v0])
+
+    # canonical ordering
+    keys = @unstructured_attributes.keys.sort
+    keys.each{ |k|
+      v  = @unstructured_attributes[k]
+      n0 = v
+      if v.is_a? Array
+        v0 = OpenSSL::ASN1::Set.new(v)
+        n0 = OpenSSL::ASN1::Sequence.new([k,v0])
+      elsif v.is_a? OpenSSL::ASN1::Constructive
+        n0 = OpenSSL::ASN1::Sequence.new([k,v])
       end
+      list << n0
+    }
+    @attributes.each { |k,v|
+      v0 = OpenSSL::ASN1::Set.new(
+        [
+          OpenSSL::ASN1::Sequence.new([v])
+        ])
+      list << OpenSSL::ASN1::Sequence.new([k,v0])
     }
 
     n = OpenSSL::ASN1::Sequence.new(list)
@@ -170,13 +177,7 @@ class CSRAttributes
 
   def add_oid(x)
     oid = OpenSSL::ASN1::ObjectId.new(x)
-    @attributes[oid] = true
-    oid
-  end
-
-  def add_oid(x)
-    oid = OpenSSL::ASN1::ObjectId.new(x)
-    @attributes[oid] = oid
+    @unstructured_attributes[oid] = oid
     oid
   end
 
@@ -192,7 +193,7 @@ class CSRAttributes
 
   # extReq/extensionRequest (1.2.840.113549.1.9.14).
   def add_ext_value(x, y)
-    add_attr(OpenSSL::ASN1::ObjectId.new("extReq"), make_attr_extension(x, true, y))
+    add_structured_attr(OpenSSL::ASN1::ObjectId.new("extReq"), make_attr_extension(x, true, y))
   end
 
   # other values which are not extension Requests, such as key type
@@ -266,6 +267,17 @@ class CSRAttributes
   # if the type is Set or Sequence, then extend the value.
   # if the item is nil, then use a Set by default
   def add_attr(x, y)
+    if @unstructured_attributes[x].nil?
+      @unstructured_attributes[x] = OpenSSL::ASN1::Set.new([])
+    end
+    if @unstructured_attributes[x].is_a? OpenSSL::ASN1::Constructive
+      @unstructured_attributes[x].value << y
+    else
+      # not constructive, so just replace value
+      @unstructured_attributes[x] = y
+    end
+  end
+  def add_structured_attr(x, y)
     if @attributes[x].nil?
       @attributes[x] = OpenSSL::ASN1::Set.new([])
     end

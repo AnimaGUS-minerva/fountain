@@ -7,13 +7,6 @@ require 'pathname'
 
 RSpec.describe CSRAttributes do
 
-  def test_potato_der
-    # from tmp/generatedCSRattr.der
-    Base64.decode64("MHswFgYJKoZIhvcNAQkHBgkqhkiG9w0BCQcwEAYHKoZIzj0CAQYFK" +
-                    "4EEACIwOQYJKoZIhvcNAQkOMCwGA1UdEQEB/wQioCAwHgYIKwYBBQ" +
-                    "UHCAoMEnBvdGF0b0BleGFtcGxlLmNvbTAUBggqhkjOPQQDAwYIKoZIzj0EAwM=")
-  end
-
   def from_file(f)
     Base64.decode64(File.read(Pathname.new("spec/files/csrattrs").join(f)))
   end
@@ -57,16 +50,33 @@ RSpec.describe CSRAttributes do
     expect(ae.to_der).to eq(Base64.decode64(ref02))
   end
 
+  it "should create a CSR attribute object with one oid" do
+    c1 = CSRAttributes.new
+    o1 = c1.add_oid("challengePassword")
+    new_der = c1.to_der
+    File.open("tmp/challengePw-csrattr.der", "wb") { |f| f.syswrite new_der }
+  end
+
+  # note this differs from the example in lamps-rfc7030-csrattrs, because the
+  # ordering is different.
+  def test_potato_der
+    # from tmp/generated-potato-csrattr.der, or examples/potato
+    Base64.decode64("MEIGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAjBggqhkjOPQQD"+
+                    "BAYDVQQFBgYqhkiG9w0GCgmSJomT8ixkAQU=")
+  end
+
   it "should create a CSR attribute file with SAN potato@example.com" do
     c1 = CSRAttributes.new
     o1 = c1.add_oid("challengePassword")
     o2 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
-    c1.add_simple_value("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp384r1"))
-    c1.add_otherNameSAN("potato@example.com")
-    o3 = c1.add_oid("ecdsa-with-SHA384")
-
+    c1.add_simple_value("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp521r1"))
+    #c1.add_otherNameSAN("potato@example.com")
+    c1.add_oid("ecdsa-with-SHA512")
+    c1.add_oid("serialNumber")
+    c1.add_oid("1.2.840.113549")
+    c1.add_oid("0.9.2342.19200300.100.1.5")
     new_der = c1.to_der
-    File.open("tmp/generatedCSRattr.der", "wb") { |f| f.syswrite new_der }
+    File.open("tmp/generated-potato-csrattr.der", "wb") { |f| f.syswrite new_der }
     expect(new_der).to eq(test_potato_der)
 
     c0 = CSRAttributes.from_der(new_der)
