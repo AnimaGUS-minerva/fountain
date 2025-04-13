@@ -98,8 +98,10 @@ RSpec.describe CSRAttributes do
 
     c0 = CSRAttributes.from_der(new_der)
     c0.process_attributes!
-    expect(c0.attribute_by_oid(o2)).to_not be_nil
-    expect(c0.attribute_by_oid(o2).value[0].oid).to eq(OpenSSL::ASN1::ObjectId.new("secp256k1").oid)
+    oid2 = c0.attribute_by_oid(o2)
+    expect(oid2).to_not be_nil
+    expect(oid2.value).to include(OpenSSL::ASN1::ObjectId.new("secp256k1"))
+    expect(oid2.value).to include(OpenSSL::ASN1::ObjectId.new("secp384r1"))
   end
 
   it "should validate encoding/decoding of CSR attributes" do
