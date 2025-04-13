@@ -61,8 +61,8 @@ RSpec.describe CSRAttributes do
   # ordering is different.
   def test_potato_der
     # from tmp/generated-potato-csrattr.der, or examples/potato
-    Base64.decode64("MEIGCSqGSIb3DQEJBzASBgcqhkjOPQIBMQcGBSuBBAAjBggqhkjOPQQD"+
-                    "BAYDVQQFBgYqhkiG9w0GCgmSJomT8ixkAQU=")
+    Base64.decode64("MEIGCgmSJomT8ixkAQUwEgYHKoZIzj0CATEHBgUrgQQA"+
+                    "IwYIKoZIzj0EAwQGBiqGSIb3DQYJKoZIhvcNAQkHBgNVBAU=")
   end
 
   it "should create a CSR attribute file with SAN potato@example.com" do
@@ -71,10 +71,10 @@ RSpec.describe CSRAttributes do
     o2 = OpenSSL::ASN1::ObjectId.new("id-ecPublicKey")
     c1.add_simple_value("id-ecPublicKey", OpenSSL::ASN1::ObjectId.new("secp521r1"))
     #c1.add_otherNameSAN("potato@example.com")
-    c1.add_oid("ecdsa-with-SHA512")
-    c1.add_oid("serialNumber")
-    c1.add_oid("1.2.840.113549")
-    c1.add_oid("0.9.2342.19200300.100.1.5")
+    o1=c1.add_oid("ecdsa-with-SHA512")
+    o2=c1.add_oid("serialNumber")
+    o3=c1.add_oid("1.2.840.113549")
+    o4=c1.add_oid("0.9.2342.19200300.100.1.5")
     new_der = c1.to_der
     File.open("tmp/generated-potato-csrattr.der", "wb") { |f| f.syswrite new_der }
     expect(new_der).to eq(test_potato_der)

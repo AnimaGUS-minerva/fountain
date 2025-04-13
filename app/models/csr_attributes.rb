@@ -150,16 +150,17 @@ class CSRAttributes
 
     list = []
 
-    # canonical ordering
+    # canonical ordering by OID. Keys are always an OID number.
     keys = @unstructured_attributes.keys.sort
     keys.each{ |k|
       v  = @unstructured_attributes[k]
       n0 = v
+      koid = OpenSSL::ASN1::ObjectId.new(k)
       if v.is_a? Array
         v0 = OpenSSL::ASN1::Set.new(v)
-        n0 = OpenSSL::ASN1::Sequence.new([k,v0])
+        n0 = OpenSSL::ASN1::Sequence.new([koid,v0])
       elsif v.is_a? OpenSSL::ASN1::Constructive
-        n0 = OpenSSL::ASN1::Sequence.new([k,v])
+        n0 = OpenSSL::ASN1::Sequence.new([koid,v])
       end
       list << n0
     }
@@ -175,9 +176,15 @@ class CSRAttributes
     n.to_der
   end
 
-  def add_oid(x)
-    oid = OpenSSL::ASN1::ObjectId.new(x)
-    @unstructured_attributes[oid] = oid
+  def add_oid(oidOrString)
+    oid = oidOrString
+    unless oidOrString.is_a? OpenSSL::ASN1::ObjectId
+      oid = OpenSSL::ASN1::ObjectId.new(oidOrString)
+    end
+
+    # at this point, "oid" is definitely a object.
+    k = oid.oid
+    @unstructured_attributes[k] = oid
     oid
   end
 
@@ -232,7 +239,7 @@ class CSRAttributes
     unless oidthing.is_a? OpenSSL::ASN1::ObjectId
       oidthing = OpenSSL::ASN1::ObjectId.new(oidthing)
     end
-    @attributes[oidthing.oid]
+    @attributes[oidthing.oid] || @unstructured_attributes[oidthing.oid]
   end
 
   # this walks through the SEQ of attributes that is the CSR attributes, and for each
@@ -267,6 +274,9 @@ class CSRAttributes
   # if the type is Set or Sequence, then extend the value.
   # if the item is nil, then use a Set by default
   def add_attr(x, y)
+    if x.is_a? OpenSSL::ASN1::ObjectId
+      x = x.oid
+    end
     if @unstructured_attributes[x].nil?
       @unstructured_attributes[x] = OpenSSL::ASN1::Set.new([])
     end
@@ -278,6 +288,9 @@ class CSRAttributes
     end
   end
   def add_structured_attr(x, y)
+    if x.is_a? OpenSSL::ASN1::ObjectId
+      x = x.oid
+    end
     if @attributes[x].nil?
       @attributes[x] = OpenSSL::ASN1::Set.new([])
     end
