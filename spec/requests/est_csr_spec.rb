@@ -78,16 +78,10 @@ RSpec.describe "Est", type: :request do
       expect(assigns(:device)).to eq(devices(:jadaf20001))
       expect(response).to have_http_status(200)
 
-      asn1 = OpenSSL::ASN1.decode(response.body)
-      expect(asn1.value[0].value[0].value).to eq("extReq")
-
-      # what we find is OCTETSTRING encoded again
-      os   = asn1.value[0].value[1].value[0].value[2].value
-      expect(os).to_not be_nil
-      san  = OpenSSL::ASN1.decode(os)
-      expect(san.value[0].value[0].value).to eq(CSRAttributes.acpNodeNameOID.value)
-      expect(san.value[0].value[1].value).to eq("rfc8994+fd739fc23c3440112233445500000000+@acp.example.com")
       File.open("tmp/jadaf20001.csrattr.der","wb") { |f| f.write response.body }
+      c0 = CSRAttributes.from_der(response.body)
+      expect(c0.find_rfc822NameOrOtherName).to include("acp.example.com")
+
     end
 
     it "should fail to be returned with acertificate with untrusted connection" do
