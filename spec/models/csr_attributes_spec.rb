@@ -145,10 +145,10 @@ RSpec.describe CSRAttributes do
   # these come from draft-ietf-lamps-rfc7030-csrattrs-18,
   # examples/realistic-acp.csrattr
   def realistic_otherName_reference
-    @realOtherName ||= Base64.decode64("MGowaAYJKoZIhvcNAQkOMVswWTBXBgNVHREBAf8ETTB"+
-                                       "LoEkwRwYIKwYBBQUHCAqgOxY5cmZjODk5NCtmZDczOW"+
-                                       "ZjMjNjMzQ0MDExMjIzMzQ0NTUwMDAwMDAwMCtAYWNwL"+
-                                       "mV4YW1wbGUuY29t")
+    @realOtherName ||= Base64.decode64("MGwwagYJKoZIhvcNAQkOMV0wWzFZMFcGA1Ud"+
+                                       "EQEB/wRNMEugSTBHBggrBgEFBQcICqA7FjlyZmM4"+
+                                       "OTk0K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1"+
+                                       "NTAwMDAwMDAwK0BhY3AuZXhhbXBsZS5jb20=")
   end
 
   it "should create a CSR attribute with a realistic subjectAltName" do
@@ -163,7 +163,6 @@ RSpec.describe CSRAttributes do
 
     c0 = CSRAttributes.from_der(der)
     expect(c0).to_not be_nil
-
     san = c0.find_rfc822NameOrOtherName
     expect(san).to eq(realistic_rfc822Name)
 

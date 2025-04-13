@@ -79,7 +79,6 @@ class CSRAttributes
   # return the sequence of subjectAltNames that have been requested
   # (usually just one item, but actually a sequence of CHOICE)
   def find_extReq
-
     attribute_by_oid("extReq")
   end
 
@@ -99,13 +98,16 @@ class CSRAttributes
 
           # found it, return entire structure
           san_list << exten
-        elsif exten.value[0].is_a? OpenSSL::ASN1::Sequence
+        else
           exten.value.each { |exten2|
-            if exten2.is_a? OpenSSL::ASN1::Sequence and
-              exten2.value[0].is_a? OpenSSL::ASN1::ObjectId and
-              exten2.value[0].oid == subjectAltNameOid.oid  and
-
-              san_list << exten2
+            if exten2.is_a? OpenSSL::ASN1::Constructive
+              exten2.value.each { |exten3|
+                if exten3.is_a? OpenSSL::ASN1::Constructive and
+                  exten3.value[0].is_a? OpenSSL::ASN1::ObjectId and
+                  exten3.value[0].oid == subjectAltNameOid.oid
+                  san_list << exten3
+                end
+              }
             end
           }
         end
@@ -165,11 +167,12 @@ class CSRAttributes
       list << n0
     }
     @attributes.each { |k,v|
+      koid = OpenSSL::ASN1::ObjectId.new(k)
       v0 = OpenSSL::ASN1::Set.new(
         [
           OpenSSL::ASN1::Sequence.new([v])
         ])
-      list << OpenSSL::ASN1::Sequence.new([k,v0])
+      list << OpenSSL::ASN1::Sequence.new([koid,v0])
     }
 
     n = OpenSSL::ASN1::Sequence.new(list)
