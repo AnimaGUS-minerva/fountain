@@ -1,4 +1,4 @@
-FROM ruby:2.7.6-slim-bullseye as builder
+FROM ruby:3.3.8-slim-bookworm as builder
 
 RUN apt-get update -qq && apt-get install -y postgresql-client libgmp10-dev libgmp10 sash dnsutils zip dnsutils && \
     apt-get remove -y git libssl-dev &&  \
@@ -28,7 +28,7 @@ RUN ls -l /src/openssl/lib
 RUN mkdir -p /app/minerva && cd /app/minerva && \
     gem install rake-compiler --source=http://rubygems.org
 
-RUN cd /app/minerva && git clone --single-branch  --branch dtls-1.1.1t https://github.com/mcr/ruby-openssl.git
+RUN cd /app/minerva && git clone --single-branch  --branch ruby-3-cms-1.1.1t https://github.com/mcr/ruby-openssl.git
 
 # the static libraries are referenced as: /sandel/3rd/openssl-dtls-api/lib in the hacked
 # ruby-openssl configure script, so arrange for that path to exist.
