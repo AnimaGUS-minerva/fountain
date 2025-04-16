@@ -19,7 +19,7 @@ RSpec.describe "Est", type: :request do
     expect(response).to have_http_status(200)
     root = OpenSSL::X509::Certificate.new(response.body)
     expect(root.issuer.to_s).to include("Fountain Root CA")
-    expect(response.content_type).to eq('application/pkix')
+    expect(response.media_type).to eq('application/pkix')
   end
 
   it "should return list of CAs from /crts" do
@@ -27,7 +27,7 @@ RSpec.describe "Est", type: :request do
     expect(response).to have_http_status(200)
     root = OpenSSL::X509::Certificate.new(response.body)
     expect(root.issuer.to_s).to include("Fountain Root CA")
-    expect(response.content_type).to eq('application/pkcs7-mime; smime-type=certs-only')
+    expect(response.media_type).to eq('application/pkcs7-mime; smime-type=certs-only')
   end
 
   describe "CSR attributes" do

@@ -92,7 +92,7 @@ RSpec.describe "Smarkaklink", type: :request do
       body = IO::read("spec/files/product/Smarkaklink-n3ce618/voucher_3c-97-0e-b9-cd-98.pkcs")
       do_voucher_post_1502(body)
       expect(response).to have_http_status(200)
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
     end
   end
 
