@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 6.0.0"
+gem 'rails', "~> 6.1.0"
 
 # psych 4.0 does not load fixtures correctly yet.
 gem 'psych', '~> 3.3'
@@ -51,7 +51,6 @@ gem "nokogiri", ">= 1.13.10"
 gem "rails-html-sanitizer", ">= 1.4.4"
 gem "tzinfo", ">= 1.2.10"
 
-
 # Use Capistrano for deployment
 gem 'capistrano', '~> 3.11.0', group: :development
 gem 'capistrano-rails',  group: :development
@@ -60,7 +59,7 @@ gem 'capistrano-bundler',group: :development
 
 # needs special build instructions, and special openssl.
 #gem 'openssl', "~> 2.1.0"
-gem 'openssl', :path => "../minerva/ruby-openssl-upstreamed"
+gem 'openssl', :path => "../minerva/ruby3-openssl"
 #gem 'openssl', :path => '/gems/highway/ruby-openssl'
 #gem 'openssl', :git => 'https://github.com/CIRALabs/ruby-openssl.git', :branch => 'ies-cms-dtls'
 
@@ -87,7 +86,7 @@ gem 'rabl'
 gem 'oj'
 
 gem 'sqlite3', "~> 1.4.0"
-gem 'pg', '~> 0.21'
+gem 'pg'
 
 # used in production on SecureHomeGateway
 gem 'thin'
