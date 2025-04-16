@@ -64,13 +64,12 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = newadmin_cert.to_pem
 
-      post "/administrators.json", { :headers => env,
-                                     :params => {
+      post "/administrators.json", :headers => env, :params => {
                                        :administrator => {
                                          :name => 'New Guy'
                                        }
                                      }
-                                   }
+
       expect(response).to have_http_status(201)
       expect(response.location).to eq(url_for(assigns(:administrator)))
       expect(assigns(:administrator).certificate.to_pem).to eq(newadmin_cert.to_pem)
@@ -85,25 +84,25 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = newadmin_cert.to_pem
 
-      post "/administrators.json", { :headers => env,
+      post "/administrators.json", :headers => env,
                                      :params => {
                                        :administrator => {
                                          :name => 'New Guy'
                                        }
                                      }
-                                   }
+
       expect(response).to have_http_status(201)
       firstone = url_for(assigns(:administrator))
       expect(response.location).to eq(firstone)
 
       # try a second time.
-      post "/administrators.json", { :headers => env,
+      post "/administrators.json", :headers => env,
                                      :params => {
                                        :administrator => {
                                          :name => 'New Guy'
                                        }
                                      }
-                                   }
+
       expect(response).to have_http_status(201)
       expect(response.location).to eq(firstone)
     end
@@ -116,14 +115,14 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
-      put url_for(frank2), { :headers => env,
+      put url_for(frank2), :headers => env,
                               :params => {
                                :administrator => {
                                  :name => 'Frank Jones',
                                  :admin => true
                                }
                               }
-                           }
+
 
       # it will succeed, but won't actually update anything
       expect(response).to have_http_status(200)
@@ -138,7 +137,7 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
-      get url_for(frank2), { :headers => env }
+      get url_for(frank2), :headers => env
       stuff = JSON::parse(response.body)
       expect(stuff.try(:[], "administrator").try(:[], "admin")).to be false
       expect(stuff.try(:[], "administrator").try(:[], "enabled")).to be false
@@ -148,39 +147,39 @@ RSpec.describe "Administrators", type: :request do
       frank2.enable!
 
       # verify that it is so.
-      get url_for(frank2), { :headers => env }
+      get url_for(frank2), :headers => env
       stuff = JSON::parse(response.body)
       expect(stuff.try(:[], "administrator").try(:[], "admin")).to be true
 
 
-      put url_for(frank2), { :headers => env,
+      put url_for(frank2), :headers => env,
                               :params => {
                                :administrator => {
                                  :name => 'Frank Jones',
                                  :admin => false
                                }
                               }
-                           }
+
 
       expect(response).to have_http_status(200)
       frank2.reload
       expect(frank2.admin).to be false
 
-      put url_for(frank2), { :headers => env,
+      put url_for(frank2),  :headers => env,
                               :params => {
                                :administrator => {
                                  :name => 'Frank Jones',
                                  :admin => true
                                }
                               }
-                           }
+
 
       # it will succeed, but won't actually update anything
       expect(response).to have_http_status(200)
       frank2.reload
       expect(frank2.admin).to be false
 
-      get url_for(frank2), { :headers => env }
+      get url_for(frank2), :headers => env
       stuff = JSON::parse(response.body)
       expect(stuff.try(:[], "administrator").try(:[], "admin")).to be false
     end
@@ -195,13 +194,13 @@ RSpec.describe "Administrators", type: :request do
       oldname1 = ad1.name
       oldname2 = frank2.name
 
-      put url_for(ad1), { :headers => env,
+      put url_for(ad1), :headers => env,
                            :params => {
                             :administrator => {
                               :name => 'Frank Jones',
                             }
                            }
-                         }
+
       expect(response).to have_http_status(403)
       ad1.reload
       expect(ad1.name).to eq(oldname1)
@@ -215,13 +214,13 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
 
-      put url_for(frank2), { :headers => env,
+      put url_for(frank2), :headers => env,
                              :params => {
                                :administrator => {
                                  :name => 'Frank Jones',
                                }
                              }
-                           }
+
       expect(response).to have_http_status(200)
       frank2.reload
       expect(frank2.name).to eq("Frank Jones")
@@ -234,14 +233,14 @@ RSpec.describe "Administrators", type: :request do
       env["SSL_CLIENT_CERT"] = frank_admin_cert.to_pem
       oldpubkey = frank2.public_key
 
-      put url_for(frank2), { :headers => env,
+      put url_for(frank2), :headers => env,
                               :params => {
                                :administrator => {
                                  :public_key => 'Baloney',
                                  :prospective => false
                                }
                               }
-                            }
+
       expect(response).to have_http_status(200)
       frank2.reload
       expect(frank2.public_key).to eq(oldpubkey)
@@ -255,14 +254,14 @@ RSpec.describe "Administrators", type: :request do
       env = ssl_headers(nil)
       env["SSL_CLIENT_CERT"] = newadmin_cert.to_pem
 
-      post "/administrators", { :headers => env,
+      post "/administrators", :headers => env,
                                 :params => {
                                   :administrator => {
                                     :name => 'New Guy',
                                     :admin => true
                                   }
                                 }
-                              }
+
       expect(response).to have_http_status(201)
       expect(response.location).to eq(url_for(assigns(:administrator)))
       expect(assigns(:administrator).admin).to eq(false)
@@ -274,7 +273,7 @@ RSpec.describe "Administrators", type: :request do
     it "should return a list of administrators" do
       ad1 = administrators(:admin1)
 
-      get "/administrators", { :headers => ssl_headers(ad1) }
+      get "/administrators", :headers => ssl_headers(ad1)
       expect(response).to have_http_status(200)
       reply = JSON::parse(response.body)
       expect(reply["administrators"].size).to eq(Administrator.count)
@@ -283,7 +282,7 @@ RSpec.describe "Administrators", type: :request do
     it "should deny the list of administrator if not enabled" do
       frank2 = administrators(:frank2)
 
-      get "/administrators", { :headers => ssl_headers(frank2) }
+      get "/administrators", :headers => ssl_headers(frank2)
       expect(response).to have_http_status(403)
     end
   end
@@ -295,9 +294,7 @@ RSpec.describe "Administrators", type: :request do
 
       frank2 = administrators(:frank2)
 
-      get url_for(frank2), {
-            :headers => ssl_headers(frank2),
-          }
+      get url_for(frank2), :headers => ssl_headers(frank2)
       expect(response).to have_http_status(200)
       reply = JSON::parse(response.body)
       expect(reply["administrator"]).to_not be_nil
@@ -317,9 +314,7 @@ RSpec.describe "Administrators", type: :request do
       ad1    = administrators(:admin1)
       frank2 = administrators(:frank2)
 
-      get url_for(frank2), {
-            :headers => ssl_headers(ad1),
-          }
+      get url_for(frank2), :headers => ssl_headers(ad1)
       expect(response).to have_http_status(200)
       reply = JSON::parse(response.body)
       expect(reply["administrator"]).to_not be_nil

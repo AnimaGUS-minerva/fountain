@@ -60,7 +60,7 @@ class MudTelemetrySocket
     details.delete(:mac_addr)
 
     dev = Device.find_or_create_by_mac(mac_addr)
-    if dev.update_attributes(details)
+    if dev.update(details)
       log.info("added device: #{dev.name}")
       dev.save!
       sendstatus("ok")
@@ -76,7 +76,7 @@ class MudTelemetrySocket
     dev = Device.find_by_mac(mac_addr)
     if !dev
       sendstatus("not found")
-    elsif dev.update_attributes(details)
+    elsif dev.update(details)
       log.info("old device: #{dev.name}")
       dev.do_activation!
       dev.save!

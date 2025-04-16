@@ -73,7 +73,7 @@ RSpec.describe Device, type: :model do
 
       toaster_mud
       mwave.do_activation!
-      expect(File.exists?("tmp/mudfiles/00006.json")).to be true
+      expect(File.exist?("tmp/mudfiles/00006.json")).to be true
     end
 
     it "should setup of a new device_type given a new mud_url" do

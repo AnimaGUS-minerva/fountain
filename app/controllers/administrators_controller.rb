@@ -35,7 +35,8 @@ class AdministratorsController < SecureGatewayController
 
     # validate parameters here manually as it is somewhat special.
     unless @peer_cert
-      render :status => 403, :text => "Must provide Client Certificate"
+      # 403 = Forbidden
+      render :status => :forbidden, :plain => "Must provide Client Certificate"
       return
     end
 

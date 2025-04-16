@@ -99,8 +99,8 @@ RSpec.describe "Devices", type: :request do
     it "should permit updates by administrator" do
       thing1 = devices(:thing1)
       oname  = thing1.name
-      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
-                             :params  => { :device => { :name => "Downstairs Thermostat" }}}
+      put url_for(thing1), :headers => ssl_headers(administrators(:admin1)),
+          :params  => { :device => { :name => "Downstairs Thermostat" }}
       expect(response).to have_http_status(200)
       thing1.reload
       expect(thing1.name).to_not eq(oname)
@@ -108,8 +108,8 @@ RSpec.describe "Devices", type: :request do
     it "should deny updates by non-administrators" do
       thing1 = devices(:thing1)
       oname  = thing1.name
-      put url_for(thing1), { :headers => ssl_headers(administrators(:frank2)),
-                             :params  => { :device => { :name => "Downstairs Thermostat" }}}
+      put url_for(thing1), :headers => ssl_headers(administrators(:frank2)),
+          :params  => { :device => { :name => "Downstairs Thermostat" }}
       expect(response).to have_http_status(403)
       thing1.reload
       expect(thing1.name).to eq(oname)
@@ -117,8 +117,8 @@ RSpec.describe "Devices", type: :request do
     it "should deny updates when no login" do
       thing1 = devices(:thing1)
       oname  = thing1.name
-      put url_for(thing1), { :headers => ssl_headers(nil),
-                             :params  => { :device => { :name => "Downstairs Thermostat" }}}
+      put url_for(thing1), :headers => ssl_headers(nil),
+          :params  => { :device => { :name => "Downstairs Thermostat" }}
       expect(response).to have_http_status(401)
       thing1.reload
       expect(thing1.name).to eq(oname)
@@ -128,10 +128,10 @@ RSpec.describe "Devices", type: :request do
       thing1 = devices(:thing1)
       oname   = thing1.name
       old_fqdn = thing1.fqdn
-      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
-                             :params  => { :device => { :name => "Downstairs Thermostat",
+      put url_for(thing1), :headers => ssl_headers(administrators(:admin1)),
+          :params  => { :device => { :name => "Downstairs Thermostat",
                                                         :fqdn => "new.example.com",
-                                                      }}}
+                                   }}
       expect(response).to have_http_status(200)
 
       # get the object again and verify that it changed appropriately
@@ -144,10 +144,10 @@ RSpec.describe "Devices", type: :request do
       thing1 = devices(:thing1)
       oname   = thing1.name
       old_eui64 = thing1.eui64
-      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
-                             :params  => { :device => { :name => "Downstairs Thermostat",
-                                                        :eui64 => "new.example.com",
-                                                      }}}
+      put url_for(thing1), :headers => ssl_headers(administrators(:admin1)),
+          :params  => { :device => { :name => "Downstairs Thermostat",
+                                     :eui64 => "new.example.com",
+                                   }}
       expect(response).to have_http_status(200)
 
       # get the object again and verify that it changed appropriately
@@ -167,10 +167,10 @@ RSpec.describe "Devices", type: :request do
       thing1 = devices(:thing1)
       oname   = thing1.name
       old_mud_url = thing1.mud_url
-      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
-                             :params  => { :device => { :name => "Downstairs Thermostat",
-                                                        :mud_url => new_url,
-                                                      }}}
+      put url_for(thing1), :headers => ssl_headers(administrators(:admin1)),
+          :params  => { :device => { :name => "Downstairs Thermostat",
+                                     :mud_url => new_url,
+                                   }}
       expect(response).to have_http_status(200)
 
       # get the object again and verify that it changed appropriately
@@ -184,10 +184,10 @@ RSpec.describe "Devices", type: :request do
       thing1 = devices(:thing1)
       oname   = thing1.name
       old_mud_url = thing1.mud_url
-      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
-                             :params  => { :device => { :name => "Downstairs Thermostat",
-                                                        :mud_url => new_url,
-                                                      }}}
+      put url_for(thing1), :headers => ssl_headers(administrators(:admin1)),
+          :params  => { :device => { :name => "Downstairs Thermostat",
+                                     :mud_url => new_url,
+                                   }}
       expect(response).to have_http_status(200)
 
       # get the object again and verify that it changed appropriately
@@ -200,10 +200,10 @@ RSpec.describe "Devices", type: :request do
       thing1 = devices(:thing1)
       oname   = thing1.name
       old_tcounts = thing1.traffic_counts
-      put url_for(thing1), { :headers => ssl_headers(administrators(:admin1)),
-                             :params  => { :device => { :name => "Downstairs Thermostat",
-                                                        :traffic_counts => { "planets" => [ 0,0 ] }
-                                                      }}}
+      put url_for(thing1), :headers => ssl_headers(administrators(:admin1)),
+          :params  => { :device => { :name => "Downstairs Thermostat",
+                                     :traffic_counts => { "planets" => [ 0,0 ] }
+                                   }}
       expect(response).to have_http_status(200)
 
       # get the object again and verify that it changed appropriately
@@ -216,7 +216,7 @@ RSpec.describe "Devices", type: :request do
   describe "deleting" do
     it "should allow administrators to mark the device as deleted" do
       thing1 = devices(:thing1)
-      delete url_for(thing1), { :headers => ssl_headers(administrators(:admin1)) }
+      delete url_for(thing1), :headers => ssl_headers(administrators(:admin1))
       expect(response).to have_http_status(204)
       thing1.reload
       expect(thing1).to be_deleted
