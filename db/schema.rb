@@ -2,15 +2,18 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_10_223519) do
+ActiveRecord::Schema.define(version: 2022_06_06_201327) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "administrators", force: :cascade do |t|
     t.text "name"
@@ -72,6 +75,8 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.text "ldevid"
     t.text "ldevid_hash"
     t.text "wpa_key"
+    t.index ["idevid_hash"], name: "index_devices_on_idevid_hash"
+    t.index ["ldevid_hash"], name: "index_devices_on_ldevid_hash"
   end
 
   create_table "manufacturers", id: :serial, force: :cascade do |t|
@@ -96,8 +101,8 @@ ActiveRecord::Schema.define(version: 2019_01_10_223519) do
     t.integer "device_id"
     t.integer "manufacturer_id"
     t.text "device_identifier"
-    t.inet "requesting_ip"
-    t.inet "proxy_ip"
+    t.text "requesting_ip"
+    t.text "proxy_ip"
     t.text "nonce"
     t.binary "idevid"
     t.boolean "signed"
