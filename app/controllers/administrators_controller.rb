@@ -56,11 +56,11 @@ class AdministratorsController < SecureGatewayController
 
     case
     when (@administrator.present? and @administrator.admin?)
-      @object.update_attributes(administrator_params)
+      @object.update(administrator_params)
     when @object.nil?
       return
     else
-      @object.update_attributes(mortal_params)
+      @object.update(mortal_params)
     end
     head 200
   end

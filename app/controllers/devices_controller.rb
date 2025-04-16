@@ -27,7 +27,7 @@ class DevicesController < SecureGatewayController
   def create
     if device_params[:eui64]
       @object = Device.find_or_create_by_mac(device_params[:eui64])
-      @object.update_attributes(device_params)
+      @object.update(device_params)
     else
       @object = Device.create(device_params)
     end
@@ -43,7 +43,7 @@ class DevicesController < SecureGatewayController
   def update
     @object = Device.find(params[:id])
 
-    if @object.update_attributes(device_params)
+    if @object.update(device_params)
       @object.save!
       head 200
     else
