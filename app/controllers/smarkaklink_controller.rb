@@ -53,17 +53,22 @@ class SmarkaklinkController < SecureGatewayController
     # look for SPnonce, and decrypt it.
     challenge = params["ietf:request-voucher-request"]
     unless challenge
-      head 400, text: "missing request-voucher-request structure"
+      head 400, plain: "missing request-voucher-request structure"
       return
     end
 
     encryptedSPnonce = challenge["voucher-challenge-nonce"]
     unless encryptedSPnonce
-      head 400, text: "missing voucher-challenge-nonce"
+      head 400, plain: "missing voucher-challenge-nonce"
       return
     end
 
     sp_nonce = nil
+    unless (!!OpenSSL::PKey::EC::IES rescue false)
+      head 403, plain: "No EC::IES available"
+      return
+    end
+
     @ec = OpenSSL::PKey::EC::IES.new(FountainKeys.ca.jrc_priv_key, FountainKeys.ca.client_curve)
     begin
       sp_nonce = @ec.private_decrypt(Base64.urlsafe_decode64(encryptedSPnonce))

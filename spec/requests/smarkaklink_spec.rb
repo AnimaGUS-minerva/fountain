@@ -18,6 +18,7 @@ RSpec.describe "Smarkaklink", type: :request do
   describe "request voucher-request" do
 
     def do_rvr_post_1502(json)
+      pending "No EC::IES" unless (!!OpenSSL::PKey::EC::IES rescue false)
       @env ||= Hash.new
       @env["SSL_CLIENT_CERT"] = smarkaklink_client_1502
       @env["HTTP_ACCEPT"]  = CmsVoucherRequest::CMS_VOUCHER_REQUEST_TYPE
