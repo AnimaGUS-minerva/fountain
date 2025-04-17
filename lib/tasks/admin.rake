@@ -23,7 +23,7 @@ namespace :fountain do
     # make sure that there is a private key available.
     adminprivkey_file = certdir.join("#{admin_name}_#{curve}.key")
     adminpubkey_file  = certdir.join("#{admin_name}_#{curve}.crt")
-    if File.exists?(adminprivkey_file)
+    if File.exist?(adminprivkey_file)
       admin_key =  OpenSSL::PKey.read(File.open(adminprivkey_file))
     else
       admin_key = OpenSSL::PKey::EC.new(curve)

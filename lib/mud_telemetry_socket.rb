@@ -13,7 +13,7 @@ class MudTelemetrySocket
   end
 
   def self.socknew
-    File.delete(sock_name) if File.exists?(sock_name)
+    File.delete(sock_name) if File.exist?(sock_name)
     sock = UNIXServer.open(sock_name)
     self.new(sock, sock)
   end

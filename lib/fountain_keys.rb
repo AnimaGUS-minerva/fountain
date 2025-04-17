@@ -142,7 +142,7 @@ class FountainKeys
       duration=(2*365*24*60*60)
     end
 
-    if File.exists?(privkeyfile)
+    if File.exist?(privkeyfile)
       puts "#{certname} using existing key at: #{privkeyfile}"
       key = OpenSSL::PKey.read(File.open(privkeyfile))
     else
