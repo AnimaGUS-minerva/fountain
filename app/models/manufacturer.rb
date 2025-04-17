@@ -6,20 +6,20 @@ class Manufacturer < ApplicationRecord
   has_many :device_types
 
   # creates trust_brski!, and trust_brski?, etc.
-  enum trust: {
+  enum :trust, {
          unknown: "unknown",     # a new manufacturer, unknown trust.
          firstused: "firstused", # a new manufacturer, first time encountered.
          admin: "admin",         # manufacturer that was firstused, now blessed for EST-COAPS
          brski: "brksi",         # manufacturer can be trusted if voucher obtained.
          webpki: "webpki"        # manufacturer can be trusted if MASA has valid WebPKI.
 
-       },  _prefix: :trust
+       },  prefix: :trust
 
   # creates certtype_acp!, or certtype_iot!
-  enum certtype: {
+  enum :certtype, {
          acp: "acp",
          iot: "iot"
-       },  _prefix: :certtype
+       },  prefix: :certtype
 
   def self.trusted_client_by_pem(clientpem)
     # decode the clientpem into a certificate
