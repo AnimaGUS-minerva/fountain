@@ -2,7 +2,8 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 6.1.0"
+gem 'rails', "~> 7.0.0"
+gem 'zeitwerk'
 
 # psych 4.0 does not load fixtures correctly yet.
 gem 'psych', '~> 3.3'
