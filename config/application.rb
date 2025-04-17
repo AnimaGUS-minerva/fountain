@@ -29,5 +29,7 @@ module Fountain
     config.active_job.queue_adapter = :sucker_punch
 
     config.active_record.schema_format = :ruby
+    config.active_support.to_time_preserves_timezone = :zone
+
   end
 end

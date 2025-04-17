@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 7.2.0"
+gem 'rails', "~> 8.0"
 gem 'zeitwerk'
 
 # Use SCSS for stylesheets
@@ -92,7 +92,7 @@ gem 'byebug'
 
 # use for background processing of mud files, and interaction with
 # mud-controller.
-gem 'sucker_punch'
+gem 'async'
 gem 'rb-readline'
 
 # version 6.0.x is just the latest.
