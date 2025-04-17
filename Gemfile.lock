@@ -266,7 +266,9 @@ GEM
     pry-doc (1.5.0)
       pry (~> 0.11)
       yard (~> 0.9.11)
-    psych (3.3.4)
+    psych (5.2.3)
+      date
+      stringio
     public_suffix (6.0.1)
     rabl (0.17.0)
       activesupport (>= 2.3.14)
@@ -314,7 +316,8 @@ GEM
       zeitwerk (~> 2.6)
     rake (13.2.1)
     rb-readline (0.5.5)
-    rdoc (6.3.4.1)
+    rdoc (6.13.1)
+      psych (>= 4.0.0)
     ref (2.0.0)
     reline (0.6.1)
       io-console (~> 0.5)
@@ -356,6 +359,7 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
+    stringio (3.1.6)
     sucker_punch (3.2.0)
       concurrent-ruby (~> 1.0)
     therubyracer (0.12.3)
@@ -426,7 +430,6 @@ DEPENDENCIES
   pg
   pry
   pry-doc
-  psych (~> 3.3)
   rabl
   rack (>= 2.2.6.4)
   rails (~> 7.1.0)
