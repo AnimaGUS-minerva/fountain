@@ -191,7 +191,7 @@ GEM
     drb (2.2.1)
     erubi (1.13.1)
     eventmachine (1.2.7)
-    ffi (1.12.2)
+    ffi (1.17.2)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
       fiber-storage
@@ -423,7 +423,7 @@ DEPENDENCIES
   chariwt!
   coap!
   ecdsa!
-  ffi (~> 1.12.0)
+  ffi
   fixture_save!
   http-accept
   ipaddress

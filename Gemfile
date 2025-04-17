@@ -32,7 +32,7 @@ gem 'rake', ">= 12.3.3"
 gem 'tzinfo-data'
 
 gem 'mail'
-gem 'ffi', '~> 1.12.0'
+gem 'ffi'
 gem 'bundler', '>= 2.4.1'
 
 # due to alerts
