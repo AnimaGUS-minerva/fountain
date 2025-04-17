@@ -3,7 +3,7 @@ require 'digest'
 
 class DeviceType < ActiveRecord::Base
   has_many :devices
-  belongs_to :manufacturer
+  belongs_to :manufacturer, optional: true
 
   attr_accessor :raw_json
 

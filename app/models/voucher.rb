@@ -1,7 +1,7 @@
 class Voucher < ActiveRecord::Base
-  belongs_to :manufacturer
-  belongs_to :device
-  belongs_to :voucher_request
+  belongs_to :manufacturer, optional: true
+  belongs_to :device, optional: true
+  belongs_to :voucher_request, optional: true
   before_save :encode_details
 
   class VoucherFormatError < Exception

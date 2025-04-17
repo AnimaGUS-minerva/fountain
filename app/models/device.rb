@@ -36,8 +36,8 @@ require 'securerandom'
 #   t.text "wpa_key"
 #
 class Device < ActiveRecord::Base
-  belongs_to :manufacturer
-  belongs_to :device_type
+  belongs_to :manufacturer, optional: true
+  belongs_to :device_type, optional: true
   has_many :vouchers
   has_many :voucher_requests
 

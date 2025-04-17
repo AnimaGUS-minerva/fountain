@@ -2,7 +2,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 7.0.0"
+gem 'rails', "~> 7.1.0"
 gem 'zeitwerk'
 
 # psych 4.0 does not load fixtures correctly yet.
@@ -100,6 +100,8 @@ gem 'rb-readline'
 
 # version 6.0.x is just the latest.
 gem 'passenger'
+gem 'sprockets-rails'
+
 
 group :development, :test do
   gem 'therubyracer', platforms: :ruby
@@ -116,12 +118,11 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   #gem 'web-console', '~> 2.0'
 
+  gem 'sprockets'
+
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'webmock'
   gem 'looksee'
-
-  gem 'sprockets', "~> 3.7.2"
-
 end
 

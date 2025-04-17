@@ -23,9 +23,8 @@ require 'mail/parsers/content_type_parser'
 #
 
 class VoucherRequest < ApplicationRecord
-
-  belongs_to :device
-  belongs_to :manufacturer
+  belongs_to :device,       optional: true
+  belongs_to :manufacturer, optional: true
   has_many   :vouchers
 
   attr_accessor :certificate, :issuer_pki, :request
