@@ -8,6 +8,8 @@ Bundler.require(*Rails.groups)
 
 module Fountain
   class Application < Rails::Application
+    config.load_defaults 7.0
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -21,13 +23,11 @@ module Fountain
     # config.i18n.default_locale = :de
 
     config.autoload_paths << Rails.root.join('lib')
+    #config.autoload_lib(ignore: %w(assets tasks))
 
     # use sucker_punch for background jobs, uses threads.
     config.active_job.queue_adapter = :sucker_punch
 
     config.active_record.schema_format = :ruby
-
-    # config.autoload_paths << Rails.root.join('lib')
-    config.eager_load_paths << Rails.root.join('lib')
   end
 end

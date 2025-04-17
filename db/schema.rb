@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_06_201327) do
-
+ActiveRecord::Schema[7.1].define(version: 2022_06_06_201327) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,22 +21,22 @@ ActiveRecord::Schema.define(version: 2022_06_06_201327) do
     t.boolean "prospective", default: true
     t.binary "public_key"
     t.binary "previous_public_key"
-    t.datetime "last_login"
-    t.datetime "first_login"
+    t.datetime "last_login", precision: nil
+    t.datetime "first_login", precision: nil
     t.text "last_login_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "certificates", id: :serial, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "device_types", id: :serial, force: :cascade do |t|
     t.text "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "mud_url"
     t.text "mud_url_sig"
     t.json "validated_mud_json"
@@ -53,8 +52,8 @@ ActiveRecord::Schema.define(version: 2022_06_06_201327) do
     t.integer "device_type_id"
     t.integer "manufacturer_id"
     t.text "idevid"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.json "traffic_counts"
     t.text "mud_url"
     t.integer "profile_id"
@@ -81,8 +80,8 @@ ActiveRecord::Schema.define(version: 2022_06_06_201327) do
 
   create_table "manufacturers", id: :serial, force: :cascade do |t|
     t.text "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "masa_url"
     t.binary "issuer_public_key"
     t.string "trust", default: "unknown"
@@ -106,8 +105,8 @@ ActiveRecord::Schema.define(version: 2022_06_06_201327) do
     t.text "nonce"
     t.binary "idevid"
     t.boolean "signed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "tls_clientcert"
     t.binary "pledge_request"
     t.string "type", default: "CmsVoucherRequest"
@@ -124,8 +123,8 @@ ActiveRecord::Schema.define(version: 2022_06_06_201327) do
     t.text "device_identifier"
     t.date "expires_at"
     t.binary "signed_voucher"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "type", default: "CmsVoucher"
     t.binary "encoded_details"
   end
