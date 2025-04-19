@@ -7,6 +7,8 @@ WORKDIR /app/fountain
 RUN git config --global pull.ff only
 RUN bundle config setup system true
 RUN bundle config set --local deployment false
+
+# note bundle install here to respect the Gemfile.
 RUN bundle install --gemfile=/app/fountain/Gemfile && \
     bundle check
 

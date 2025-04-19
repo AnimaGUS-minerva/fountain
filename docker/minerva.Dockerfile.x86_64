@@ -1,31 +1,44 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_ruby_openssl:v202304 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_ruby_openssl:v202504 as builder
 
 WORKDIR /app
 
-RUN echo http://cacher.sandelman.ca:3142/deb.debian.org/debian bullseye main | tee /etc/apt/sources.list.d/cache.conf
+RUN echo deb http://cacher.sandelman.ca:3142/deb.debian.org/debian bookworm main | tee /etc/apt/sources.list.d/cache.list
 RUN apt-get update
 
-RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev
+RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev libyaml-dev
+
+RUN gem update --system
 
 # install gems with extensions explicitely so that layers are cached.
-RUN gem install -v1.13.10 nokogiri --source=http://rubygems.org && \
+RUN gem install -v1.18.7 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7 eventmachine --source=http://rubygems.org && \
-    gem install -v2.5.8  nio4r --source=http://rubygems.org && \
-    gem install -v1.14.2 ffi --source=http://rubygems.org && \
-    gem install -v0.21.0 pg --source=http://rubygems.org && \
+    gem install -v12.0.0  byebug --source=http://rubygems.org && \
+    gem install -v1.10.0  io-event --source=http://rubygems.org && \
+    gem install -v0.8.0  io-console --source=http://rubygems.org && \
+    gem install -v3.1.6  stringio   --source=http://rubygems.org && \
+    gem install -v1.8.1  racc --source=http://rubygems.org && \
+    gem install -v2.7.4  nio4r --source=http://rubygems.org && \
+    gem install -v1.17.2 ffi --source=http://rubygems.org && \
+    gem install -v1.5.9  pg --source=http://rubygems.org && \
     gem install -v1.8.2  thin --source=http://rubygems.org && \
     gem install -v0.1.5  websocket-extensions --source=http://rubygems.org && \
-    gem install -v0.7.5  websocket-driver     --source=http://rubygems.org && \
-    gem install -v0.5.9.6 cbor --source=http://rubygems.org && \
+    gem install -v0.7.7  websocket-driver     --source=http://rubygems.org && \
+    gem install -v0.5.9.8 cbor --source=http://rubygems.org && \
     gem install -v1.4.4  sqlite3 --source=http://rubygems.org && \
-    gem install -v2.6.3  json --source=http://rubygems.org && \
-    gem install -v6.0.17 passenger --source=http://rubygems.org
+    gem install -v2.4.0  sassc   --source=http://rubygems.org && \
+    gem install -v3.16.10 oj      --source=http://rubygems.org && \
+    gem install -v3.1.9   bigdecimal  --source=http://rubygems.org && \
+    gem install -v2.10.2  json --source=http://rubygems.org
+
+# rackup from bundler conflicts with passenger, which is weird.
+RUN rm /usr/local/bundle/bin/rackup
+RUN gem install -v6.0.27 passenger --source=http://rubygems.org
 
 
 RUN apt-get install -y busybox
 
-RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev
+RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev  zlib1g-dev
 
-RUN /usr/local/bundle/gems/passenger-6.0.17/bin/passenger-install-apache2-module
+RUN /usr/local/bundle/gems/passenger-6.0.27/bin/passenger-install-apache2-module
 RUN passenger-config build-native-support
 

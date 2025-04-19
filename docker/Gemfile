@@ -3,7 +3,11 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', "~> 5.2.8.1"
+gem 'rails', "~> 8.0"
+gem 'zeitwerk'
+
+# Use SCSS for stylesheets
+gem 'sassc'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -14,29 +18,30 @@ gem "turbolinks"
 #gem 'ecdsa',   :path => '/app/minerva/ruby_ecdsa'
 gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :branch => 'ecdsa_interface_openssl'
 
-#gem 'chariwt', :path => '/app/minerva/chariwt'
-gem 'chariwt', :git => 'https://github.com/mcr/ChariWTs.git', :branch => 'v0.9.0'
+#gem 'chariwt', :path => '../chariwt'
+# need version 0.11.0 to get correct date and nonce types
+gem 'chariwt', :git => 'https://github.com/AnimaGUS-minerva/ChariWTs.git', :branch => 'v0.11.0'
 gem 'jwt'
 
 #gem "fixture_save", :path => "../fixture_save"
 gem 'fixture_save', :git => 'https://github.com/mcr/fixture_save.git'
 
 gem 'jbuilder', '~> 2.0'
-gem 'rake'
+gem 'rake', ">= 12.3.3"
 
 gem 'tzinfo-data'
 
 gem 'mail'
-gem 'ffi', '~> 1.14.2'
-gem 'bundler', "~> 2.4.1"
+gem 'ffi'
+gem 'bundler', '>= 2.6.8'
 
 # due to alerts
 gem "yard", ">= 0.9.20"
 gem "websocket-extensions", ">= 0.1.5"
 gem "rack", ">= 2.2.6.4"
 gem "loofah", ">= 2.19.1"
-gem "actionpack", ">= 5.2.6.2"
 gem "activerecord", ">= 5.2.8.1"
+gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
 gem "addressable", ">= 2.8.0"
@@ -59,11 +64,11 @@ gem 'openssl', :path => '/app/minerva/ruby-openssl'
 gem 'coap',    :git => 'https://github.com/AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
 #gem 'coap',    :path => "/app/minerva/coap"
 
-gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true
-#gem 'celluloid-io', :path => "/app/minerva/celluloid-io"
+gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.git', :submodules => true, :branch => '0.17-dtls'
+#gem 'celluloid-io', :path => "../minerva/celluloid-io"
 
-#gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git'
 #gem 'david', :git => 'https://github.com/AnimaGUS-minerva/david.git', :branch => 'dtls-david'
+#gem 'david', :path => "../minerva/david"
 
 # use this to get full decoding of HTTP Accept: headers, to be able to
 # split off smime-type=voucher in pkcs7-mime, and other parameters
@@ -77,8 +82,8 @@ gem 'cbor'
 gem 'rabl'
 gem 'oj'
 
-gem 'sqlite3', "~> 1.4.2"
-gem 'pg', '~> 0.21'
+gem 'sqlite3', "~> 1.4.0"
+gem 'pg'
 
 # used in production on SecureHomeGateway
 gem 'thin'
@@ -89,6 +94,6 @@ gem 'passenger'
 
 # use for background processing of mud files, and interaction with
 # mud-controller.
-gem 'sucker_punch'
+gem 'async'
 gem 'rb-readline'
 
