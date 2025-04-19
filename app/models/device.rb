@@ -228,10 +228,10 @@ class Device < ActiveRecord::Base
       #                                                   rfc822Name),
       #                                           false)
       otherName=extension_factory.create_extension("subjectAltName",
-                                                   sprintf("otherName:1.3.6.1.5.5.7.8.10:%s",
+                                                   sprintf("otherName:1.3.6.1.5.5.7.8.10;IA5STRING:%s",
                                                            rfc822Name),
                                                    false)
-      ldevid.add_extension(rfcName)
+      ldevid.add_extension(otherName)
     end
 
     ldevid.not_before = Time.now
