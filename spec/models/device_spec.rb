@@ -222,10 +222,9 @@ RSpec.describe Device, type: :model do
     end
 
     def bulb1_csrattr_acpNode
-      Base64.decode64("MGwwagYJKoZIhvcNAQkOMV0wWzFZMFcGA1UdEQEB"+
-                      "/wRNMEugSTBHBggrBgEFBQcICqA7FjlyZmM4OTk0"+
-                      "K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1NTAwMDAw"+
-                      "MDAwK0BhY3AuZXhhbXBsZS5jb20=")
+      Base64.decode64("MGgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcG"+
+                      "CCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3MzlmYzIzYzM0NDAx"+
+                      "MTIyMzM0NDU1MDAwMDAwMDArQGFjcC5leGFtcGxlLmNvbQ==")
     end
 
     it "should generate an appropriate CSRattributes object with the otherName" do

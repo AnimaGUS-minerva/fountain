@@ -43,8 +43,9 @@ RSpec.describe CSRAttributes do
 
   it "should create an otherName object" do
     ae = CSRAttributes.otherName(realistic_rfc822Name)
-    ref02 = "MEugSTBHBggrBgEFBQcICqA7FjlyZmM4OTk0K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1NTAwMDAw"+
-            "MDAwK0BhY3AuZXhhbXBsZS5jb20="
+    ref02 = "MEmgRwYIKwYBBQUHCAqgOxY5cmZjODk5NCtmZDczOWZjMjNj"+
+            "MzQ0MDExMjIzMzQ0NTUwMDAwMDAwMCtAYWNwLmV4YW1wbGUu"+
+            "Y29t"
 
     File.open("tmp/otherName.der", "wb") { |f| f.syswrite ae.to_der }
     expect(ae.to_der).to eq(Base64.decode64(ref02))
@@ -145,16 +146,27 @@ RSpec.describe CSRAttributes do
   # these come from draft-ietf-lamps-rfc7030-csrattrs-18,
   # examples/realistic-acp.csrattr
   def realistic_otherName_reference
-    @realOtherName ||= Base64.decode64("MGwwagYJKoZIhvcNAQkOMV0wWzFZMFcGA1Ud"+
-                                       "EQEB/wRNMEugSTBHBggrBgEFBQcICqA7FjlyZmM4"+
-                                       "OTk0K2ZkNzM5ZmMyM2MzNDQwMTEyMjMzNDQ1"+
-                                       "NTAwMDAwMDAwK0BhY3AuZXhhbXBsZS5jb20=")
+    @realOtherName ||= Base64.decode64("MGgwZgYJKoZIhvcNAQkOMVkwVzBVBgNVHREBAf8ESzBJoEcG"+
+                                       "CCsGAQUFBwgKoDsWOXJmYzg5OTQrZmQ3MzlmYzIzYzM0NDAx"+
+                                       "MTIyMzM0NDU1MDAwMDAwMDArQGFjcC5leGFtcGxlLmNvbQ==")
   end
+
+  it "should create a CSR otherName SAN object" do
+    c1 = CSRAttributes.otherName(realistic_rfc822Name)
+    File.open("tmp/realisticSAN.der", "wb") { |f| f.syswrite c1.to_der }
+  end
+
+
+  # note that this creates an extension suitable for a certificate, not a Certificate Signing Request
+  #     b = ef.create_extension("subjectAltName",
+  #sprintf("otherName:1.3.6.1.5.5.7.8.10;UTF8:%s",
+  #                                  "rfc8994+fd739fc23c3440112233445500000000+@acp.example.com"),
+  #                          false)
 
   it "should create a CSR attribute with a realistic subjectAltName" do
     c1 = CSRAttributes.new
+    ef = OpenSSL::X509::ExtensionFactory.new
     c1.add_otherNameSAN(realistic_rfc822Name)
-    #byebug
 
     der=c1.to_der
     #puts der.unpack("H*")
@@ -260,7 +272,6 @@ RSpec.describe CSRAttributes do
   it "should process realistic-acp from rfc7030-csrattr, finding an rfc822name" do
     c0 = CSRAttributes.from_der(realistic_acp_example)
     expect(c0).to_not be_nil
-    pending "This example is probably invalid, so it should be updated"
     name = c0.find_rfc822NameOrOtherName
     expect(name).to_not be_nil
   end

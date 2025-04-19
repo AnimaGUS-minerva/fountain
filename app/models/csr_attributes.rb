@@ -100,14 +100,10 @@ class CSRAttributes
           san_list << exten
         else
           exten.value.each { |exten2|
-            if exten2.is_a? OpenSSL::ASN1::Constructive
-              exten2.value.each { |exten3|
-                if exten3.is_a? OpenSSL::ASN1::Constructive and
-                  exten3.value[0].is_a? OpenSSL::ASN1::ObjectId and
-                  exten3.value[0].oid == subjectAltNameOid.oid
-                  san_list << exten3
-                end
-              }
+            if exten2.is_a? OpenSSL::ASN1::Constructive and
+              exten2.value[0].is_a? OpenSSL::ASN1::ObjectId and
+              exten2.value[0].oid == subjectAltNameOid.oid
+              san_list << exten2
             end
           }
         end
@@ -131,10 +127,6 @@ class CSRAttributes
         return nil unless (san and san.try(:value))
 
         san.value.each { |name|
-          if name.is_a? OpenSSL::ASN1::ASN1Data
-            name = name.value[0]
-          end
-          next unless (name.is_a? OpenSSL::ASN1::Constructive)
           next unless name.value.length >= 2
           if name.value[0].oid == CSRAttributes.acpNodeNameOID.oid
             return name.value[1].value[0].value
