@@ -223,10 +223,14 @@ class Device < ActiveRecord::Base
       # the OID: 1.3.6.1.4.1.46930.1 is a Private Enterprise Number OID:
       #    iso.org.dod.internet.private.enterprise . SANDELMAN=46930 . 1
       # subjectAltName=otherName:1.2.3.4;UTF8:some other identifier
-      rfcName=extension_factory.create_extension("subjectAltName",
-                                                 sprintf("email:%s",
-                                                         rfc822Name),
-                                                 false)
+      #rfcName=extension_factory.create_extension("subjectAltName",
+      #                                           sprintf("email:%s",
+      #                                                   rfc822Name),
+      #                                           false)
+      otherName=extension_factory.create_extension("subjectAltName",
+                                                   sprintf("otherName:1.3.6.1.5.5.7.8.10:%s",
+                                                           rfc822Name),
+                                                   false)
       ldevid.add_extension(rfcName)
     end
 

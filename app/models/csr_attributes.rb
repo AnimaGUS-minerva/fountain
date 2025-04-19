@@ -64,8 +64,8 @@ class CSRAttributes
     # a is otherNameName CHOICE from RFC7030, and the result is a sequence of SANs
     v = OpenSSL::ASN1::IA5String.new(x, 0, :EXPLICIT, :CONTEXT_SPECIFIC)
 
-    # this seq makes up the OtherName
-    seq1 = OpenSSL::ASN1::Sequence.new([acpNodeNameOID,v], otherNameChoice, :EXPLICIT, :CONTEXT_SPECIFIC)
+    # this is a constructed, context specific, implicit tag.
+    seq1 = OpenSSL::ASN1::Constructive.new([acpNodeNameOID,v], 0, :IMPLICIT, :CONTEXT_SPECIFIC)
     # this is the SubjectAltName contents.
     return OpenSSL::ASN1::Sequence.new([seq1])
   end
@@ -168,10 +168,7 @@ class CSRAttributes
     }
     @attributes.each { |k,v|
       koid = OpenSSL::ASN1::ObjectId.new(k)
-      v0 = OpenSSL::ASN1::Set.new(
-        [
-          OpenSSL::ASN1::Sequence.new([v])
-        ])
+      v0 = OpenSSL::ASN1::Set.new([v])
       list << OpenSSL::ASN1::Sequence.new([koid,v0])
     }
 
@@ -295,7 +292,7 @@ class CSRAttributes
       x = x.oid
     end
     if @attributes[x].nil?
-      @attributes[x] = OpenSSL::ASN1::Set.new([])
+      @attributes[x] = OpenSSL::ASN1::Sequence.new([])
     end
     if @attributes[x].is_a? OpenSSL::ASN1::Constructive
       @attributes[x].value << y
