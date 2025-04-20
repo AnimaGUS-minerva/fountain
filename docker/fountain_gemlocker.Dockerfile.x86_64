@@ -1,4 +1,4 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202304 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202504 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
@@ -7,6 +7,8 @@ WORKDIR /app/fountain
 RUN git config --global pull.ff only
 RUN bundle config setup system true
 RUN bundle config set --local development 'false'
+
+# note bundle update to get latest items for updating
 RUN bundle update --gemfile=/app/fountain/Gemfile && \
     bundle check
 

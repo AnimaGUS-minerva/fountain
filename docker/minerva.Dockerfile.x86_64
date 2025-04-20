@@ -34,6 +34,9 @@ RUN gem install -v1.18.7 nokogiri --source=http://rubygems.org && \
 RUN rm /usr/local/bundle/bin/rackup
 RUN gem install -v6.0.27 passenger --source=http://rubygems.org
 
+RUN gem install -v3.4.1 date  --source=http://rubygems.org && \
+    gem install -v5.2.3 psych --source=http://rubygems.org
+
 
 RUN apt-get install -y busybox
 
