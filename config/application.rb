@@ -26,7 +26,7 @@ module Fountain
     #config.autoload_lib(ignore: %w(assets tasks))
 
     # use sucker_punch for background jobs, uses threads.
-    config.active_job.queue_adapter = :sucker_punch
+    # config.active_job.queue_adapter = :sucker_punch
 
     config.active_record.schema_format = :ruby
     config.active_support.to_time_preserves_timezone = :zone
