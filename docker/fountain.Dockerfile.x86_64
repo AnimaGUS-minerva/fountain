@@ -1,4 +1,4 @@
-FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202304 as builder
+FROM dockerhub.gatineau.credil.org/minerva/minerva_builder:v202504 as builder
 
 ADD ./docker/Gemfile /app/fountain/Gemfile
 ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
@@ -34,7 +34,7 @@ ENV GEM_HOME="/usr/local/bundle"
 WORKDIR /app/fountain
 #RUN ["bundle","show" ]
 
-FROM dockerhub.gatineau.credil.org/minerva/distroless-ruby:2.7.6-dnsutils
+FROM dockerhub.gatineau.credil.org/minerva/distroless-ruby:3.3.8-dnsutils
 
 # includes /app/minerva, where the gems were installed.
 COPY --from=builder /app /app
@@ -47,8 +47,9 @@ COPY --from=builder /bin/busybox  /bin/busybox
 COPY --from=builder /usr/bin/strace  /usr/bin/strace
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libpq.so* \
                     /usr/lib/x86_64-linux-gnu/libffi.so* \
-                    /lib/x86_64-linux-gnu/libcrypt.so* \
-                    /lib/x86_64-linux-gnu/libidn.so*  \
+                    /usr/lib/x86_64-linux-gnu/libcrypt.so* \
+                    /usr/lib/x86_64-linux-gnu/libidn.so*  \
+                    /usr/lib/x86_64-linux-gnu/liblber-2.5*  \
                     /usr/lib/x86_64-linux-gnu/libidn2.so*  \
                     /usr/lib/x86_64-linux-gnu/libunistring.so* \
                     /usr/lib/x86_64-linux-gnu/libunwind*so* \
@@ -77,7 +78,6 @@ ADD ./docker/Gemfile.lock /app/fountain/Gemfile.lock
 
 RUN ["bundle","show" ]
 RUN ["bundle","exec","rake","-T" ]
-RUN ["bundle","exec","rake","assets:precompile" ]
 
 EXPOSE 8443
 
