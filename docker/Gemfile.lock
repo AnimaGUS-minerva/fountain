@@ -300,7 +300,7 @@ GEM
     sassc (2.4.0)
       ffi (~> 1.9)
     securerandom (0.4.1)
-    sqlite3 (1.4.4)
+    sqlite3 (2.6.0-x86_64-linux-gnu)
     sshkit (1.24.0)
       base64
       logger
@@ -308,7 +308,7 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
-    stringio (3.1.6)
+    stringio (3.1.7)
     thin (1.8.2)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -376,7 +376,7 @@ DEPENDENCIES
   rb-readline
   rexml (>= 3.2.5)
   sassc
-  sqlite3 (~> 1.4.0)
+  sqlite3
   thin
   turbolinks
   tzinfo (>= 1.2.10)
