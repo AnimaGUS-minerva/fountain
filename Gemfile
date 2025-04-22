@@ -76,7 +76,7 @@ gem 'celluloid-io', :git => 'https://github.com/AnimaGUS-minerva/celluloid-io.gi
 gem 'http-accept'
 
 # IP address management for use in ANIMA ACP
-gem 'ipaddress'
+gem 'ipaddress', :git => 'https://github.com/mcr/ipaddress.git', :branch => 'v0.9.0mcr'
 
 # encode/decode cbor messages
 gem 'cbor'
