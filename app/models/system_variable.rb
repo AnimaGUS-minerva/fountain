@@ -124,7 +124,7 @@ class SystemVariable < ActiveRecord::Base
     end
   end
 
-    # this generates a new pseudo-random number from the things stored into
+  # this generates a new pseudo-random number from the things stored into
   # the given item.  Both the number and value are used.   The value is used
   # to store the cryptographic state, and the number gives which iteration
   # this is.  This object needs to initialize itself from a nextval().
@@ -202,6 +202,11 @@ class SystemVariable < ActiveRecord::Base
       end
     end
     newaddress
+  end
+
+  # allocate a new ACPAddress pool, save it to the database.
+  def self.acp_pool!
+    _acp_pool
   end
 
   def self.newdevice_prefix
