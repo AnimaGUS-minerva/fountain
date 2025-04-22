@@ -100,6 +100,9 @@ namespace :fountain do
                           :acp_domain)
 
     SystemVariable.acp_pool!
+
+    # mark as being an ACP enabled
+    Manufacturer.default_manufacturer.certtype_acp!
   end
 
 
