@@ -10,7 +10,13 @@ namespace :fountain do
     ownerprivkeyfile = FountainKeys.ca.certdir.join("ownerca_#{curve}.key")
     outfile       = FountainKeys.ca.certdir.join("ownerca_#{curve}.crt")
     dnprefix = SystemVariable.string(:dnprefix) || "/DC=ca/DC=sandelman"
-    dn = sprintf("%s/CN=%s Unstrung Fountain Root CA", dnprefix, SystemVariable.string(:hostname))
+    hostname = SystemVariable.string(:hostname)
+    unless SystemVariable.string(:hostname)
+      puts "Hostname must be set before generating registrar CA"
+      exit 1
+    end
+    hostname.chomp!
+    dn = sprintf("%s/CN=%s Unstrung Fountain Root CA", dnprefix, hostname)
     puts "issuer is now: #{dn}"
     dnobj = OpenSSL::X509::Name.parse dn
 
@@ -102,7 +108,7 @@ namespace :fountain do
     puts manu.to_yaml(:root => "manu")
   end
 
-  desc "Read a CSR from CSR= and sign it as if it came in via EST, LIFETIME=5years OUTFILE=foo.crt"
+  desc "Read a CSR from CSR=file and sign it as if it came in via EST, LIFETIME=5years OUTFILE=foo.crt"
   task :sign_csr => :environment do
 
     lifetime      = nil  # accept default

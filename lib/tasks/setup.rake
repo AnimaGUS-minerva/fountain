@@ -10,6 +10,8 @@ namespace :fountain do
 
     if value.blank?
       value = previous
+    else
+      value.chomp!
     end
 
     value
