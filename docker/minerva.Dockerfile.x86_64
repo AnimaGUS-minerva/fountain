@@ -9,6 +9,8 @@ RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev libyaml-dev
 
 RUN gem update --system
 
+RUN gem update --system
+
 # install gems with extensions explicitely so that layers are cached.
 RUN gem install -v1.18.7 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7 eventmachine --source=http://rubygems.org && \
