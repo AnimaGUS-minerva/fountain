@@ -4,7 +4,7 @@ require File.expand_path('../application', __FILE__)
 # Initialize the Rails application.
 Rails.application.initialize!
 
-$VERSION = "0.93"
+$VERSION = "0.95"
 $ADMININTERFACE = false
 
 # gets overritten by config/initializers/revision.rb by capistrano
