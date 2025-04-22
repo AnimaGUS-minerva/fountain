@@ -9,15 +9,13 @@ RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev libyaml-dev
 
 RUN gem update --system
 
-RUN gem update --system
-
 # install gems with extensions explicitely so that layers are cached.
-RUN gem install -v1.18.7 nokogiri --source=http://rubygems.org && \
+RUN gem install -v1.18.8 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7 eventmachine --source=http://rubygems.org && \
     gem install -v12.0.0  byebug --source=http://rubygems.org && \
     gem install -v1.10.0  io-event --source=http://rubygems.org && \
     gem install -v0.8.0  io-console --source=http://rubygems.org && \
-    gem install -v3.1.6  stringio   --source=http://rubygems.org && \
+    gem install -v3.1.7  stringio   --source=http://rubygems.org && \
     gem install -v1.8.1  racc --source=http://rubygems.org && \
     gem install -v2.7.4  nio4r --source=http://rubygems.org && \
     gem install -v1.17.2 ffi --source=http://rubygems.org && \
