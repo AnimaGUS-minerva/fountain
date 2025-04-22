@@ -88,7 +88,19 @@ namespace :fountain do
     prompt_variable_value("Curve/size to use for Registrar Key",
                           :client_curve, 'prime256v1')
 
+
     SystemVariable.dump_vars
   end
+
+  desc "Set Registrar into ACP mode, with open registrar"
+  task :s0_acp_mode => :environment do
+    SystemVariable.setbool(:open_registrar, true)
+
+    prompt_variable_value("ACP domain for this registrar",
+                          :acp_domain)
+
+    SystemVariable.acp_pool!
+  end
+
 
 end
