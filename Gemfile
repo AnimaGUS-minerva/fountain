@@ -83,7 +83,7 @@ gem 'cbor'
 gem 'rabl'
 gem 'oj'
 
-gem 'sqlite3', "~> 1.4.0"
+gem 'sqlite3', "~> 2.6.0"
 gem 'pg'
 
 # used in production on SecureHomeGateway

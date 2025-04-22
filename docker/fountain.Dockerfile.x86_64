@@ -16,7 +16,7 @@ RUN bundle install --gemfile=/app/fountain/Gemfile && \
 #RUN echo "deb http://istari.sandelman.ca:3142/deb.debian.org/debian bullseye main contrib non-free" >/etc/apt/sources.list.d/cacher.list
 
 # install items for use in debugging
-RUN apt-get update && apt-get  install -y strace busybox
+RUN apt-get update && apt-get  install -y strace busybox sqlite3
 
 # clean up just to be sure.
 RUN rm -f /app/fountain/tmp/pids/server.pid && \
