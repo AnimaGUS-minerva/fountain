@@ -122,10 +122,18 @@ namespace :fountain do
       puts "Can not process #{filename} into CSR object"
       exit 2
     end
+    unless ENV['MANUFACTURER'].blank?
+      manu = Manufacturer.find(ENV['MANUFACTURER'])
+    else
+      manu = Manufacturer.default_manufacturer
+    end
+
     dev = Device.create_device_from_csr(csrobj)
     # make sure it has an acp_address allocated
     dev.acp_address_allocate!
+    dev.manufacturer = manu
     dev.create_ldevid_from_csr(csrobj)
+    dev.save!
 
     File.open(outfile, "wb") do |f| f.write dev.ldevid end
     puts "New Certificate writtten to: #{outfile}"

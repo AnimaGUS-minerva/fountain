@@ -168,6 +168,19 @@ class Manufacturer < ApplicationRecord
     return manu1
   end
 
+  def self.default_manufacturer
+    masaurl = "defaultmanufacturer.example.com"
+    manu = where(masa_url: masaurl).first
+    return manu if manu
+
+    manu = create(issuer_dn: "CN=Default Manufacturer",
+                  masa_url: masaurl)
+    manu.trust_firstused!
+    manu.name = "Default Manufacturer for manually enrolled devices"
+    manu.save!
+    manu
+  end
+
   # if a voucher validates this manufacturer, then we set the
   # manufacturer as trust_brski!
   def trust_brski_if_firstused!
