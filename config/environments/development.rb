@@ -27,6 +27,13 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
+  config.hosts = [
+    IPAddr.new("0.0.0.0/0"), # All IPv4 addresses.
+    IPAddr.new("::/0"),      # All IPv6 addresses.
+    "localhost",              # The localhost reserved domain.
+    "fountain-test.example.com"   # The test hostname
+  ]
+
   # setup the MockMudSocket, this will overide the parent,
   # and mock out the environment environment.
   MockMudSocket.new(nil, "tmp/devel_mud_super.tout")
