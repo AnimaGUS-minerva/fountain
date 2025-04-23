@@ -1,4 +1,5 @@
 class EstController < ApiController
+  skip_forgery_protection
 
   # CACERTS return
   def cacerts
