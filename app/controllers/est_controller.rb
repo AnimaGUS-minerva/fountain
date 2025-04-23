@@ -1,3 +1,24 @@
+
+# This is a monkey patch for a problem with certificates not getting passed up through eventmachine
+# This might be related to openssl1.1.1 in the ruby3-openssl vs the libssl3 that thin uses!
+if defined? Thin::Connection
+  class Thin::Connection
+    def ssl_handshake_completed
+      if @certs
+        @request.env['rack.peer_cert'] = @certs.first
+      end
+    end
+    def ssl_verify_peer(cert)
+      # In order to make the cert available later we have to have made at least
+      # a show of verifying it.
+      @certs ||= []
+      @certs << cert
+      true
+    end
+  end
+
+end
+
 class EstController < ApiController
   skip_forgery_protection
 
