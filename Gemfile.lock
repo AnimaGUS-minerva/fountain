@@ -42,7 +42,7 @@ GIT
 GIT
   remote: https://github.com/mcr/ipaddress.git
   revision: b52c61e9f804f9fd8a05cf2897a36b07dfaad1cc
-  branch: v0.9.0mcr
+  tag: v0.9.0mcr
   specs:
     ipaddress (0.8.3)
 
@@ -462,7 +462,7 @@ DEPENDENCIES
   spring
   sprockets
   sprockets-rails
-  sqlite3
+  sqlite3 (~> 2.6.0)
   therubyracer
   thin
   turbolinks
