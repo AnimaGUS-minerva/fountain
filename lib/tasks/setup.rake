@@ -100,9 +100,12 @@ namespace :fountain do
                           :acp_domain)
 
     SystemVariable.acp_pool!
+    SystemVariable.setbool(:anima_acp, true)
 
     # mark as being an ACP enabled
-    Manufacturer.default_manufacturer.certtype_acp!
+    defmanu = Manufacturer.default_manufacturer
+    defmanu.certtype_acp!
+    defmanu.save!
   end
 
 
