@@ -45,7 +45,7 @@ gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.2.5"
 gem "addressable", ">= 2.8.0"
-gem "nokogiri", ">= 1.13.10"
+gem "nokogiri", ">= 1.18.9"
 gem "rails-html-sanitizer", ">= 1.4.4"
 gem "tzinfo", ">= 1.2.10"
 
