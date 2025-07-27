@@ -10,7 +10,7 @@ RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev libyaml-dev
 RUN gem update --system
 
 # install gems with extensions explicitely so that layers are cached.
-RUN gem install -v1.18.8 nokogiri --source=http://rubygems.org && \
+RUN gem install -v1.18.9 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7 eventmachine --source=http://rubygems.org && \
     gem install -v12.0.0  byebug --source=http://rubygems.org && \
     gem install -v1.10.0  io-event --source=http://rubygems.org && \
@@ -37,7 +37,9 @@ RUN gem install -v6.0.27 passenger --source=http://rubygems.org
 RUN gem install -v3.4.1 date  --source=http://rubygems.org && \
     gem install -v5.2.6 psych --source=http://rubygems.org
 
-
+RUN ip addr ls || exit 0
+RUN ping -c 3 172.30.2.30|| exit 0
+RUN ping -c 3 cacher.sandelman.ca || exit 0
 RUN apt-get install -y busybox
 
 RUN apt-get install -y apache2 libcurl4-openssl-dev apache2-dev libapr1-dev libaprutil1-dev  zlib1g-dev
