@@ -31,7 +31,7 @@ namespace :fountain do
     puts "CA Certificate writtten to: #{outfile}"
   end
 
-  desc "Create a certificate for the Registration Authority to own devices with, LIFETIME=5years"
+  desc "Create an EE certificate for the Registration Authority to own devices with, LIFETIME=5years"
   task :s2_create_registrar => :environment do
 
     curve = FountainKeys.ca.client_curve
@@ -70,7 +70,7 @@ namespace :fountain do
     puts "JRC Certificate writtten to: #{outfile}"
   end
 
-  desc "Create a keypair for the domain owner to own devices with"
+  desc "Create a subordinate CA the domain owner to own devices with (LDevID CA)"
   task :s4_domain_authority => :environment do
 
     curve = FountainKeys.ca.client_curve
