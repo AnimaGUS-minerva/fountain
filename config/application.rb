@@ -31,5 +31,8 @@ module Fountain
     config.active_record.schema_format = :ruby
     config.active_support.to_time_preserves_timezone = :zone
 
+    # turn off image_processor, not needed
+    config.active_storage.variant_processor= :disabled
+
   end
 end
