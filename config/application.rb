@@ -29,7 +29,9 @@ module Fountain
     # config.active_job.queue_adapter = :sucker_punch
 
     config.active_record.schema_format = :ruby
-    config.active_support.to_time_preserves_timezone = :zone
+
+    # deprecated in 8.2
+    #config.active_support.to_time_preserves_timezone = :zone
 
     # turn off image_processor, not needed
     config.active_storage.variant_processor= :disabled
