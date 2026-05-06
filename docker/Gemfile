@@ -36,9 +36,13 @@ gem 'ffi'
 gem 'bundler', '>= 2.6.8'
 
 # due to alerts
-gem "yard", ">= 0.9.20"
+gem "yard", ">= 0.9.42"
+gem "erb", ">= 6.0.4"
+gem "net-imap", ">= 0.6.4"
 gem "websocket-extensions", ">= 0.1.5"
-gem "rack", ">= 3.2.3"
+gem "action_text-trix", ">= 2.1.18"
+gem "rack", ">= 3.2.6"
+gem "rack-session", ">= 2.1.2"
 gem "loofah", ">= 2.19.1"
 gem "activerecord", ">= 5.2.8.1"
 gem "activestorage", ">= 8.0.2.1"
@@ -46,7 +50,7 @@ gem "actionpack", ">= 5.2.6.2"
 gem "json", ">= 2.3.0"
 gem "rexml", ">= 3.4.2"
 gem "addressable", ">= 2.8.0"
-gem "nokogiri", ">= 1.18.9"
+gem "nokogiri", ">= 1.19.3"
 gem "rails-html-sanitizer", ">= 1.4.4"
 gem "tzinfo", ">= 1.2.10"
 

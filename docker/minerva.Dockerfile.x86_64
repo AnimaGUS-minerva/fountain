@@ -10,7 +10,7 @@ RUN apt-get install -y libpq-dev libsqlite3-dev libssl-dev libyaml-dev
 RUN gem update --system
 
 # install gems with extensions explicitely so that layers are cached.
-RUN gem install -v1.19.2 nokogiri --source=http://rubygems.org && \
+RUN gem install -v1.19.3 nokogiri --source=http://rubygems.org && \
     gem install -v1.2.7  eventmachine --source=http://rubygems.org && \
     gem install -v13.0.0  byebug --source=http://rubygems.org && \
     gem install -v1.14.5  io-event --source=http://rubygems.org && \
@@ -18,17 +18,17 @@ RUN gem install -v1.19.2 nokogiri --source=http://rubygems.org && \
     gem install -v3.2.0  stringio   --source=http://rubygems.org && \
     gem install -v1.8.1  racc --source=http://rubygems.org && \
     gem install -v2.7.5  nio4r --source=http://rubygems.org && \
-    gem install -v1.17.3 ffi --source=http://rubygems.org && \
+    gem install -v1.17.4 ffi --source=http://rubygems.org && \
     gem install -v1.6.3  pg --source=http://rubygems.org && \
     gem install -v2.0.1  thin --source=http://rubygems.org && \
     gem install -v0.1.5  websocket-extensions --source=http://rubygems.org && \
     gem install -v0.8.0  websocket-driver     --source=http://rubygems.org && \
-    gem install -v0.5.10.1 cbor --source=http://rubygems.org && \
+    gem install -v0.5.10.2 cbor --source=http://rubygems.org && \
     gem install -v2.6.0  sqlite3 --source=http://rubygems.org && \
     gem install -v2.4.0  sassc   --source=http://rubygems.org && \
     gem install -v3.16.16 oj      --source=http://rubygems.org && \
     gem install -v6.0.2   erb     --source=http://rubygems.org && \
-    gem install -v4.0.1   bigdecimal  --source=http://rubygems.org && \
+    gem install -v4.1.0   bigdecimal  --source=http://rubygems.org && \
     gem install -v2.19.3  json --source=http://rubygems.org
 RUN gem install -v3.5.1 date  --source=http://rubygems.org && \
     gem install -v5.3.1 psych --source=http://rubygems.org

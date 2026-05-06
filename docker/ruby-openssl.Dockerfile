@@ -37,7 +37,7 @@ RUN mkdir -p /sandel/3rd/openssl-dtls-api/lib && ln -s /src/openssl/lib/*.a /san
 #RUN apt-get install -y vim
 RUN cd /app/minerva/ruby-openssl && rake compile -- --with-openssl-dir=/src/openssl
 
-#RUN touch /app/v202304
+RUN touch /app/v202605
 
 #WORKDIR /app
 
